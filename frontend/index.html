@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>SoftSkills360 - Inicia sesión</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>SoftSkills360</h1>
+
+    <div id="loginForm">
+      <h2>Iniciar sesión</h2>
+      <input id="loginEmail" placeholder="Email" type="email">
+      <input id="loginPassword" placeholder="Contraseña" type="password">
+      <button id="loginBtn">Entrar</button>
+      <p>¿No tienes cuenta? <a id="toRegister">Regístrate aquí</a></p>
+    </div>
+
+    <div id="registerForm" style="display:none;">
+      <h2>Registro</h2>
+      <input id="regName" placeholder="Nombre">
+      <input id="regEmail" placeholder="Email" type="email">
+      <input id="regPassword" placeholder="Contraseña" type="password">
+      <button id="registerBtn">Registrarme</button>
+      <p>¿Ya tienes cuenta? <a id="toLogin">Inicia sesión</a></p>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
