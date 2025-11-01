@@ -2,9 +2,8 @@ from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv() 
 
-client = MongoClient(os.getenv("mongodb+srv://hanzell:UwU@cluster0.3wjtgsa.mongodb.net/?appName=Cluster0"))
+client = MongoClient(os.getenv("MONGO_URI")) # <--- Usa la variable
 db = client["softskills360"]
 users_collection = db["users"]
-
