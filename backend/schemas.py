@@ -18,6 +18,6 @@ class UserLogin(BaseModel):
 # Modelo para guardar los resultados del quiz
 class QuizResult(BaseModel):
     answers: Dict[str, str] # {q1: 'Totalmente en desacuerdo', ...}
-    softSkills: List[SoftSkillScore] # Lista de objetos SoftSkillScore
+    softSkills: List[SoftSkillScore] # ¡Lista de objetos SoftSkillScore!
     profile: str # El título del perfil (Ej: "El Estratega Visionario")
     date: str # Fecha de realización en formato ISO
