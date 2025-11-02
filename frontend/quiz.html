@@ -1,203 +1,198 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SoftSkills360 - Test de Habilidades Blandas</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: radial-gradient(circle at top left, #0a0a1f, #000);
-      color: #e0e7ff;
-      overflow-x: hidden;
-    }
-
-    h1, h2, h3 {
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 1px;
-    }
-
-    .glow {
-      text-shadow: 0 0 8px #38bdf8, 0 0 16px #0ea5e9;
-    }
-
-    .card {
-      background: rgba(17, 25, 40, 0.85);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(56, 189, 248, 0.2);
-      box-shadow: 0 0 15px rgba(14, 165, 233, 0.25);
-      border-radius: 1rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 25px rgba(14, 165, 233, 0.5);
-    }
-
-    .btn {
-      background: linear-gradient(90deg, #2563eb, #0ea5e9);
-      color: white;
-      font-weight: 500;
-      border-radius: 0.75rem;
-      padding: 0.75rem 1.5rem;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .btn:hover {
-      background: linear-gradient(90deg, #38bdf8, #3b82f6);
-      box-shadow: 0 0 20px #0ea5e9;
-    }
-
-    .option {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.05);
-      transition: 0.3s;
-      cursor: pointer;
-      border-radius: 0.5rem;
-      padding: 1rem;
-    }
-
-    .option:hover {
-      background: rgba(56, 189, 248, 0.15);
-      border-color: rgba(56, 189, 248, 0.5);
-    }
-
-    .option input {
-      accent-color: #38bdf8;
-    }
-
-    .result-box {
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 2rem;
-      border-radius: 1rem;
-      background: rgba(17, 25, 40, 0.85);
-      box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
-    }
-
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 1.5rem;
-      }
-      .card {
-        padding: 1rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoftSkills360 - Test de Habilidades</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #10b981;
+            --color-accent: #3b82f6;
+            --color-bg-dark: #0f172a;
+            --color-card-dark: #1e293b;
+            --color-text-light: #f1f5f9;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-dark);
+            background-image: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 50%),
+                              radial-gradient(at 100% 100%, #10b981 0%, transparent 50%);
+            min-height: 100vh;
+            color: var(--color-text-light);
+        }
+        .navbar {
+            @apply bg-slate-900 shadow-2xl p-4 flex justify-between items-center sticky top-0 z-10 border-b-4 border-emerald-600/50;
+        }
+        .navbar h1 { @apply text-3xl font-black text-white tracking-widest; }
+        .quiz-container { @apply max-w-4xl mx-auto py-12 px-4; }
+        .quiz-card, .result-card {
+            background-color: var(--color-card-dark);
+            @apply p-6 md:p-12 rounded-xl border border-gray-700/50;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3), 
+                        0 10px 15px -3px rgba(0, 0, 0, 0.8),
+                        0 4px 6px -4px rgba(0, 0, 0, 0.7);
+        }
+        .progress-bar { @apply w-full bg-slate-700/50 rounded-full h-2.5 mb-6; }
+        .progress-fill {
+            background-color: var(--color-primary);
+            @apply h-2.5 rounded-full transition-all duration-700 ease-in-out;
+            box-shadow: 0 0 8px var(--color-primary);
+        }
+        .question-item { @apply flex flex-col text-center; }
+        .question-item p {
+            @apply text-3xl md:text-4xl font-extrabold text-white mb-10 leading-snug p-4;
+            text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+        }
+        .options-group { @apply flex flex-wrap justify-center gap-4 w-full mt-8; }
+        .option-btn {
+            background-color: #374151;
+            @apply flex-grow text-gray-100 border-2 border-slate-600 hover:bg-slate-600 transition-all duration-200 ease-in-out py-5 px-6 text-lg font-bold rounded-xl cursor-pointer min-w-[140px] max-w-[240px] sm:max-w-none transform hover:scale-[1.03] hover:shadow-lg;
+            box-shadow: 0 4px 0 0 #1f2937;
+        }
+        .option-btn.selected {
+            background-color: var(--color-primary);
+            @apply border-white text-gray-900 font-extrabold transform scale-105;
+            box-shadow: 0 0 15px var(--color-primary), 
+                        0 0 5px var(--color-primary),
+                        0 4px 0 0 #0c4a31;
+        }
+        .progress-footer { @apply text-right mt-8 pt-4 border-t border-slate-700/50; }
+        .quiz-actions { @apply mt-10 flex justify-between gap-4; }
+        .cta-btn {
+            background-color: var(--color-primary);
+            @apply hover:bg-emerald-600 text-gray-900 font-extrabold py-3.5 px-8 rounded-xl shadow-xl transition duration-300 ease-in-out transform hover:scale-[1.02] disabled:opacity-40 disabled:shadow-none;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+        }
+        .secondary-btn {
+            @apply bg-slate-700 hover:bg-slate-600 text-gray-200 font-bold py-3.5 px-6 rounded-xl transition duration-200;
+        }
+        .result-card .text-emerald-500 { text-shadow: 0 0 8px rgba(16, 185, 129, 0.8); }
+        .modal-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background-color: rgba(0,0,0,0.85);
+            display:flex; align-items:center; justify-content:center;
+            z-index:100;
+        }
+        .modal-content {
+            background-color:#1e293b;
+            border:2px solid var(--color-primary);
+            border-radius:1rem;
+            padding:2rem;
+            text-align:center;
+            max-width:400px;
+            box-shadow:0 0 15px var(--color-primary);
+        }
+    </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center px-4 py-10">
-  
-  <div class="text-center mb-10">
-    <h1 class="text-4xl md:text-5xl font-extrabold glow mb-3">SoftSkills360</h1>
-    <p class="text-lg text-blue-200 tracking-wide">Evaluá tus habilidades blandas y descubrí tu perfil personal</p>
-  </div>
+<body>
+    <header class="navbar">
+        <h1>SoftSkills360</h1>
+        <button id="backBtn" class="secondary-btn p-2 px-4">Volver</button>
+    </header>
 
-  <div id="quiz-container" class="w-full max-w-2xl card p-6 md:p-10">
-    <h2 id="question" class="text-xl font-semibold mb-6 text-center"></h2>
-    <div id="options" class="space-y-3 mb-8"></div>
-    <button id="next-btn" class="btn w-full">Siguiente</button>
-  </div>
+    <main class="quiz-container">
+        <div id="quiz" class="quiz-card">
+            <h2 class="text-4xl font-extrabold text-center mb-8 text-white">TEST :: INICIANDO ESCANEO DE HABILIDADES</h2>
+            <div class="progress-bar"><div id="progressBarFill" class="progress-fill" style="width:0%;"></div></div>
+            <div id="questionsContainer" class="min-h-[250px] flex items-center justify-center">
+                <div id="loading" class="text-gray-400 text-lg">Cargando preguntas...</div>
+            </div>
+            <div class="progress-footer">
+                <p id="progressText" class="text-lg font-mono text-emerald-400 tracking-wider">Cargando...</p>
+            </div>
+            <div class="quiz-actions">
+                <button id="prevBtn" class="secondary-btn" style="display:none;">Anterior</button>
+                <button id="nextBtn" class="cta-btn" style="display:none;">Siguiente</button>
+                <button id="submitBtn" class="cta-btn" style="display:none;">Finalizar Test</button>
+            </div>
+        </div>
+        
+        <div id="result" class="result-card" style="display:none;">
+            <h3 class="text-4xl font-extrabold text-center mb-6 text-emerald-500">:: RESULTADOS FINALES :: 🚀</h3>
+            <div id="resultContent" class="text-gray-300">
+                <div class="bg-gray-900/50 p-6 rounded-xl mb-8 border border-emerald-600/50">
+                     <p class="text-lg font-medium mb-2 text-gray-400">PERFIL DETERMINADO:</p>
+                     <h4 id="profileName" class="text-3xl font-extrabold text-emerald-400"></h4>
+                     <p id="profileDescription" class="mt-3 text-gray-400 italic"></p>
+                </div>
+                <h4 class="text-2xl font-bold mt-8 mb-4 border-b pb-2 border-slate-700/50 text-white">MÉTRICAS DE HABILIDAD (0-100)</h4>
+                <div id="skillsList" class="space-y-3"></div>
+            </div>
+            <div class="mt-10 text-center">
+                <button id="saveResultBtn" class="cta-btn" disabled>Guardar Resultado</button>
+                <button id="goHomeFromQuiz" class="secondary-btn ml-4">Volver al Inicio</button>
+            </div>
+        </div>
+    </main>
 
-  <div id="result-container" class="hidden w-full max-w-3xl result-box text-center mt-8">
-    <h2 class="text-3xl font-bold glow mb-4">Tu Resultado</h2>
-    <p id="result-text" class="text-lg mb-6"></p>
-    <button id="restart-btn" class="btn">Reiniciar Test</button>
-  </div>
+    <div id="alertModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <h3 id="alertTitle">¡ALERTA!</h3>
+            <p id="alertMessage" class="text-gray-300"></p>
+            <button class="cta-btn bg-red-600 hover:bg-red-700 mt-6 text-white" onclick="closeAlertModal()">ACEPTAR</button>
+        </div>
+    </div>
 
-  <script>
-    const questions = [
-      {
-        question: "Cuando tenés un problema en grupo, ¿qué hacés primero?",
-        options: ["Escuchás las opiniones de todos", "Proponés una solución inmediata", "Esperás a que alguien más lo resuelva"],
-        scores: [3, 2, 1]
-      },
-      {
-        question: "¿Cómo reaccionás ante una crítica?",
-        options: ["La tomás como una oportunidad de mejora", "Te molesta un poco pero la aceptás", "La ignorás completamente"],
-        scores: [3, 2, 1]
-      },
-      {
-        question: "¿Qué tan bien trabajás bajo presión?",
-        options: ["Muy bien, me enfoco más", "Depende de la situación", "Me cuesta mantener la calma"],
-        scores: [3, 2, 1]
-      },
-      {
-        question: "¿Cómo manejás los conflictos con tus compañeros?",
-        options: ["Busco una solución en conjunto", "Intento evitar confrontaciones", "Prefiero no involucrarme"],
-        scores: [3, 2, 1]
-      }
-    ];
-
-    let currentQuestion = 0;
-    let totalScore = 0;
-
-    const questionEl = document.getElementById("question");
-    const optionsEl = document.getElementById("options");
-    const nextBtn = document.getElementById("next-btn");
-    const resultContainer = document.getElementById("result-container");
-    const resultText = document.getElementById("result-text");
-    const restartBtn = document.getElementById("restart-btn");
-    const quizContainer = document.getElementById("quiz-container");
-
-    function loadQuestion() {
-      const q = questions[currentQuestion];
-      questionEl.textContent = q.question;
-      optionsEl.innerHTML = "";
-      q.options.forEach((opt, index) => {
-        const option = document.createElement("div");
-        option.classList.add("option", "flex", "items-center", "space-x-3");
-        option.innerHTML = `
-          <input type="radio" name="option" value="${index}" class="w-5 h-5">
-          <label>${opt}</label>
-        `;
-        optionsEl.appendChild(option);
-      });
-    }
-
-    nextBtn.addEventListener("click", () => {
-      const selected = document.querySelector('input[name="option"]:checked');
-      if (!selected) return alert("Seleccioná una opción antes de continuar.");
-
-      const value = parseInt(selected.value);
-      totalScore += questions[currentQuestion].scores[value];
-      currentQuestion++;
-
-      if (currentQuestion < questions.length) {
-        loadQuestion();
-      } else {
-        showResult();
-      }
-    });
-
-    function showResult() {
-      quizContainer.classList.add("hidden");
-      resultContainer.classList.remove("hidden");
-
-      let message = "";
-      if (totalScore >= 10) {
-        message = "Tenés un alto nivel de habilidades blandas. Sos empático, resolutivo y trabajás muy bien en equipo.";
-      } else if (totalScore >= 7) {
-        message = "Tenés buenas habilidades blandas, aunque podés mejorar en comunicación y liderazgo.";
-      } else {
-        message = "Podés fortalecer tus habilidades sociales y emocionales con práctica y autoconocimiento.";
-      }
-
-      resultText.textContent = message;
-    }
-
-    restartBtn.addEventListener("click", () => {
-      totalScore = 0;
-      currentQuestion = 0;
-      resultContainer.classList.add("hidden");
-      quizContainer.classList.remove("hidden");
-      loadQuestion();
-    });
-
-    loadQuestion();
-  </script>
+    <script>
+        const QUIZ_DATA = [
+            { id: 1, text: "¿Te resulta fácil comunicar tus ideas a los demás?", skill: "Comunicación Efectiva" },
+            { id: 2, text: "¿Prefieres tomar la iniciativa en proyectos grupales?", skill: "Liderazgo" },
+            { id: 3, text: "¿Analizas a fondo los pros y contras antes de decidir?", skill: "Toma de Decisiones" }
+        ];
+        const answersMap = ["Totalmente de acuerdo","De acuerdo","Neutral","En desacuerdo","Totalmente en desacuerdo"];
+        let currentQuestionIndex = 0;
+        const userAnswers = {};
+        const questionsContainer=document.getElementById('questionsContainer');
+        const progressBarFill=document.getElementById('progressBarFill');
+        const progressText=document.getElementById('progressText');
+        const prevBtn=document.getElementById('prevBtn');
+        const nextBtn=document.getElementById('nextBtn');
+        const submitBtn=document.getElementById('submitBtn');
+        const quiz=document.getElementById('quiz');
+        const result=document.getElementById('result');
+        const skillsList=document.getElementById('skillsList');
+        const profileName=document.getElementById('profileName');
+        const profileDescription=document.getElementById('profileDescription');
+        const alertModal=document.getElementById('alertModal');
+        const alertMessage=document.getElementById('alertMessage');
+        function closeAlertModal(){alertModal.style.display='none';}
+        document.getElementById('goHomeFromQuiz').onclick=()=>location.reload();
+        function renderQuestion(i){
+            const q=QUIZ_DATA[i];
+            questionsContainer.innerHTML=`<div class="question-item"><p>${q.text}</p><div class="options-group">${answersMap.map(opt=>`<button class="option-btn ${userAnswers[q.id]===opt?'selected':''}" onclick="selectOption(${q.id},'${opt}')">${opt}</button>`).join('')}</div></div>`;
+            updateButtons();
+            updateProgress();
+        }
+        function selectOption(qId,opt){
+            userAnswers[qId]=opt;
+            renderQuestion(currentQuestionIndex);
+        }
+        function updateButtons(){
+            prevBtn.style.display=currentQuestionIndex>0?'block':'none';
+            nextBtn.style.display=currentQuestionIndex<QUIZ_DATA.length-1?'block':'none';
+            submitBtn.style.display=currentQuestionIndex===QUIZ_DATA.length-1?'block':'none';
+        }
+        function updateProgress(){
+            const pct=((currentQuestionIndex+1)/QUIZ_DATA.length)*100;
+            progressBarFill.style.width=pct+'%';
+            progressText.textContent=`Pregunta ${currentQuestionIndex+1} de ${QUIZ_DATA.length}`;
+        }
+        prevBtn.onclick=()=>{if(currentQuestionIndex>0){currentQuestionIndex--;renderQuestion(currentQuestionIndex);}};
+        nextBtn.onclick=()=>{if(currentQuestionIndex<QUIZ_DATA.length-1){currentQuestionIndex++;renderQuestion(currentQuestionIndex);}};
+        submitBtn.onclick=()=>{
+            if(Object.keys(userAnswers).length!==QUIZ_DATA.length){
+                alertMessage.textContent="Debes responder todas las preguntas.";
+                alertModal.style.display='flex';
+                return;
+            }
+            quiz.style.display='none';result.style.display='block';
+            profileName.textContent="Perfil Genérico";
+            profileDescription.textContent="Buen equilibrio de habilidades blandas.";
+            skillsList.innerHTML=`<div class="bg-slate-700 p-4 rounded">Comunicación Efectiva: 80/100</div>`;
+        };
+        renderQuestion(currentQuestionIndex);
+    </script>
 </body>
 </html>
