@@ -4,379 +4,353 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SoftSkills360 - Test de Habilidades</title>
-    <!-- Carga Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <script>
-  const quizCard = document.querySelector('.quiz-card');
-
-  quizCard.addEventListener('mousemove', (e) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-
-    const x = e.clientX - rect.left; // posición X dentro de la tarjeta
-    const y = e.clientY - rect.top;  // posición Y dentro de la tarjeta
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = ((y - centerY) / centerY) * 10; // grados de inclinación vertical
-    const rotateY = ((x - centerX) / centerX) * 10; // grados de inclinación horizontal
-
-    card.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
-  });
-
-  quizCard.addEventListener('mouseleave', () => {
-    quizCard.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
-    quizCard.style.transition = 'transform 0.6s ease';
-  });
-
-  quizCard.addEventListener('mouseenter', () => {
-    quizCard.style.transition = 'none';
-  });
-</script>
-
     <style>
-  /* 🎨 CONFIGURACIÓN GLOBAL - ESTILO OSCURO ESMERALDA */
-  :root {
-    --color-primary: #10b981; /* Esmeralda 500 */
-    --color-accent: #059669; /* Esmeralda 600 */
-    --color-bg-dark: #0f172a; /* Fondo oscuro */
-    --color-card-dark: #1e293b; /* Fondo de tarjetas */
-    --color-text-light: #f8fafc; /* Texto claro */
-    --color-border: #475569; /* Borde neutro */
-  }
-.quiz-container {
-  perspective: 1200px; /* 🔹 Más profundidad */
-}
+      /* 🎨 CONFIGURACIÓN GLOBAL - ESTILO OSCURO ESMERALDA */
+      :root {
+        --color-primary: #10b981; /* Esmeralda 500 */
+        --color-accent: #059669; /* Esmeralda 600 */
+        --color-bg-dark: #0f172a; /* Fondo oscuro */
+        --color-card-dark: #1e293b; /* Fondo de tarjetas */
+        --color-text-light: #f8fafc; /* Texto claro */
+        --color-border: #475569; /* Borde neutro */
+      }
+      .quiz-container {
+        perspective: 1200px; /* 🔹 Más profundidad */
+      }
 
-.quiz-card {
-  transform-style: preserve-3d;
-  transition: transform 0.3s ease;
-  will-change: transform;
-}
+      .quiz-card {
+        transform-style: preserve-3d;
+        transition: transform 0.3s ease;
+        will-change: transform;
+      }
 
-  body {
-    font-family: "Inter", sans-serif;
-    background-color: var(--color-bg-dark);
-    min-height: 100vh;
-    color: var(--color-text-light);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow-y: auto;
-    margin: 0;
-  }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--color-bg-dark);
+        min-height: 100vh;
+        color: var(--color-text-light);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow-y: auto;
+        margin: 0;
+      }
 
-  /* 🔹 NAVBAR */
-  .navbar {
-    background-color: rgba(15, 23, 42, 0.9);
-    backdrop-filter: blur(6px);
-    border-bottom: 2px solid var(--color-primary);
-    padding: 0.6rem 1.2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 20;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-  }
+      /* 🔹 NAVBAR */
+      .navbar {
+        background-color: rgba(15, 23, 42, 0.9);
+        backdrop-filter: blur(6px);
+        border-bottom: 2px solid var(--color-primary);
+        padding: 0.6rem 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 20;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+      }
 
-  .navbar h1 {
-    font-size: 1.3rem;
-    font-weight: 900;
-    color: var(--color-text-light);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
-  }
+      .navbar h1 {
+        font-size: 1.3rem;
+        font-weight: 900;
+        color: var(--color-text-light);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+      }
 
-  /* 🧩 CONTENEDOR DEL QUIZ */
-  .quiz-container {
-    max-width: 700px;
-    margin: 5rem auto 2rem auto;
-    padding: 1rem;
-    position: relative;
-    perspective: 1000px;
-    transform: scale(0.95);
-  }
+      /* 🧩 CONTENEDOR DEL QUIZ */
+      .quiz-container {
+        max-width: 700px;
+        margin: 5rem auto 2rem auto;
+        padding: 1rem;
+        position: relative;
+        perspective: 1000px;
+        transform: scale(0.95);
+      }
 
-  /* 💫 TARJETA DEL QUIZ */
-  .quiz-card,
-  .result-card {
-    background-color: var(--color-card-dark);
-    border: 1px solid var(--color-border);
-    border-radius: 1rem;
-    padding: 1.8rem;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-    transition: all 0.5s ease, box-shadow 0.3s ease;
-    animation: popCard 0.6s ease forwards;
-  }
+      /* 💫 TARJETA DEL QUIZ */
+      .quiz-card,
+      .result-card {
+        background-color: var(--color-card-dark);
+        border: 1px solid var(--color-border);
+        border-radius: 1rem;
+        padding: 1.8rem;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        transition: all 0.5s ease, box-shadow 0.3s ease;
+        animation: popCard 0.6s ease forwards;
+      }
 
-  .quiz-card:hover {
-    transform: scale(1.01);
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
-  }
+      .quiz-card:hover {
+        transform: scale(1.01);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+      }
 
-  @keyframes popCard {
-    from {
-      opacity: 0;
-      transform: scale(0.9) translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
+      @keyframes popCard {
+        from {
+          opacity: 0;
+          transform: scale(0.9) translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
 
-  /* 🔸 BARRA DE PROGRESO */
-  .progress-bar {
-    width: 100%;
-    height: 8px;
-    background: #334155; /* gris azulado */
-    border-radius: 9999px;
-    margin-bottom: 1rem;
-  }
+      /* 🔸 BARRA DE PROGRESO */
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #334155; /* gris azulado */
+        border-radius: 9999px;
+        margin-bottom: 1rem;
+      }
 
-  .progress-fill {
-    background: var(--color-primary);
-    height: 8px;
-    width: 0%;
-    border-radius: 9999px;
-    box-shadow: 0 0 10px var(--color-primary);
-    transition: width 0.6s ease-in-out;
-  }
+      .progress-fill {
+        background: var(--color-primary);
+        height: 8px;
+        width: 0%;
+        border-radius: 9999px;
+        box-shadow: 0 0 10px var(--color-primary);
+        transition: width 0.6s ease-in-out;
+      }
 
-  /* ❓ PREGUNTA */
-  .question-item {
-    text-align: center;
-  }
+      /* ❓ PREGUNTA */
+      .question-item {
+        text-align: center;
+      }
 
-  .question-item p {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--color-text-light);
-    margin-bottom: 1.2rem;
-    text-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
-  }
+      .question-item p {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: var(--color-text-light);
+        margin-bottom: 1.2rem;
+        text-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+      }
 
-  /* ⚡ OPCIONES */
-  .options-group {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.8rem;
-    margin-top: 1rem;
-  }
+      /* ⚡ OPCIONES */
+      .options-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.8rem;
+        margin-top: 1rem;
+      }
 
-  .option-btn {
-    background-color: #334155;
-    border: 1px solid var(--color-border);
-    color: var(--color-text-light);
-    padding: 0.6rem 1.4rem;
-    font-size: 1rem;
-    font-weight: 700;
-    border-radius: 0.6rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    min-width: 120px;
-    max-width: 220px;
-    text-align: center;
-  }
+      .option-btn {
+        background-color: #334155;
+        border: 1px solid var(--color-border);
+        color: var(--color-text-light);
+        padding: 0.6rem 1.4rem;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 0.6rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 120px;
+        max-width: 220px;
+        text-align: center;
+      }
 
-  .option-btn:hover {
-    background-color: #475569;
-    transform: scale(1.05);
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
-  }
+      .option-btn:hover {
+        background-color: #475569;
+        transform: scale(1.05);
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+      }
 
-  .option-btn.selected {
-    background: var(--color-primary);
-    color: #0f172a;
-    border: 2px solid white;
-    font-weight: 900;
-    transform: scale(1.08);
-    box-shadow: 0 0 10px var(--color-primary);
-  }
+      .option-btn.selected {
+        background: var(--color-primary);
+        color: #0f172a;
+        border: 2px solid white;
+        font-weight: 900;
+        transform: scale(1.08);
+        box-shadow: 0 0 10px var(--color-primary);
+      }
 
-  /* 🔻 BOTONES DE ACCIÓN */
-  .quiz-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
+      /* 🔻 BOTONES DE ACCIÓN */
+      .quiz-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
 
-  .cta-btn {
-    background-color: var(--color-primary);
-    color: #0f172a;
-    font-weight: 900;
-    padding: 0.7rem 1.6rem;
-    border-radius: 0.6rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-    font-size: 0.95rem;
-  }
+      .cta-btn {
+        background-color: var(--color-primary);
+        color: #0f172a;
+        font-weight: 900;
+        padding: 0.7rem 1.6rem;
+        border-radius: 0.6rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+        font-size: 0.95rem;
+      }
 
-  .cta-btn:hover {
-    background-color: var(--color-accent);
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
-  }
+      .cta-btn:hover {
+        background-color: var(--color-accent);
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+      }
 
-  .secondary-btn {
-    background-color: #334155;
-    color: var(--color-text-light);
-    font-weight: 700;
-    padding: 0.7rem 1.6rem;
-    border-radius: 0.6rem;
-    transition: all 0.3s ease;
-    font-size: 0.95rem;
-  }
+      .secondary-btn {
+        background-color: #334155;
+        color: var(--color-text-light);
+        font-weight: 700;
+        padding: 0.7rem 1.6rem;
+        border-radius: 0.6rem;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+      }
 
-  .secondary-btn:hover {
-    background-color: #475569;
-    transform: scale(1.03);
-  }
+      .secondary-btn:hover {
+        background-color: #475569;
+        transform: scale(1.03);
+      }
 
-  /* 💬 RESULTADOS */
-  .result-card {
-    text-align: center;
-    padding: 1.8rem;
-    margin-bottom: 2rem;
-  }
+      /* 💬 RESULTADOS */
+      .result-card {
+        text-align: center;
+        padding: 1.8rem;
+        margin-bottom: 2rem;
+      }
 
-  .result-card .text-emerald-500 {
-    font-size: 1.8rem;
-    font-weight: 900;
-    color: var(--color-primary);
-    text-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
-  }
+      .result-card .text-emerald-500 {
+        font-size: 1.8rem;
+        font-weight: 900;
+        color: var(--color-primary);
+        text-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+      }
 
-  .result-card p {
-    font-size: 1rem;
-    color: #d1d5db;
-  }
+      .result-card p {
+        font-size: 1rem;
+        color: #d1d5db;
+      }
 
-  .skill-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.4rem 0;
-  }
+      .skill-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.4rem 0;
+      }
 
-  .skill-name {
-    font-weight: 600;
-    color: var(--color-text-light);
-    width: 30%;
-    text-align: left;
-  }
+      .skill-name {
+        font-weight: 600;
+        color: var(--color-text-light);
+        width: 30%;
+        text-align: left;
+      }
 
-  .skill-bar-container {
-    flex-grow: 1;
-    height: 8px;
-    background-color: #334155;
-    border-radius: 9999px;
-    overflow: hidden;
-  }
+      .skill-bar-container {
+        flex-grow: 1;
+        height: 8px;
+        background-color: #334155;
+        border-radius: 9999px;
+        overflow: hidden;
+      }
 
-  .skill-bar {
-    height: 100%;
-    background-color: var(--color-primary);
-    transition: width 0.5s ease-out;
-    box-shadow: 0 0 4px rgba(16, 185, 129, 0.6);
-  }
+      .skill-bar {
+        height: 100%;
+        background-color: var(--color-primary);
+        transition: width 0.5s ease-out;
+        box-shadow: 0 0 4px rgba(16, 185, 129, 0.6);
+      }
 
-  /* Modal */
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 50;
-  }
+      /* Modal */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 50;
+        opacity: 0; /* Controlado por JS */
+        visibility: hidden; /* Controlado por JS */
+        transition: opacity 0.3s ease;
+      }
+      .modal-overlay.open {
+        opacity: 1;
+        visibility: visible;
+      }
 
-  .modal-content {
-    background-color: var(--color-card-dark);
-    padding: 1.5rem;
-    border-radius: 1rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    max-width: 380px;
-    text-align: center;
-    border: 2px solid var(--color-primary);
-  }
+      .modal-content {
+        background-color: var(--color-card-dark);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        max-width: 380px;
+        text-align: center;
+        border: 2px solid var(--color-primary);
+      }
 
-  .modal-content h3 {
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: var(--color-primary);
-    margin-bottom: 0.8rem;
-  }
+      .modal-content h3 {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--color-primary);
+        margin-bottom: 0.8rem;
+      }
 
-  /* 🌟 EFECTO DE FONDO */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
-    z-index: -1;
-  }
+      /* 🌟 EFECTO DE FONDO */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          circle at 50% 50%,
+          rgba(16, 185, 129, 0.06) 0%,
+          transparent 70%
+        );
+        z-index: -1;
+      }
 
-  /* 📱 RESPONSIVIDAD */
-  @media (max-width: 640px) {
-    .question-item p {
-      font-size: 1.3rem;
-    }
+      /* 📱 RESPONSIVIDAD */
+      @media (max-width: 640px) {
+        .question-item p {
+          font-size: 1.3rem;
+        }
 
-    .option-btn {
-      width: 100%;
-    }
+        .option-btn {
+          width: 100%;
+        }
 
-    .quiz-card,
-    .result-card {
-      padding: 1.5rem;
-    }
+        .quiz-card,
+        .result-card {
+          padding: 1.5rem;
+        }
 
-    .cta-btn,
-    .secondary-btn {
-      padding: 0.6rem 1.2rem;
-      font-size: 0.9rem;
-    }
-  }
-</style>
-
-
-
+        .cta-btn,
+        .secondary-btn {
+          padding: 0.6rem 1.2rem;
+          font-size: 0.9rem;
+        }
+      }
+    </style>
   </head>
 
   <body>
-    <!-- Barra de Navegación -->
     <header class="navbar">
       <h1>SoftSkills360</h1>
       <button id="backBtn" class="secondary-btn p-2 px-4">Volver</button>
     </header>
 
-    <!-- Contenedor Principal de la Aplicación -->
     <main class="quiz-container">
-      <!-- Tarjeta del Quiz -->
       <div id="quiz" class="quiz-card">
         <h2 class="text-4xl font-extrabold text-center mb-8 text-white">
           TEST :: INICIANDO ESCANEO DE HABILIDADES
         </h2>
 
-        <!-- Barra de Progreso -->
         <div class="progress-bar">
           <div
             id="progressBarFill"
@@ -385,7 +359,6 @@
           ></div>
         </div>
 
-        <!-- Contenedor de Preguntas -->
         <div
           id="questionsContainer"
           class="min-h-[250px] flex items-center justify-center"
@@ -395,7 +368,6 @@
           </div>
         </div>
 
-        <!-- Botones de Navegación -->
         <div class="quiz-actions">
           <button id="prevBtn" class="secondary-btn" style="display: none">
             Anterior
@@ -409,7 +381,6 @@
         </div>
       </div>
 
-      <!-- Indicador de Pregunta (Pie de tarjeta) -->
       <div class="progress-footer text-center mt-4">
         <p
           id="progressText"
@@ -419,13 +390,11 @@
         </p>
       </div>
 
-      <!-- Contenedor de Resultados (Inicialmente oculto) -->
       <div id="result" class="result-card" style="display: none">
         <h3 class="text-4xl font-extrabold text-center mb-6 text-emerald-500">
           :: RESULTADOS FINALES :: 🚀
         </h3>
         <div id="resultContent" class="text-gray-300">
-          <!-- Resumen del Perfil -->
           <div
             class="bg-gray-900/50 p-6 rounded-xl mb-8 border border-emerald-600/50"
           >
@@ -439,18 +408,15 @@
             <p id="profileDescription" class="mt-3 text-gray-400 italic"></p>
           </div>
 
-          <!-- Métricas de Habilidad -->
           <h4
             class="text-2xl font-bold mt-8 mb-4 border-b pb-2 border-slate-700/50 text-white"
           >
             MÉTRICAS DE HABILIDAD (0-100)
           </h4>
           <div id="skillsList" class="space-y-3">
-            <!-- Lista de habilidades generada por JS -->
-          </div>
+            </div>
         </div>
 
-        <!-- Botones de Acción de Resultados -->
         <div class="mt-10 text-center">
           <button
             id="saveResultBtn"
@@ -466,8 +432,7 @@
       </div>
     </main>
 
-    <!-- Modal de Alerta (Reemplazo de alert()) -->
-    <div id="alertModal" class="modal-overlay" style="display: none">
+    <div id="alertModal" class="modal-overlay">
       <div class="modal-content">
         <h3 id="alertTitle">¡ALERTA DE SISTEMA!</h3>
         <p id="alertMessage" class="text-gray-300">Mensaje de prueba.</p>
@@ -893,7 +858,7 @@
         },
         {
           name: "EL DESARROLLADOR INTEGRAL",
-          skills: [],
+          skills: [], // Perfil por defecto o cuando las habilidades están muy balanceadas
           description:
             "Tienes un equilibrio fuerte entre tus habilidades blandas, mostrando potencial en diversas áreas. Tu adaptabilidad y enfoque te harán exitoso.",
         },
@@ -920,43 +885,55 @@
       const alertTitle = document.getElementById('alertTitle');
       const alertMessage = document.getElementById('alertMessage');
       const saveResultBtn = document.getElementById('saveResultBtn');
+      const backBtn = document.getElementById('backBtn');
+      const goHomeFromQuizBtn = document.getElementById('goHomeFromQuiz');
+      const loadingEl = document.getElementById('loading');
+
 
       /** Muestra un modal de alerta personalizado. */
-      function showAlert(title, message) {
+      function showAlert(title, message, isError = true) {
         alertTitle.textContent = title;
         alertMessage.textContent = message;
-        alertModal.style.display = 'flex';
+        // Cambiar color del botón si es un error
+        if (isError) {
+             alertModal.querySelector('.cta-btn').classList.add('bg-red-600', 'hover:bg-red-700');
+             alertModal.querySelector('.cta-btn').classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+        } else {
+             alertModal.querySelector('.cta-btn').classList.remove('bg-red-600', 'hover:bg-red-700');
+             alertModal.querySelector('.cta-btn').classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+        }
+        alertModal.classList.add('open');
       }
 
       /** Cierra el modal de alerta. */
       function closeAlertModal() {
-        alertModal.style.display = 'none';
+        alertModal.classList.remove('open');
       }
+      window.closeAlertModal = closeAlertModal; // Hacer accesible desde el onclick del HTML
 
       // Redirecciones (asumiendo que existen home.html)
-      document.getElementById('backBtn').onclick = () => window.location.href = 'home.html';
-      document.getElementById('goHomeFromQuiz').onclick = () => window.location.href = 'home.html';
+      backBtn.onclick = () => (window.location.href = 'home.html');
+      goHomeFromQuizBtn.onclick = () => (window.location.href = 'home.html');
 
       // --- RENDERIZADO ---
 
       /** Renderiza la pregunta actual en la interfaz. */
       function renderQuestion(index) {
+        loadingEl.style.display = 'none'; // Oculta el mensaje de carga
         questionsContainer.innerHTML = '';
         const questionData = QUIZ_DATA[index];
         const questionNumber = index + 1;
         const questionId = `q${questionNumber}`;
 
-        // Uso de Template Literal para HTML más limpio
         const questionHTML = `
           <div id="${questionId}" class="question-item animate-in fade-in">
-            <p>${questionData.text}</p>
+            <p>(${questionNumber}/${QUIZ_DATA.length}) ${questionData.text}</p>
             <div class="options-group" data-q="${questionNumber}">
               ${Object.keys(questionData.valueMap).map(option => {
                 const isSelected = userAnswers[questionId] === option;
                 return `
                   <button
                     class="option-btn ${isSelected ? 'selected' : ''}"
-                    data-value="${questionData.valueMap[option]}"
                     data-answer="${option}"
                   >
                     ${option}
@@ -998,11 +975,20 @@
 
         // 4. Actualizar estado de navegación
         updateNavigationButtons(questionId);
+
+        // Opcional: Avanzar automáticamente si no es la última pregunta
+        if (currentQuestionIndex < QUIZ_DATA.length - 1) {
+            setTimeout(() => {
+                currentQuestionIndex++;
+                renderQuestion(currentQuestionIndex);
+            }, 300); // Pequeña pausa para ver la selección
+        }
       }
 
       /** Actualiza la barra de progreso y el texto de estado. */
       function updateProgressBar() {
-        const percentage = ((currentQuestionIndex + 1) / QUIZ_DATA.length) * 100;
+        const answeredCount = Object.keys(userAnswers).length;
+        const percentage = (answeredCount / QUIZ_DATA.length) * 100;
         progressBarFill.style.width = `${percentage}%`;
 
         // Mover el texto de progreso al pie de la tarjeta
@@ -1026,7 +1012,7 @@
             submitBtn.style.display = 'block';
           }
         } else {
-          // Si no tiene respuesta, oculta ambos botones de avance
+          // Si no tiene respuesta, oculta el botón de avance
           nextBtn.style.display = 'none';
           submitBtn.style.display = 'none';
         }
@@ -1053,7 +1039,7 @@
 
       submitBtn.addEventListener('click', calculateResults);
 
-      /** Determina el color de la barra de habilidad según el puntaje. */
+      /** Determina el color de la barra de habilidad según el puntaje (0-100). */
       function getBarColor(score) {
         if (score >= 80) return 'bg-emerald-500'; // Sobresaliente
         if (score >= 60) return 'bg-yellow-500'; // Competente
@@ -1063,9 +1049,9 @@
 
       /** Procesa las respuestas para calcular las métricas finales. */
       function calculateResults() {
-        // Validación final
+        // 🚨 VALIDACIÓN FINAL: Asegurarse de que todas las preguntas están respondidas
         if (Object.keys(userAnswers).length !== QUIZ_DATA.length) {
-          showAlert('Faltan Respuestas', 'Por favor, asegúrate de responder todas las preguntas.');
+          showAlert('Faltan Respuestas', 'Por favor, asegúrate de responder todas las preguntas antes de finalizar.', true);
           // Busca la primera pregunta sin responder y redirige
           for (let i = 0; i < QUIZ_DATA.length; i++) {
             const qId = `q${i + 1}`;
@@ -1080,134 +1066,170 @@
 
         const skillScores = {};
         const skillCounts = {};
+        const MAX_SCORE_PER_QUESTION = 4; // Puntaje máximo por pregunta
 
-        // 1. Recolectar puntajes brutos
+        // 1. Recolectar puntajes brutos por habilidad
         QUIZ_DATA.forEach(q => {
           const qId = `q${q.id}`;
           const answerText = userAnswers[qId];
           const scoreValue = q.valueMap[answerText];
           const skill = q.skill;
 
-          skillScores[skill] = (skillScores[skill] || 0) + scoreValue;
-          skillCounts[skill] = (skillCounts[skill] || 0) + 1;
+          if (!skillScores[skill]) {
+            skillScores[skill] = 0;
+            skillCounts[skill] = 0;
+          }
+          
+          skillScores[skill] += scoreValue;
+          skillCounts[skill]++;
         });
 
-        // 2. Normalizar a escala de 0 a 100
-        const finalScores = Object.keys(skillScores).map(skill => {
-          const totalScore = skillScores[skill];
-          const maxPossibleScore = skillCounts[skill] * 4; // Max score por pregunta es 4
-          // Normalización a 0-100
-          const score = Math.round((totalScore / maxPossibleScore) * 100);
-          return { skill, score };
-        });
+        // 2. Calcular porcentajes (0-100) y encontrar las habilidades más fuertes
+        const finalScores = [];
+        let maxPossibleScore = 0;
 
-        // 3. Determinar el perfil
-        // Ordenar las puntuaciones para encontrar las Top 3
+        for (const skill in skillScores) {
+          maxPossibleScore = skillCounts[skill] * MAX_SCORE_PER_QUESTION;
+          const percentage = Math.round((skillScores[skill] / maxPossibleScore) * 100);
+          finalScores.push({ skill, score: percentage });
+        }
+        
+        // 3. Determinar el perfil del usuario
         finalScores.sort((a, b) => b.score - a.score);
         const topSkills = finalScores.slice(0, 3).map(s => s.skill);
+        let userProfile = PROFILES.find(p => p.skills.every(skill => topSkills.includes(skill)));
 
-        let determinedProfile = PROFILES.find(p =>
-          p.skills.length > 0 && p.skills.every(skill => topSkills.includes(skill))
-        );
-
-        if (!determinedProfile) {
-          // Perfil por defecto (El Desarrollador Integral)
-          determinedProfile = PROFILES.find(p => p.skills.length === 0);
+        // Si no se encuentra un perfil específico, usar el perfil "Integral"
+        if (!userProfile) {
+            userProfile = PROFILES.find(p => p.name === "EL DESARROLLADOR INTEGRAL");
         }
-
-        // 4. Mostrar Resultados
-        // Ordenar alfabéticamente las habilidades para visualización
-        showResults(finalScores.sort((a, b) => a.skill.localeCompare(b.skill)), determinedProfile);
-
-        // 5. Guardar resultados en el estado global para el guardado API
+        
+        // 4. Guardar resultado final
         window.finalQuizResult = {
-          answers: userAnswers,
-          softSkills: finalScores.map(s => ({ skill: s.skill, score: s.score })),
-          profile: determinedProfile.name,
-          date: new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
+            scores: finalScores,
+            profile: userProfile.name,
         };
 
-        // Habilita el botón de guardar
-        saveResultBtn.disabled = false;
+        // 5. Renderizar y mostrar resultados
+        renderResults(finalScores, userProfile);
       }
 
-      /** Muestra la tarjeta de resultados con el perfil y las métricas. */
-      function showResults(finalScores, determinedProfile) {
-        // Ocultar quiz y mostrar resultados
+      /** Renderiza los resultados en la tarjeta de resultados. */
+      function renderResults(scores, profile) {
         quizCard.style.display = 'none';
         resultCard.style.display = 'block';
 
-        profileNameEl.textContent = determinedProfile.name;
-        profileDescriptionEl.textContent = determinedProfile.description;
+        profileNameEl.textContent = profile.name;
+        profileDescriptionEl.textContent = profile.description;
 
-        // Renderizar la lista de habilidades usando Template Literal
-        skillsList.innerHTML = finalScores.map(s => {
-          const barColor = getBarColor(s.score);
-          return `
-            <div class="skill-item">
-              <span class="skill-name">${s.skill}</span>
-              <div class="w-2/3 ml-4 flex items-center">
+        skillsList.innerHTML = scores.map(s => {
+            const colorClass = getBarColor(s.score);
+            return `
+              <div class="skill-item">
+                <span class="skill-name">${s.skill}</span>
                 <div class="skill-bar-container">
-                  <div class="skill-bar ${barColor}" style="width: ${s.score}%;"></div>
+                  <div class="skill-bar ${colorClass}" style="width: ${s.score}%"></div>
                 </div>
-                <span class="ml-3 text-base font-extrabold text-white w-10 text-right">${s.score}%</span>
+                <span class="ml-4 text-sm font-bold text-slate-300">${s.score}%</span>
               </div>
-            </div>
-          `;
+            `;
         }).join('');
+        
+        // Habilitar botón de guardar si el usuario está autenticado
+        const token = localStorage.getItem('token');
+        if (token) {
+            saveResultBtn.disabled = false;
+        }
       }
 
-      // --- INTERACCIÓN CON LA API (Guardar Resultados) ---
-      saveResultBtn.addEventListener('click', async () => {
+      // --- GUARDAR RESULTADOS ---
+
+      /** Guarda los resultados en la API */
+      saveResultBtn.addEventListener('click', saveResultsToAPI);
+
+      async function saveResultsToAPI() {
         const token = localStorage.getItem('token');
         if (!token) {
-          showAlert('Error de Autenticación', 'No estás logueado. Por favor, inicia sesión de nuevo.');
-          return;
+            showAlert('Acceso Denegado', 'Debes iniciar sesión para guardar tus resultados.', true);
+            return;
+        }
+        if (!window.finalQuizResult) {
+            showAlert('Error', 'No hay resultados que guardar.', true);
+            return;
         }
 
-        const payload = window.finalQuizResult;
         saveResultBtn.disabled = true;
         saveResultBtn.textContent = 'Guardando...';
 
         try {
-          const res = await fetch(`${API_URL}/api/quiz`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
-          });
+            const res = await fetch(`${API_URL}/api/resultados`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(window.finalQuizResult),
+            });
+            
+            saveResultBtn.textContent = 'Guardar Resultado'; // Restablecer texto
+            
+            if (res.ok) {
+                showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil.', false);
+                saveResultBtn.disabled = true; // Deshabilitar después de guardar
+            } else {
+                const data = await res.json();
+                showAlert('❌ Error al Guardar', data.detail || 'Ocurrió un error al contactar con el servidor.', true);
+                saveResultBtn.disabled = false; // Permitir reintentar
+            }
 
-          if (res.ok) {
-            showAlert('¡ÉXITO DE REGISTRO!', 'Tu resultado ha sido guardado en tu historial.');
-            saveResultBtn.textContent = '¡REGISTRO GUARDADO!';
-            saveResultBtn.classList.add('bg-green-500', 'hover:bg-green-600', 'text-white');
-            saveResultBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
-          } else {
-            const error = await res.json();
-            showAlert('ERROR DE REGISTRO', `Hubo un problema al guardar el quiz: ${error.detail || res.statusText}`);
-            console.error('API Save Error:', error);
-            saveResultBtn.disabled = false;
-            saveResultBtn.textContent = 'Reintentar Guardar';
-          }
         } catch (error) {
-          showAlert('ERROR DE CONEXIÓN', 'No se pudo conectar con el servidor API. Revisa tu conexión.');
-          console.error('Connection Error:', error);
-          saveResultBtn.disabled = false;
-          saveResultBtn.textContent = 'Reintentar Guardar';
+            saveResultBtn.textContent = 'Guardar Resultado';
+            saveResultBtn.disabled = false;
+            showAlert('🚨 Error de Conexión', 'No se pudo conectar con la API.', true);
+        }
+      }
+      
+      // --- INICIALIZACIÓN Y ANIMACIÓN ---
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // Inicializar la primera pregunta
+        renderQuestion(currentQuestionIndex);
+        
+        // --- Lógica de la Tarjeta 3D (Animación) ---
+        // Se pone aquí para asegurar que quizCard ya existe en el DOM
+        const quizCardEl = document.querySelector('.quiz-card');
+
+        if(quizCardEl) {
+            quizCardEl.addEventListener('mousemove', (e) => {
+                const card = e.currentTarget;
+                const rect = card.getBoundingClientRect();
+
+                const x = e.clientX - rect.left; // posición X dentro de la tarjeta
+                const y = e.clientY - rect.top;  // posición Y dentro de la tarjeta
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                // Rotación inversa: si el ratón va a la derecha (X > centerX), el eje Y rota a la derecha (positivo)
+                // Rotación normal: si el ratón va abajo (Y > centerY), el eje X rota hacia abajo (negativo)
+                const rotateX = ((y - centerY) / centerY) * 5; // grados de inclinación vertical (se invierte en el transform)
+                const rotateY = ((x - centerX) / centerX) * 5; // grados de inclinación horizontal
+                
+                // Reducción de la rotación para hacerlo más sutil (de 10 a 5)
+                card.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
+            });
+
+            quizCardEl.addEventListener('mouseleave', () => {
+                quizCardEl.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+                quizCardEl.style.transition = 'transform 0.6s cubic-bezier(.17,.67,.83,.67)';
+            });
+
+            quizCardEl.addEventListener('mouseenter', () => {
+                // Al entrar, deshabilitar la transición suave para que la rotación sea instantánea
+                quizCardEl.style.transition = 'none';
+            });
         }
       });
-
-      // --- INICIO DE LA APLICACIÓN ---
-      window.onload = () => {
-        renderQuestion(currentQuestionIndex);
-      };
     </script>
   </body>
 </html>
-
-
-
-
-
