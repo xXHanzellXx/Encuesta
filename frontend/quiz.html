@@ -1,212 +1,176 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SoftSkills360 - Test de Habilidades</title>
-    <!-- Carga Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-   <style>
-/* 🎨 CONFIGURACIÓN GLOBAL - FUTURISTA MODERNO */
+  <meta charset="UTF-8">
+  <title>SoftSkills360 - Inicio</title>
+  <style>
+/* 🌌 ESTILOS MODERNOS - SoftSkills360 Inicio */
 :root {
   --color-primary: #10b981; /* Esmeralda */
-  --color-accent: #3b82f6;  /* Azul Eléctrico */
+  --color-accent: #3b82f6; /* Azul eléctrico */
   --color-bg-dark: #0f172a; /* Fondo oscuro */
-  --color-card-dark: #1e293b; /* Fondo de tarjetas */
+  --color-card-dark: #1e293b; /* Tarjeta */
   --color-text-light: #f1f5f9;
 }
 
+/* 🔹 Fondo general */
 body {
   font-family: 'Inter', sans-serif;
-  background: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 50%),
-              radial-gradient(at 100% 100%, #10b981 0%, transparent 50%),
+  background: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 60%),
+              radial-gradient(at 100% 100%, #10b981 0%, transparent 60%),
               var(--color-bg-dark);
-  min-height: 100vh;
   color: var(--color-text-light);
+  margin: 0;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
   overflow-x: hidden;
 }
 
-/* 🔹 NAVBAR */
+/* 🔸 NAVBAR */
 .navbar {
-  background-color: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(8px);
-  border-bottom: 3px solid var(--color-primary);
-  padding: 1rem 2rem;
+  border-bottom: 2px solid var(--color-primary);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  padding: 0.8rem 1.5rem;
   position: sticky;
   top: 0;
-  z-index: 20;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  z-index: 50;
 }
+
 .navbar h1 {
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: white;
+  font-size: 1.6rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 3px;
+  color: #fff;
+  letter-spacing: 2px;
   text-shadow: 0 0 6px var(--color-accent);
 }
 
-/* 🧩 CONTENEDOR DEL QUIZ */
-.quiz-container {
-  max-width: 800px;
-  margin: 6rem auto;
-  padding: 2rem;
-  position: relative;
-  perspective: 1000px;
+.navbar button {
+  background: var(--color-primary);
+  color: #0f172a;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  transition: all 0.3s ease;
+}
+.navbar button:hover {
+  background: #059669;
+  transform: scale(1.04);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
 }
 
-/* 💫 ANIMACIÓN DE TARJETA (VENTANA EMERGENTE) */
-.quiz-card, .result-card {
-  background: rgba(30, 41, 59, 0.85);
+/* 🧭 CONTENIDO PRINCIPAL */
+.content {
+  background: rgba(30, 41, 59, 0.9);
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 1rem;
-  padding: 3rem 2rem;
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1);
-  transform: scale(0.98) translateY(10px);
-  transition: all 0.5s ease, box-shadow 0.3s ease;
+  border-radius: 1.2rem;
+  padding: 2.5rem 2rem;
+  max-width: 700px;
+  width: 90%;
+  margin-top: 5rem;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25),
+              inset 0 0 10px rgba(59, 130, 246, 0.1);
   animation: popCard 0.6s ease forwards;
+  transform: scale(0.98);
+  transition: all 0.4s ease;
 }
-.quiz-card:hover {
+.content:hover {
   transform: scale(1.01);
-  box-shadow: 0 0 30px rgba(16, 185, 129, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.4),
+              0 0 15px rgba(59, 130, 246, 0.25);
 }
+
+/* 💫 Animación de aparición */
 @keyframes popCard {
   from {
     opacity: 0;
-    transform: scale(0.8) rotateX(10deg);
+    transform: scale(0.85) translateY(10px);
   }
   to {
     opacity: 1;
-    transform: scale(1) rotateX(0);
+    transform: scale(1);
   }
 }
 
-/* 🔸 BARRA DE PROGRESO */
-.progress-bar {
-  width: 100%;
-  height: 10px;
-  background: rgba(51, 65, 85, 0.5);
-  border-radius: 9999px;
-  margin-bottom: 1.5rem;
-  overflow: hidden;
-}
-.progress-fill {
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
-  height: 10px;
-  width: 0%;
-  border-radius: 9999px;
-  box-shadow: 0 0 10px var(--color-primary);
-  transition: width 0.6s ease-in-out;
-}
-
-/* ❓ PREGUNTA */
-.question-item {
-  text-align: center;
-}
-.question-item p {
-  font-size: 2rem;
+/* ✨ Texto y listas */
+.content h2 {
+  font-size: 1.8rem;
   font-weight: 800;
-  color: white;
-  margin-bottom: 2rem;
-  line-height: 1.3;
+  margin-bottom: 1rem;
   text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
 }
 
-/* ⚡ OPCIONES */
-.options-group {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1.2rem;
-  margin-top: 1.5rem;
+.content p {
+  font-size: 1rem;
+  color: #cbd5e1;
+  margin: 0.5rem 0 1rem 0;
 }
-.option-btn {
-  background: rgba(55, 65, 81, 0.8);
-  border: 2px solid rgba(100, 116, 139, 0.4);
-  color: #e2e8f0;
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
-  font-weight: 700;
-  border-radius: 0.75rem;
+
+.content ul {
+  text-align: left;
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+}
+
+.content li {
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+.content li::before {
+  content: '▹';
+  position: absolute;
+  left: 0;
+  color: var(--color-accent);
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(59, 130, 246, 0.6);
+}
+
+/* 🚀 BOTÓN PRINCIPAL */
+.cta {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  color: #0f172a;
+  font-weight: 800;
+  border: none;
+  border-radius: 10px;
+  padding: 0.9rem 2rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 150px;
-  max-width: 260px;
-  text-align: center;
-  box-shadow: 0 3px 0 0 #1e293b;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+  margin-top: 1.2rem;
+  font-size: 1rem;
 }
-.option-btn:hover {
-  background-color: rgba(59, 130, 246, 0.2);
+.cta:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
-}
-.option-btn.selected {
-  background: var(--color-primary);
-  color: #0f172a;
-  font-weight: 900;
-  border: 2px solid white;
-  transform: scale(1.08);
-  box-shadow: 0 0 15px var(--color-primary), 0 0 6px var(--color-primary);
+  box-shadow: 0 0 22px rgba(59, 130, 246, 0.45);
 }
 
-/* 🔻 BOTONES DE ACCIÓN */
-.quiz-actions {
-  display: flex;
-  justify-content: space-between;
+/* 📊 SECCIÓN DE RESULTADOS ANTERIORES */
+#pastResults {
   margin-top: 2.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.cta-btn {
-  background: var(--color-primary);
-  color: #0f172a;
-  font-weight: 900;
-  padding: 0.9rem 2.2rem;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
-}
-.cta-btn:hover {
-  background: #059669;
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
-}
-.secondary-btn {
-  background: rgba(51, 65, 85, 0.9);
-  color: #f8fafc;
-  font-weight: 700;
-  padding: 0.9rem 2rem;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
-}
-.secondary-btn:hover {
-  background: rgba(100, 116, 139, 0.8);
-  transform: scale(1.03);
+  background: rgba(15, 23, 42, 0.65);
+  border-radius: 1rem;
+  padding: 1.2rem 1.5rem;
+  box-shadow: inset 0 0 8px rgba(59, 130, 246, 0.2);
+  color: #cbd5e1;
+  font-size: 0.9rem;
 }
 
-/* 💬 RESULTADOS */
-.result-card {
-  text-align: center;
-}
-.result-card .text-emerald-500 {
-  font-size: 2.2rem;
-  font-weight: 900;
-  text-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
-}
-.result-card p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #d1d5db;
-}
-
-/* 🌟 EFECTO DE FONDO DINÁMICO */
+/* 🌟 EFECTO DE FONDO ANIMADO */
 body::before {
   content: '';
   position: fixed;
@@ -222,429 +186,48 @@ body::before {
 }
 
 /* 📱 RESPONSIVIDAD */
-@media (max-width: 640px) {
-  .question-item p {
+@media (max-width: 768px) {
+  .content {
+    padding: 2rem 1.5rem;
+    margin-top: 4rem;
+  }
+  .navbar h1 {
+    font-size: 1.3rem;
+  }
+  .navbar button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  .content h2 {
     font-size: 1.5rem;
   }
-  .option-btn {
+  .cta {
     width: 100%;
-    max-width: none;
-  }
-  .quiz-card, .result-card {
-    padding: 2rem 1.5rem;
+    padding: 0.9rem;
   }
 }
-</style>
-
+  </style>
 </head>
 <body>
-    <header class="navbar">
-        <h1>SoftSkills360</h1>
-        <button id="backBtn" class="secondary-btn p-2 px-4">Volver</button>
-    </header>
+  <header class="navbar">
+    <h1>SoftSkills360</h1>
+    <button id="logoutBtn">Cerrar sesión</button>
+  </header>
 
-    <main class="quiz-container">
-        <!-- Contenedor Principal del Quiz -->
-        <div id="quiz" class="quiz-card">
-            <h2 class="text-4xl font-extrabold text-center mb-8 text-white">TEST :: INICIANDO ESCANEO DE HABILIDADES</h2>
-            
-            <!-- Barra de Progreso -->
-            <div class="progress-bar">
-                <div id="progressBarFill" class="progress-fill" style="width: 0%;"></div>
-            </div>
+  <main class="content">
+    <h2>¡Hola, <span id="userName"></span>! 👋</h2>
+    <p>Bienvenido a tu espacio personal. Aquí podrás:</p>
+    <ul>
+      <li>Realizar nuestro test de habilidades blandas completo</li>
+      <li>Consultar tus resultados anteriores</li>
+      <li>Aprender más sobre tus fortalezas</li>
+    </ul>
 
-            <!-- Contenedor de Preguntas -->
-            <div id="questionsContainer" class="min-h-[250px] flex items-center justify-center">
-                <div id="loading" class="text-gray-400 text-lg">Cargando preguntas...</div>
-            </div>
-            
-            <div class="quiz-actions">
-                <button id="prevBtn" class="secondary-btn" style="display:none;">Anterior</button>
-                <button id="nextBtn" class="cta-btn" style="display:none;">Siguiente</button>
-                <button id="submitBtn" class="cta-btn" style="display:none;">Finalizar Test</button>
-            </div>
-        </div>
-        <!-- Indicador de Pregunta (Pie de tarjeta) -->
-            <div class="progress-footer">
-                <p id="progressText" class="text-lg font-mono text-emerald-400 tracking-wider">Cargando...</p>
-            </div>
-        <!-- Contenedor de Resultados (Inicialmente oculto) -->
-        <div id="result" class="result-card" style="display: none;">
-            <h3 class="text-4xl font-extrabold text-center mb-6 text-emerald-500">:: RESULTADOS FINALES :: 🚀</h3>
-            <div id="resultContent" class="text-gray-300">
-                <div class="bg-gray-900/50 p-6 rounded-xl mb-8 border border-emerald-600/50">
-                     <p class="text-lg font-medium mb-2 text-gray-400">PERFIL DETERMINADO:</p>
-                     <h4 id="profileName" class="text-3xl font-extrabold text-emerald-400"></h4>
-                     <p id="profileDescription" class="mt-3 text-gray-400 italic"></p>
-                </div>
-                
+    <button id="goQuiz" class="cta">Hacer el test ahora</button>
 
-                <h4 class="text-2xl font-bold mt-8 mb-4 border-b pb-2 border-slate-700/50 text-white">MÉTRICAS DE HABILIDAD (0-100)</h4>
-                <div id="skillsList" class="space-y-3">
-                    <!-- Lista de habilidades -->
-                </div>
-            </div>
-            
-            <div class="mt-10 text-center">
-                <button id="saveResultBtn" class="cta-btn disabled:opacity-50" disabled>Guardar Resultado</button>
-                <button id="goHomeFromQuiz" class="secondary-btn ml-4">Volver al Inicio</button>
-            </div>
-        </div>
-    </main>
+    <section id="pastResults"></section>
+  </main>
 
-    <!-- Modal de Alerta (Reemplazo de alert()) -->
-    <div id="alertModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <h3 id="alertTitle">¡ALERTA DE SISTEMA!</h3>
-            <p id="alertMessage" class="text-gray-300">Mensaje de prueba.</p>
-            <button class="cta-btn bg-red-600 hover:bg-red-700 mt-6 text-white" onclick="closeAlertModal()">ACEPTAR</button>
-        </div>
-    </div>
-
-    <script>
-        const API_URL = "https://encuestaa.onrender.com"; // URL de tu API de FastAPI en Render
-        
-        // --- DATA DEL QUIZ (30 preguntas) ---
-        // Se mantiene la estructura y las preguntas para el cálculo
-        const QUIZ_DATA = [
-            { id: 1, text: "¿Te resulta fácil comunicar tus ideas a los demás?", skill: "Comunicación Efectiva", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 2, text: "¿Prefieres tomar la iniciativa en proyectos grupales?", skill: "Liderazgo", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 3, text: "¿Analizas a fondo los pros y contras antes de decidir?", skill: "Toma de Decisiones", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 4, text: "¿Buscas activamente retroalimentación sobre tu trabajo?", skill: "Aprendizaje Continuo", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 5, text: "¿Aceptas las críticas constructivas sin tomarlas personal?", skill: "Inteligencia Emocional", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 6, text: "¿Te adaptas fácilmente a nuevas personas o entornos?", skill: "Adaptabilidad", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 7, text: "¿Disfrutas resolviendo conflictos dentro de un equipo?", skill: "Resolución de Conflictos", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 8, text: "¿Reconoces rápidamente las emociones de tus compañeros?", skill: "Empatía", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 9, text: "¿Manejas bien la frustración o el estrés laboral?", skill: "Manejo del Estrés", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 10, text: "¿Compartes información y conocimientos libremente con otros?", skill: "Colaboración", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 11, text: "¿Estableces prioridades claras para tus tareas diarias?", skill: "Gestión del Tiempo", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 12, text: "¿Eres una persona orientada a cumplir plazos y metas?", skill: "Orientación a Resultados", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 13, text: "¿Buscas constantemente maneras de mejorar procesos?", skill: "Pensamiento Crítico", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 14, text: "¿Te sientes cómodo/a tomando riesgos calculados?", skill: "Proactividad", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 15, text: "¿Tienes una actitud positiva ante los desafíos?", skill: "Resiliencia", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 16, text: "¿Generas ideas nuevas y creativas con frecuencia?", skill: "Creatividad", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 17, text: "¿Cuando hay un problema, lo abordas de manera metódica?", skill: "Análisis de Problemas", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 18, text: "¿Te concentras fácilmente en tareas complejas?", skill: "Concentración", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 19, text: "¿Eres eficaz negociando acuerdos o soluciones?", skill: "Negociación", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 20, text: "¿Buscas activamente diferentes perspectivas sobre un tema?", skill: "Apertura al Cambio", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 21, text: "¿Te mantienes calmado/a bajo presión de fechas límite?", skill: "Manejo del Estrés", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 22, text: "¿Inspiras a otros a alcanzar sus objetivos?", skill: "Liderazgo", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 23, text: "¿Resuelves problemas analizando la causa raíz?", skill: "Análisis de Problemas", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 24, text: "¿Puedes explicar temas complejos de forma simple?", skill: "Comunicación Efectiva", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 25, text: "¿Priorizas las necesidades del equipo sobre las tuyas?", skill: "Colaboración", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 26, text: "¿Te sientes motivado/a para aprender nuevas habilidades de trabajo?", skill: "Aprendizaje Continuo", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 27, text: "¿Puedes cambiar tu enfoque si un método no funciona?", skill: "Adaptabilidad", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 28, text: "¿Buscas siempre la mejor solución, no solo la más fácil?", skill: "Orientación a Resultados", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 29, text: "¿Te recuperas rápidamente de los reveses o fallos?", skill: "Resiliencia", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-            { id: 30, text: "¿Tienes autoconciencia sobre tus propias emociones?", skill: "Inteligencia Emocional", valueMap: { "Totalmente de acuerdo": 4, "De acuerdo": 3, "Neutral": 2, "En desacuerdo": 1, "Totalmente en desacuerdo": 0 } },
-        ];
-        
-        // Mapeo de perfiles basado en las habilidades más altas (Top 3)
-        const PROFILES = [
-            { name: "EL ESTRATEGA VISIONARIO", skills: ["Liderazgo", "Pensamiento Crítico", "Orientación a Resultados"], description: "Un líder natural con la capacidad de analizar problemas complejos y dirigir al equipo hacia metas claras." },
-            { name: "EL AGENTE DE CAMBIO COLABORATIVO", skills: ["Colaboración", "Adaptabilidad", "Resolución de Conflictos"], description: "Excelente trabajando en equipo, se adapta a cualquier situación y es el mediador ideal en momentos de tensión." },
-            { name: "EL COMUNICADOR EMPÁTICO", skills: ["Comunicación Efectiva", "Empatía", "Inteligencia Emocional"], description: "Maestro en expresar ideas y entender las necesidades de otros, creando un ambiente de confianza y respeto." },
-            { name: "EL EJECUTOR RESILIENTE", skills: ["Gestión del Tiempo", "Proactividad", "Resiliencia"], description: "Altamente organizado y enfocado, capaz de superar obstáculos rápidamente y tomar acción sin depender de otros." },
-            { name: "EL INNOVADOR ANALÍTICO", skills: ["Creatividad", "Análisis de Problemas", "Aprendizaje Continuo"], description: "Genera soluciones originales y tiene una mente metódica para descomponer problemas, siempre buscando mejorar sus conocimientos." },
-            { name: "EL DESARROLLADOR INTEGRAL", skills: [], description: "Tienes un equilibrio fuerte entre tus habilidades blandas, mostrando potencial en diversas áreas. Tu adaptabilidad y enfoque te harán exitoso." },
-        ];
-
-
-        // --- ESTADO Y UTILERIAS ---
-        let currentQuestionIndex = 0;
-        const userAnswers = {}; // Guarda respuestas: { q1: 'De acuerdo', q2: 'Neutral', ...}
-        
-        // Elementos del DOM
-        const questionsContainer = document.getElementById('questionsContainer');
-        const progressText = document.getElementById('progressText');
-        const progressBarFill = document.getElementById('progressBarFill');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const submitBtn = document.getElementById('submitBtn');
-        const quizCard = document.getElementById('quiz');
-        const resultCard = document.getElementById('result');
-        const skillsList = document.getElementById('skillsList');
-        const profileNameEl = document.getElementById('profileName');
-        const profileDescriptionEl = document.getElementById('profileDescription');
-        const alertModal = document.getElementById('alertModal');
-        const alertTitle = document.getElementById('alertTitle');
-        const alertMessage = document.getElementById('alertMessage');
-        const saveResultBtn = document.getElementById('saveResultBtn');
-
-        function showAlert(title, message) {
-            alertTitle.textContent = title;
-            alertMessage.textContent = message;
-            alertModal.style.display = 'flex';
-        }
-
-        function closeAlertModal() {
-            alertModal.style.display = 'none';
-        }
-
-        // Redirecciones
-        document.getElementById('backBtn').onclick = () => window.location.href = 'home.html';
-        document.getElementById('goHomeFromQuiz').onclick = () => window.location.href = 'home.html';
-        
-
-        // --- RENDERIZADO ---
-        function renderQuestion(index) {
-            questionsContainer.innerHTML = '';
-            const questionData = QUIZ_DATA[index];
-            const questionNumber = index + 1;
-            const questionId = `q${questionNumber}`;
-            
-            const questionHTML = `
-                <div id="${questionId}" class="question-item animate-in fade-in">
-                    <p>${questionData.text}</p>
-                    <div class="options-group" data-q="${questionNumber}">
-                        ${Object.keys(questionData.valueMap).map(option => {
-                            const isSelected = userAnswers[questionId] === option;
-                            return `<button class="option-btn ${isSelected ? 'selected' : ''}" data-value="${questionData.valueMap[option]}" data-answer="${option}">${option}</button>`;
-                        }).join('')}
-                    </div>
-                </div>
-            `;
-            questionsContainer.innerHTML = questionHTML;
-            
-            // Asigna el manejador de clic a los nuevos botones
-            document.querySelectorAll('.option-btn').forEach(button => {
-                button.addEventListener('click', handleOptionClick);
-            });
-
-            updateNavigationButtons(questionId);
-            updateProgressBar();
-        }
-
-        function handleOptionClick(event) {
-            const button = event.target;
-            const optionsGroup = button.closest('.options-group');
-            const questionNumber = optionsGroup.dataset.q;
-            const questionId = `q${questionNumber}`;
-            const answer = button.dataset.answer;
-
-            // 1. Deseleccionar todos los botones en este grupo
-            optionsGroup.querySelectorAll('.option-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-
-            // 2. Seleccionar el botón actual
-            button.classList.add('selected');
-            
-            // 3. Guardar la respuesta
-            userAnswers[questionId] = answer;
-
-            // 4. Actualizar estado de navegación
-            updateNavigationButtons(questionId);
-        }
-
-        function updateProgressBar() {
-            const percentage = ((currentQuestionIndex + 1) / QUIZ_DATA.length) * 100;
-            progressBarFill.style.width = `${percentage}%`;
-            // Mover el texto de progreso al pie de la tarjeta
-            progressText.textContent = `PUNTO DE ESCANEO: ${currentQuestionIndex + 1} DE ${QUIZ_DATA.length}`;
-        }
-
-        function updateNavigationButtons(questionId) {
-            const hasAnswer = !!userAnswers[questionId];
-
-            prevBtn.style.display = currentQuestionIndex > 0 ? 'block' : 'none';
-            
-            // Si tiene respuesta, habilita el siguiente o finalizar
-            if (hasAnswer) {
-                if (currentQuestionIndex < QUIZ_DATA.length - 1) {
-                    nextBtn.style.display = 'block';
-                    submitBtn.style.display = 'none';
-                } else {
-                    nextBtn.style.display = 'none';
-                    submitBtn.style.display = 'block';
-                }
-            } else {
-                // Si no tiene respuesta, oculta ambos botones de avance
-                nextBtn.style.display = 'none';
-                submitBtn.style.display = 'none';
-            }
-        }
-        
-        // --- NAVEGACIÓN ---
-        prevBtn.addEventListener('click', () => {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                renderQuestion(currentQuestionIndex);
-            }
-        });
-
-        nextBtn.addEventListener('click', () => {
-            const questionId = `q${currentQuestionIndex + 1}`;
-            if (userAnswers[questionId]) {
-                currentQuestionIndex++;
-                renderQuestion(currentQuestionIndex);
-            }
-        });
-        
-        // --- CÁLCULO DE RESULTADOS ---
-        submitBtn.addEventListener('click', calculateResults);
-
-        function getBarColor(score) {
-            if (score >= 80) return 'bg-emerald-500'; // Sobresaliente
-            if (score >= 60) return 'bg-yellow-500'; // Competente
-            if (score >= 40) return 'bg-orange-500'; // En desarrollo
-            return 'bg-red-500'; // Necesita enfoque
-        }
-
-        function calculateResults() {
-            // Validación final
-            if (Object.keys(userAnswers).length !== QUIZ_DATA.length) {
-                showAlert('Faltan Respuestas', 'Por favor, asegúrate de responder todas las preguntas.');
-                // Busca la primera pregunta sin responder y redirige
-                for (let i = 0; i < QUIZ_DATA.length; i++) {
-                    const qId = `q${i + 1}`;
-                    if (!userAnswers[qId]) {
-                        currentQuestionIndex = i;
-                        renderQuestion(currentQuestionIndex);
-                        break;
-                    }
-                }
-                return;
-            }
-
-            const skillScores = {};
-            const skillCounts = {};
-            
-            // 1. Recolectar puntajes brutos
-            QUIZ_DATA.forEach(q => {
-                const qId = `q${q.id}`;
-                const answerText = userAnswers[qId];
-                const scoreValue = q.valueMap[answerText];
-                const skill = q.skill;
-
-                skillScores[skill] = (skillScores[skill] || 0) + scoreValue;
-                skillCounts[skill] = (skillCounts[skill] || 0) + 1;
-            });
-
-            // 2. Normalizar a escala de 0 a 100
-            const finalScores = Object.keys(skillScores).map(skill => {
-                const totalScore = skillScores[skill];
-                const maxPossibleScore = skillCounts[skill] * 4; // Max score por pregunta es 4
-                
-                // Normalización a 0-100
-                const score = Math.round((totalScore / maxPossibleScore) * 100);
-                
-                return { skill, score };
-            });
-
-            // 3. Determinar el perfil
-            finalScores.sort((a, b) => b.score - a.score); // Ordenar de mayor a menor
-            const topSkills = finalScores.slice(0, 3).map(s => s.skill);
-
-            let determinedProfile = PROFILES.find(p => 
-                p.skills.length > 0 && p.skills.every(skill => topSkills.includes(skill))
-            );
-            
-            if (!determinedProfile) {
-                // Perfil por defecto
-                determinedProfile = PROFILES.find(p => p.skills.length === 0);
-            }
-            
-            // 4. Mostrar Resultados
-            showResults(finalScores.sort((a, b) => a.skill.localeCompare(b.skill)), determinedProfile); // Ordenar alfabéticamente para visualización
-
-            // 5. Guardar resultados en el estado global para el guardado API
-            window.finalQuizResult = {
-                answers: userAnswers,
-                softSkills: finalScores.map(s => ({
-                    skill: s.skill,
-                    score: s.score
-                })),
-                profile: determinedProfile.name,
-                date: new Date().toISOString().split('T')[0] // Formato YYYY-MM-DD
-            };
-            
-            // Habilita el botón de guardar
-            saveResultBtn.disabled = false;
-        }
-
-        function showResults(finalScores, determinedProfile) {
-            // Ocultar quiz y mostrar resultados
-            quizCard.style.display = 'none';
-            resultCard.style.display = 'block';
-
-            profileNameEl.textContent = determinedProfile.name;
-            profileDescriptionEl.textContent = determinedProfile.description;
-
-            // Renderizar la lista de habilidades
-            skillsList.innerHTML = finalScores.map(s => {
-                const barColor = getBarColor(s.score);
-                return `
-                    <div class="skill-item">
-                        <span class="skill-name">${s.skill}</span>
-                        <div class="w-2/3 ml-4 flex items-center">
-                            <div class="skill-bar-container">
-                                <div class="skill-bar ${barColor}" style="width: ${s.score}%;"></div>
-                            </div>
-                            <span class="ml-3 text-base font-extrabold text-white w-10 text-right">${s.score}%</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // --- INTERACCIÓN CON LA API (Guardar Resultados) ---
-        saveResultBtn.addEventListener('click', async () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                showAlert('Error de Autenticación', 'No estás logueado. Por favor, inicia sesión de nuevo.');
-                return;
-            }
-
-            const payload = window.finalQuizResult;
-            
-            saveResultBtn.disabled = true;
-            saveResultBtn.textContent = 'Guardando...';
-
-            try {
-                const res = await fetch(`${API_URL}/api/quiz`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` 
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (res.ok) {
-                    showAlert('¡ÉXITO DE REGISTRO!', 'Tu resultado ha sido guardado en tu historial.');
-                    saveResultBtn.textContent = '¡REGISTRO GUARDADO!';
-                    saveResultBtn.classList.add('bg-green-500', 'hover:bg-green-600', 'text-white');
-                    saveResultBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
-                } else {
-                    const error = await res.json();
-                    showAlert('ERROR DE REGISTRO', `Hubo un problema al guardar el quiz: ${error.detail || res.statusText}`);
-                }
-            } catch (error) {
-                showAlert('ERROR DE CONEXIÓN', 'No se pudo conectar con el servidor API.');
-                console.error('API Error:', error);
-            } finally {
-                // Revertir el estado si hubo error, o mantenerlo si fue exitoso
-                if (!saveResultBtn.classList.contains('bg-green-500')) {
-                    saveResultBtn.disabled = false;
-                    saveResultBtn.textContent = 'Guardar Resultado';
-                } else {
-                     saveResultBtn.disabled = true; // No permitir doble guardado
-                }
-            }
-        });
-
-
-        // --- INICIALIZACIÓN ---
-        window.onload = () => {
-            document.getElementById('loading').style.display = 'none';
-            if (QUIZ_DATA.length > 0) {
-                renderQuestion(currentQuestionIndex);
-            }
-        };
-        
-    </script>
+  <script src="js/home.js"></script>
 </body>
 </html>
-
-
