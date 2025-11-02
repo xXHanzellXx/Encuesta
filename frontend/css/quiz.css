@@ -1,0 +1,250 @@
+/* --- Estilos Globales y de Base --- */
+:root {
+    --primary-color: #4a55e1; /* Azul principal */
+    --secondary-color: #2c3e50; /* Azul oscuro/gris */
+    --accent-color: #e74c3c; /* Rojo para alertas/destacar */
+    --background-light: #ecf0f1; /* Fondo claro */
+    --card-background: #ffffff; /* Fondo de tarjetas */
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 6px 18px rgba(0, 0, 0, 0.15);
+    font-family: 'Inter', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--background-light);
+    color: var(--secondary-color);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Barra de Navegación (Header) --- */
+.navbar {
+    background-color: var(--secondary-color);
+    color: var(--card-background);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-medium);
+}
+.navbar h1 {
+    font-size: 1.5rem;
+}
+
+/* --- Botones Genéricos --- */
+.cta-btn, .secondary-btn, .navbar button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.cta-btn {
+    background-color: var(--primary-color);
+    color: var(--card-background);
+    box-shadow: 0 4px 6px rgba(74, 85, 225, 0.3);
+}
+
+.cta-btn:hover {
+    background-color: #3b46c0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(74, 85, 225, 0.4);
+}
+
+.secondary-btn, .navbar button {
+    background-color: #bdc3c7;
+    color: var(--secondary-color);
+}
+
+.secondary-btn:hover, .navbar button:hover {
+    background-color: #95a5a6;
+    transform: translateY(-1px);
+}
+
+/* --- Estilos de la Página de Quiz (quiz.html) --- */
+
+.quiz-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.quiz-card {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-medium);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+/* Barra de Progreso */
+.progress-text {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #7f8c8d;
+}
+
+.progress-bar {
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    height: 10px;
+    width: 100%;
+    margin: 0.5rem 0 2rem;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--primary-color);
+    transition: width 0.4s ease-in-out;
+    border-radius: 10px;
+}
+
+/* Estilos de Pregunta Individual (Tipo Modal/Card) */
+.question-card {
+    border: 1px solid #ddd;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    text-align: left;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.question-card label {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: block;
+    color: var(--secondary-color);
+}
+
+.option-btn {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 0.5rem;
+    background-color: var(--background-light);
+    border: 2px solid #bdc3c7;
+    border-radius: 6px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+}
+
+.option-btn:hover {
+    background-color: #dce0e3;
+    border-color: var(--primary-color);
+}
+
+.option-btn.selected {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    font-weight: 700;
+    transform: scale(1.02);
+}
+
+/* Contenedor de Acciones (Botones Inferiores) */
+.quiz-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+
+/* --- Estilos de Resultados --- */
+.result-card {
+    background-color: var(--card-background);
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-medium);
+    width: 100%;
+    max-width: 800px;
+    text-align: left;
+}
+
+.result-card h2 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.result-card h3 {
+    margin-top: 1.5rem;
+    color: var(--secondary-color);
+    font-size: 1.5rem;
+}
+
+.result-card ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.result-card li {
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.result-card li::before {
+    content: '★';
+    color: gold;
+    margin-right: 0.5rem;
+}
+
+/* Recomendaciones */
+.result-card h4 {
+    color: var(--accent-color);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* --- Estilos de Modal de Alerta --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow-medium);
+    max-width: 400px;
+    text-align: center;
+}
+
+.modal-content h3 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
