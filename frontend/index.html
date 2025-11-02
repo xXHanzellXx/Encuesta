@@ -1,188 +1,323 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>SoftSkills360 - Inicia sesión</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoftSkills360 - Acceso</title>
+    <!-- Carga Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Estilos personalizados para el tema oscuro */
+        :root {
+            --primary: #10b981; /* Esmeralda 500 */
+            --background: #0f172a; /* Slate 900 */
+            --card: #1e293b; /* Slate 800 */
+            --text: #f8fafc; /* Slate 50 */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        .form-card {
+            background-color: var(--card);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            width: 100%;
+        }
+        .input-field {
+            background-color: #334155; /* Slate 700 */
+            border: 1px solid #475569; /* Slate 600 */
+            color: var(--text);
+            transition: border-color 0.3s;
+        }
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .btn-primary:hover {
+            background-color: #059669; /* Esmeralda 600 */
+        }
+        .btn-primary:active {
+            transform: scale(0.99);
+        }
+        /* Estilo para los mensajes de validación */
+        .validation-tip {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            color: #f87171; /* Rojo suave */
+        }
+    </style>
 </head>
-  <style>/* 🌌 ESTILO GLOBAL - SoftSkills360 LOGIN/REGISTER */
-:root {
-  --color-primary: #10b981; /* Esmeralda */
-  --color-accent: #3b82f6;  /* Azul Eléctrico */
-  --color-bg-dark: #0f172a; /* Fondo oscuro */
-  --color-card-dark: #1e293b; /* Tarjeta */
-  --color-text-light: #f1f5f9;
-}
-
-body {
-  font-family: 'Inter', sans-serif;
-  background: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 60%),
-              radial-gradient(at 100% 100%, #10b981 0%, transparent 60%),
-              var(--color-bg-dark);
-  color: var(--color-text-light);
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  position: relative;
-}
-
-/* 🌟 EFECTO DE FONDO ANIMADO */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 70%),
-              radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
-  z-index: -1;
-  animation: pulseGlow 6s ease-in-out infinite alternate;
-}
-@keyframes pulseGlow {
-  from { opacity: 0.5; }
-  to { opacity: 1; }
-}
-
-/* 🧩 CONTENEDOR PRINCIPAL */
-.container {
-  background: rgba(30, 41, 59, 0.85);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 1.5rem;
-  padding: 3rem 2.5rem;
-  width: 90%;
-  max-width: 420px;
-  text-align: center;
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1);
-  transform: scale(0.96);
-  transition: all 0.4s ease;
-  animation: popCard 0.6s ease forwards;
-}
-.container:hover {
-  transform: scale(1.01);
-  box-shadow: 0 0 35px rgba(16, 185, 129, 0.4), 0 0 25px rgba(59, 130, 246, 0.3);
-}
-
-/* 💫 ANIMACIÓN DE APARICIÓN */
-@keyframes popCard {
-  from {
-    opacity: 0;
-    transform: scale(0.8) translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* 🔹 TÍTULOS */
-.container h1 {
-  font-size: 2.2rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  color: white;
-  text-shadow: 0 0 8px var(--color-accent);
-  margin-bottom: 2rem;
-}
-
-.container h2 {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--color-primary);
-  text-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
-  margin-bottom: 1.5rem;
-}
-
-/* ✏️ INPUTS */
-input {
-  width: 100%;
-  padding: 0.9rem 1rem;
-  margin: 0.6rem 0;
-  border: 2px solid rgba(100, 116, 139, 0.4);
-  border-radius: 0.75rem;
-  background: rgba(15, 23, 42, 0.8);
-  color: #e2e8f0;
-  font-size: 1rem;
-  outline: none;
-  transition: all 0.3s ease;
-  box-shadow: inset 0 0 5px rgba(59, 130, 246, 0.2);
-}
-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
-  transform: scale(1.02);
-}
-
-/* 🚀 BOTONES */
-button {
-  width: 100%;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
-  color: #0f172a;
-  font-weight: 900;
-  border: none;
-  border-radius: 0.75rem;
-  padding: 0.9rem 2rem;
-  margin-top: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-}
-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
-}
-
-/* 🔗 LINKS ENTRE FORMULARIOS */
-p {
-  margin-top: 1.2rem;
-  font-size: 0.95rem;
-  color: #cbd5e1;
-}
-a {
-  color: var(--color-accent);
-  cursor: pointer;
-  font-weight: 600;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-a:hover {
-  color: var(--color-primary);
-  text-shadow: 0 0 6px var(--color-primary);
-}
-
-/* 💡 RESPONSIVIDAD */
-@media (max-width: 600px) {
-  .container {
-    padding: 2.2rem 1.5rem;
-  }
-  .container h1 {
-    font-size: 1.8rem;
-  }
-  input, button {
-    font-size: 0.95rem;
-  }
-}
-</style>
 <body>
-  <div class="container">
-    <h1>SoftSkills360</h1>
 
-    <div id="loginForm">
-      <h2>Iniciar sesión</h2>
-      <input id="loginEmail" placeholder="Email" type="email">
-      <input id="loginPassword" placeholder="Contraseña" type="password">
-      <button id="loginBtn">Entrar</button>
-      <p>¿No tienes cuenta? <a id="toRegister">Regístrate aquí</a></p>
-    </div>
+    <div class="form-card p-8 rounded-xl">
+        <h1 class="text-3xl font-extrabold text-center mb-6">SoftSkills360</h1>
 
-    <div id="registerForm" style="display:none;">
-      <h2>Registro</h2>
-      <input id="regName" placeholder="Nombre">
-      <input id="regEmail" placeholder="Email" type="email">
-      <input id="regPassword" placeholder="Contraseña" type="password">
-      <button id="registerBtn">Registrarme</button>
-      <p>¿Ya tienes cuenta? <a id="toLogin">Inicia sesión</a></p>
-    </div>
-  </div>
+        <!-- Formulario de LOGIN -->
+        <!-- Cambiado button type a 'submit' para que Enter funcione con el evento submit del formulario -->
+        <form id="loginForm">
+            <h2 class="text-xl font-bold mb-6 text-center">Inicia Sesión</h2>
+            <div class="mb-4">
+                <label for="loginEmail" class="block text-sm font-medium mb-1">Correo Electrónico</label>
+                <input type="email" id="loginEmail" placeholder="tu.correo@ejemplo.com" class="input-field w-full p-3 rounded-lg" required>
+            </div>
+            <div class="mb-6">
+                <label for="loginPassword" class="block text-sm font-medium mb-1">Contraseña</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" class="input-field w-full p-3 rounded-lg" required>
+            </div>
+            <!-- Cambiado de type="button" a type="submit" para que Enter lo active -->
+            <button type="submit" id="loginBtn" class="btn-primary w-full text-white font-semibold py-3 rounded-lg">
+                Iniciar Sesión
+            </button>
+            <p class="mt-4 text-center text-sm">
+                ¿Aún no tienes cuenta? 
+                <span id="toRegister" class="text-primary hover:underline cursor-pointer font-medium">Regístrate aquí</span>
+            </p>
+        </form>
 
-  <script src="js/auth.js"></script>
+        <!-- Formulario de REGISTRO (Inicialmente oculto) -->
+        <form id="registerForm" style="display: none;">
+            <h2 class="text-xl font-bold mb-6 text-center">Crea tu Cuenta</h2>
+            <div class="mb-4">
+                <label for="regName" class="block text-sm font-medium mb-1">Nombre</label>
+                <input type="text" id="regName" placeholder="Tu Nombre Completo" class="input-field w-full p-3 rounded-lg" required>
+            </div>
+            <div class="mb-4">
+                <label for="regEmail" class="block text-sm font-medium mb-1">Correo Electrónico</label>
+                <input type="email" id="regEmail" placeholder="tu.correo@ejemplo.com" class="input-field w-full p-3 rounded-lg" required>
+                <p id="emailValidationTip" class="validation-tip hidden text-red-400">🚨 Por favor, introduce un correo válido.</p>
+            </div>
+            <div class="mb-6">
+                <label for="regPassword" class="block text-sm font-medium mb-1">Contraseña</label>
+                <input type="password" id="regPassword" placeholder="Mínimo 8 caracteres, mayús, número, símbolo" class="input-field w-full p-3 rounded-lg" required>
+                <p id="passwordValidationTip" class="validation-tip hidden text-red-400"></p>
+            </div>
+            <!-- Cambiado de type="button" a type="submit" para que Enter lo active -->
+            <button type="submit" id="registerBtn" class="btn-primary w-full text-white font-semibold py-3 rounded-lg">
+                Registrarse
+            </button>
+            <p class="mt-4 text-center text-sm">
+                ¿Ya tienes cuenta? 
+                <span id="toLogin" class="text-primary hover:underline cursor-pointer font-medium">Inicia Sesión</span>
+            </p>
+        </form>
+    </div>
+
+    <!-- MODAL PERSONALIZADO PARA MENSAJES (Reemplazo de alert()) -->
+    <div id="messageModal" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center p-4 z-50 transition-opacity duration-300 opacity-0">
+        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full transform scale-90 transition-transform duration-300">
+            <div class="flex items-center mb-4">
+                <div id="modalIcon" class="w-8 h-8 rounded-full flex items-center justify-center mr-3"></div>
+                <h3 id="modalTitle" class="text-xl font-bold text-gray-900"></h3>
+            </div>
+            <p id="modalMessage" class="text-gray-700 mb-6"></p>
+            <button id="modalCloseBtn" class="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg w-full hover:bg-gray-300 transition-colors">
+                Aceptar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de la URL de tu API
+        const API_URL = "https://encuestaa.onrender.com"; 
+
+        // --- LÓGICA DEL MODAL (Reemplazo de alert) ---
+        const modal = document.getElementById("messageModal");
+        const modalCloseBtn = document.getElementById("modalCloseBtn");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalMessage = document.getElementById("modalMessage");
+        const modalIcon = document.getElementById("modalIcon");
+        const modalContent = modal.querySelector('div');
+
+        modalCloseBtn.onclick = () => hideMessage();
+        
+        function showMessage(title, message, isSuccess = true) {
+            // Configurar el estilo del modal
+            const iconHTML = isSuccess 
+                ? '<i data-lucide="check-circle" class="text-green-600"></i>' 
+                : '<i data-lucide="x-circle" class="text-red-600"></i>';
+            const iconBg = isSuccess ? 'bg-green-100' : 'bg-red-100';
+
+            modalIcon.innerHTML = iconHTML;
+            modalIcon.className = `w-8 h-8 rounded-full flex items-center justify-center mr-3 ${iconBg}`;
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+
+            // Mostrar el modal con transición
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('opacity-100');
+                modalContent.classList.remove('scale-90');
+            }, 10);
+            
+            // Re-renderizar los iconos de lucide
+            lucide.createIcons();
+        }
+
+        function hideMessage() {
+            modal.classList.remove('opacity-100');
+            modalContent.classList.add('scale-90');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+        
+        // --- LÓGICA DE VALIDACIÓN ---
+
+        function isValidEmail(email) {
+            // Regex básico para validar el formato de correo
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function getPasswordSuggestion(password) {
+            let suggestions = [];
+            if (password.length < 8) {
+                suggestions.push("Debe tener al menos 8 caracteres.");
+            }
+            if (!/[A-Z]/.test(password)) {
+                suggestions.push("Incluye al menos una letra mayúscula.");
+            }
+            if (!/[a-z]/.test(password)) {
+                suggestions.push("Incluye al menos una letra minúscula.");
+            }
+            if (!/\d/.test(password)) {
+                suggestions.push("Incluye al menos un número.");
+            }
+            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+                suggestions.push("Incluye al menos un símbolo (!@#$, etc.).");
+            }
+            return suggestions;
+        }
+
+        function isStrongPassword(password) {
+            const suggestions = getPasswordSuggestion(password);
+            return suggestions.length === 0;
+        }
+
+        // --- MANEJO DE VISTAS ---
+        document.getElementById("toRegister").onclick = () => {
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById("registerForm").style.display = "block";
+        };
+        document.getElementById("toLogin").onclick = () => {
+            document.getElementById("registerForm").style.display = "none";
+            document.getElementById("loginForm").style.display = "block";
+        };
+
+        // --- HANDLERS PRINCIPALES DE FORMULARIO ---
+
+        // ---- Registro Handler ----
+        async function handleRegister() {
+            const name = document.getElementById("regName").value;
+            const email = document.getElementById("regEmail").value.trim();
+            const password = document.getElementById("regPassword").value;
+            const emailTip = document.getElementById("emailValidationTip");
+            const passwordTip = document.getElementById("passwordValidationTip");
+
+            // 1. Validar Email
+            if (!isValidEmail(email)) {
+                emailTip.classList.remove("hidden");
+                return;
+            } else {
+                emailTip.classList.add("hidden");
+            }
+
+            // 2. Validar Contraseña Segura
+            if (!isStrongPassword(password)) {
+                const suggestions = getPasswordSuggestion(password);
+                passwordTip.innerHTML = `⚠️ Contraseña débil. Sugerencias:<ul>${suggestions.map(s => `<li>${s}</li>`).join('')}</ul>`;
+                passwordTip.classList.remove("hidden");
+                return;
+            } else {
+                passwordTip.classList.add("hidden");
+            }
+
+            // 3. Llamada a la API
+            try {
+                const res = await fetch(`${API_URL}/api/register`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password }),
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    showMessage("Registro Exitoso", "¡Tu cuenta ha sido creada! Por favor, inicia sesión.", true);
+                    // Cambiar a la vista de login automáticamente
+                    document.getElementById("toLogin").click();
+                } else {
+                    showMessage("Error al Registrar", `${data.detail || "Error desconocido."}`, false);
+                }
+            } catch (error) {
+                showMessage("Error de Conexión", "No se pudo conectar con la API. Verifica la URL de Render.", false);
+            }
+        }
+        
+        // ---- Login Handler ----
+        async function handleLogin() {
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            try {
+                const res = await fetch(`${API_URL}/api/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    // Nota: Se recomienda Firebase/Firestore para persistencia
+                    localStorage.setItem("token", data.token);
+                    localStorage.setItem("userName", data.name);
+                    showMessage("Inicio Exitoso", `¡Bienvenido, ${data.name}! Redirigiendo...`, true);
+                    
+                    // Pequeño retardo para que el usuario vea el mensaje
+                    setTimeout(() => {
+                        window.location.href = "home.html";
+                    }, 1000);
+
+                } else {
+                    showMessage("Error de Acceso", `${data.detail || "Email o contraseña incorrectos."}`, false);
+                }
+            } catch (error) {
+                showMessage("Error de Conexión", "No se pudo conectar con la API. Verifica la URL de Render.", false);
+            }
+        }
+        
+        // --- ASIGNACIÓN DE HANDLERS Y SUBMIT POR ENTER (¡REVISADO!) ---
+        
+        // 1. Asignar handlers al evento submit de los formularios
+        document.getElementById("registerForm").addEventListener('submit', function(e) {
+            e.preventDefault(); // Detiene el envío de formulario nativo
+            handleRegister();
+        });
+        
+        document.getElementById("loginForm").addEventListener('submit', function(e) {
+            e.preventDefault(); // Detiene el envío de formulario nativo
+            handleLogin();
+        });
+        
+        // 2. Eliminar listeners de click innecesarios para usar solo el submit
+        document.getElementById("registerBtn").onclick = () => { /* No hacer nada aquí */ };
+        document.getElementById("loginBtn").onclick = () => { /* No hacer nada aquí */ };
+
+        // 3. Se cambia el type de los botones a "submit" en el HTML (ya hecho)
+
+    </script>
 </body>
 </html>
