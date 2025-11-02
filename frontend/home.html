@@ -1,224 +1,352 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>SoftSkills360 - Inicio</title>
-  <style>/* 🌌 ESTILOS MODERNOS - SoftSkills360 Inicio */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoftSkills360 - Inicio</title>
+    <style>/* 🌌 ESTILOS MODERNOS - SoftSkills360 Inicio */
 :root {
-  --color-primary: #10b981; /* Esmeralda */
-  --color-accent: #3b82f6; /* Azul eléctrico */
-  --color-bg-dark: #0f172a; /* Fondo oscuro */
-  --color-card-dark: #1e293b; /* Tarjeta */
-  --color-text-light: #f1f5f9;
+  --color-primary: #10b981; /* Esmeralda */
+  --color-accent: #3b82f6; /* Azul eléctrico */
+  --color-bg-dark: #0f172a; /* Fondo oscuro */
+  --color-card-dark: #1e293b; /* Tarjeta */
+  --color-text-light: #f1f5f9;
 }
 
 /* 🔹 Fondo general */
 body {
-  font-family: 'Inter', sans-serif;
-  background: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 60%),
-              radial-gradient(at 100% 100%, #10b981 0%, transparent 60%),
-              var(--color-bg-dark);
-  color: var(--color-text-light);
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 60%),
+              radial-gradient(at 100% 100%, #10b981 0%, transparent 60%),
+              var(--color-bg-dark);
+  color: var(--color-text-light);
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-x: hidden;
 }
 
 /* 🔸 NAVBAR */
 .navbar {
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(8px);
-  border-bottom: 3px solid var(--color-primary);
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 1rem 2rem;
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 3px solid var(--color-primary);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 .navbar h1 {
-  font-size: 1.9rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  color: #fff;
-  letter-spacing: 3px;
-  text-shadow: 0 0 8px var(--color-accent);
+  font-size: 1.9rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #fff;
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px var(--color-accent);
 }
 
 .navbar button {
-  background: var(--color-primary);
-  color: #0f172a;
-  font-weight: 800;
-  border: none;
-  border-radius: 10px;
-  padding: 0.7rem 1.5rem;
-  cursor: pointer;
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
-  transition: all 0.3s ease;
+  background: var(--color-primary);
+  color: #0f172a;
+  font-weight: 800;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+  transition: all 0.3s ease;
 }
 .navbar button:hover {
-  background: #059669;
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+  background: #059669;
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
 }
 
 /* 🧭 CONTENIDO PRINCIPAL */
 .content {
-  background: rgba(30, 41, 59, 0.85);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 1.2rem;
-  padding: 3rem 2.5rem;
-  max-width: 750px;
-  width: 90%;
-  margin-top: 6rem;
-  text-align: center;
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.25),
-              inset 0 0 10px rgba(59, 130, 246, 0.1);
-  animation: popCard 0.6s ease forwards;
-  transform: scale(0.98);
-  transition: all 0.4s ease;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 1.2rem;
+  padding: 3rem 2.5rem;
+  max-width: 750px;
+  width: 90%;
+  margin-top: 6rem;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.25),
+              inset 0 0 10px rgba(59, 130, 246, 0.1);
+  animation: popCard 0.6s ease forwards;
+  transform: scale(0.98);
+  transition: all 0.4s ease;
 }
 .content:hover {
-  transform: scale(1.01);
-  box-shadow: 0 0 30px rgba(16, 185, 129, 0.5),
-              0 0 20px rgba(59, 130, 246, 0.3);
+  transform: scale(1.01);
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.5),
+              0 0 20px rgba(59, 130, 246, 0.3);
 }
 
 /* 💫 Animación de aparición */
 @keyframes popCard {
-  from {
-    opacity: 0;
-    transform: scale(0.8) translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* ✨ Texto y listas */
 .content h2 {
-  font-size: 2rem;
-  font-weight: 900;
-  margin-bottom: 1rem;
-  text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
 }
 
 .content p {
-  font-size: 1.1rem;
-  color: #cbd5e1;
+  font-size: 1.1rem;
+  color: #cbd5e1;
 }
 
 .content ul {
-  text-align: left;
-  list-style: none;
-  padding: 0;
-  margin: 2rem 0;
+  text-align: left;
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
 }
 
 .content li {
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  padding-left: 1.8rem;
-  position: relative;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  padding-left: 1.8rem;
+  position: relative;
 }
 .content li::before {
-  content: '▹';
-  position: absolute;
-  left: 0;
-  color: var(--color-accent);
-  font-weight: bold;
-  text-shadow: 0 0 6px rgba(59, 130, 246, 0.6);
+  content: '▹';
+  position: absolute;
+  left: 0;
+  color: var(--color-accent);
+  font-weight: bold;
+  text-shadow: 0 0 6px rgba(59, 130, 246, 0.6);
 }
 
 /* 🚀 BOTÓN PRINCIPAL */
 .cta {
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
-  color: #0f172a;
-  font-weight: 900;
-  border: none;
-  border-radius: 12px;
-  padding: 1rem 2.5rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
-  margin-top: 1.5rem;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  color: #0f172a;
+  font-weight: 900;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 2.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  margin-top: 1.5rem;
 }
 .cta:hover {
-  transform: scale(1.06);
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+  transform: scale(1.06);
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
 }
 
 /* 📊 SECCIÓN DE RESULTADOS ANTERIORES */
 #pastResults {
-  margin-top: 3rem;
-  background: rgba(15, 23, 42, 0.6);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: inset 0 0 10px rgba(59, 130, 246, 0.2);
-  color: #cbd5e1;
-  font-size: 0.95rem;
+  margin-top: 3rem;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: inset 0 0 10px rgba(59, 130, 246, 0.2);
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+/* Estilos para las tarjetas de resultado */
+.result-item {
+    background-color: var(--color-card-dark); 
+    padding: 1.5rem; 
+    border-radius: 10px; 
+    margin-bottom: 1.5rem; 
+    border-left: 4px solid var(--color-primary); 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    transition: all 0.3s ease;
+}
+.result-item:hover {
+    background-color: #263347;
+}
+.skill-badge {
+    padding: 0.3rem 0.6rem; 
+    border-radius: 8px; 
+    font-size: 0.85rem; 
+    font-weight: 700;
+    white-space: nowrap; /* Evita que el badge se rompa */
 }
 
 /* 🌟 EFECTO DE FONDO ANIMADO */
 body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 70%),
-              radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
-  z-index: -1;
-  animation: pulseGlow 6s ease-in-out infinite alternate;
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 70%),
+              radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+  z-index: -1;
+  animation: pulseGlow 6s ease-in-out infinite alternate;
 }
 @keyframes pulseGlow {
-  from { opacity: 0.5; }
-  to { opacity: 1; }
+  from { opacity: 0.5; }
+  to { opacity: 1; }
 }
 
 /* 📱 RESPONSIVIDAD */
 @media (max-width: 768px) {
-  .content {
-    padding: 2rem 1.5rem;
-  }
-  .navbar h1 {
-    font-size: 1.5rem;
-  }
-  .cta {
-    width: 100%;
-    padding: 1rem;
-  }
+  .content {
+    padding: 2rem 1.5rem;
+  }
+  .navbar h1 {
+    font-size: 1.5rem;
+  }
+  .cta {
+    width: 100%;
+    padding: 1rem;
+  }
 }
 </style>
 </head>
 <body>
-  <header class="navbar">
-    <h1>SoftSkills360</h1>
-    <button id="logoutBtn">Cerrar sesión</button>
-  </header>
+  <header class="navbar">
+    <h1>SoftSkills360</h1>
+    <button id="logoutBtn">Cerrar sesión</button>
+  </header>
 
-  <main class="content">
-    <h2>¡Hola, <span id="userName"></span>! 👋</h2>
-    <p>Bienvenido a tu espacio personal. Aquí podrás:</p>
-    <ul>
-      <li>Realizar nuestro test de habilidades blandas completo</li>
-      <li>Consultar tus resultados anteriores</li>
-      <li>Aprender más sobre tus fortalezas</li>
-    </ul>
+  <main class="content">
+    <h2>¡Hola, <span id="userName"></span>! 👋</h2>
+    <p>Bienvenido a tu espacio personal. Aquí podrás:</p>
+    <ul>
+      <li>Realizar nuestro test de habilidades blandas completo</li>
+      <li>Consultar tus resultados anteriores</li>
+      <li>Aprender más sobre tus fortalezas</li>
+    </ul>
 
-    <button id="goQuiz" class="cta">Hacer el test ahora</button>
+    <button id="goQuiz" class="cta">Hacer el test ahora</button>
 
-    <section id="pastResults"></section>
-  </main>
+    <section id="pastResults"></section>
+  </main>
 
-  <script src="js/home.js"></script>
+<script>
+    const API_URL = "https://encuestaa.onrender.com"; // ¡URL REAL DE TU API DE RENDER!
+    const token = localStorage.getItem("token");
+
+    // Si no hay token, redirigir a la página de login
+    if (!token) window.location.href = "index.html";
+
+    document.getElementById("logoutBtn").onclick = () => {
+        localStorage.clear();
+        window.location.href = "index.html";
+    };
+
+    document.getElementById("goQuiz").onclick = () => {
+        window.location.href = "quiz.html";
+    };
+
+    // Obtener datos del usuario
+    async function loadUser() {
+        try {
+            const res = await fetch(`${API_URL}/api/user`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            if (res.ok) {
+                const data = await res.json();
+                document.getElementById("userName").innerText = data.name;
+            } else {
+                // Manejar token expirado o inválido
+                localStorage.clear();
+                // Usar un modal o mensaje en la UI en lugar de alert()
+                console.error("Sesión expirada o inválida.");
+                window.location.href = "index.html";
+            }
+        } catch (error) {
+            console.error("Error al cargar datos del usuario:", error);
+        }
+    }
+
+    // Obtener quizzes anteriores (LÓGICA ACTUALIZADA PARA EL NUEVO CSS)
+    async function loadResults() {
+        const container = document.getElementById("pastResults");
+        container.innerHTML = `<p style="text-align: center; color: #94a3b8; padding: 2rem;">Cargando resultados...</p>`; // Mensaje de carga
+
+        try {
+            const res = await fetch(`${API_URL}/api/quizzes`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                const quizzes = await res.json();
+                
+                if (quizzes.length === 0) {
+                    container.innerHTML = `<div class="result-item" style="text-align: center; border-left: none;"><p style="color: #cbd5e1;">Aún no tienes resultados guardados. ¡Realiza el quiz para empezar!</p></div>`;
+                } else {
+                    // --- LÓGICA DE RENDERING CON ESTILOS PERSONALIZADOS ---
+                    const resultsListHTML = quizzes.map(q => {
+                        // Formatear la fecha para que se vea bien
+                        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                        const date = new Date(q.date).toLocaleDateString('es-ES', dateOptions);
+
+                        // Generar los badges de habilidades con sus puntajes
+                        const skillsHTML = q.softSkills.map(s => `
+                            <span class="skill-badge" style="background-color: var(--color-accent); color: var(--color-bg-dark);">
+                                ${s.skill}: <strong>${s.score}%</strong>
+                            </span>
+                        `).join('');
+
+                        return `
+                            <div class="result-item">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                                    <h4 style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary);">${q.profile}</h4>
+                                    <span style="font-size: 0.85rem; color: #94a3b8;">Realizado el ${date}</span>
+                                </div>
+                                <p style="margin-bottom: 0.75rem; color: #cbd5e1;">Habilidades clave:</p>
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                                    ${skillsHTML}
+                                </div>
+                            </div>
+                        `;
+                    }).join("");
+                    // --- FIN DE LÓGICA DE RENDERING ---
+
+                    container.innerHTML = `
+                        <h3 style="font-size: 1.7rem; font-weight: 800; color: var(--color-text-light); margin-bottom: 1.5rem; text-align: left; border-bottom: 1px solid rgba(16, 185, 129, 0.3); padding-bottom: 0.5rem;">Resultados Anteriores (${quizzes.length})</h3>
+                        <div>
+                            ${resultsListHTML}
+                        </div>
+                    `;
+                }
+            } else {
+                // Manejar error de API, posiblemente token inválido
+                if (res.status === 401) {
+                    localStorage.clear();
+                    container.innerHTML = "<div class='result-item' style='border-left: 4px solid red;'><p style='color: red;'>Tu sesión ha expirado o es inválida. Redirigiendo al inicio de sesión...</p></div>";
+                    setTimeout(() => window.location.href = "index.html", 2000);
+                } else {
+                    container.innerHTML = "<div class='result-item' style='border-left: 4px solid orange;'><p style='color: orange;'>No se pudieron cargar los resultados. Intenta iniciar sesión de nuevo.</p></div>";
+                }
+            }
+        } catch (error) {
+            console.error("Error de red al cargar resultados:", error);
+            container.innerHTML = "<div class='result-item' style='border-left: 4px solid red;'><p style='color: red;'>No se pudo conectar con el servidor para obtener los resultados.</p></div>";
+        }
+    }
+
+    loadUser();
+    loadResults();
+</script>
 </body>
 </html>
-
