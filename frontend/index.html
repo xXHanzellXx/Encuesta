@@ -211,6 +211,9 @@ a:hover {
   </div>
 
   <script>
+    // URL de la API de Render
+    const API_URL = "https://encuestaa.onrender.com";
+
     // Referencias a los elementos del DOM
     const loginFormDiv = document.getElementById('loginForm');
     const registerFormDiv = document.getElementById('registerForm');
@@ -282,15 +285,15 @@ a:hover {
 
 
     // ------------------------------------------
-    // 3. MANEJADOR DE ENVÍO DE FORMULARIO
+    // 3. MANEJADOR DE ENVÍO Y API CALL
     // ------------------------------------------
 
     /**
-     * Maneja la lógica de validación y simulación de envío.
+     * Maneja la lógica de validación y envío real a la API.
      * @param {boolean} isRegister - True si es el formulario de registro, False para login.
      */
-    function handleSubmission(isRegister) {
-        let email, password;
+    async function handleSubmission(isRegister) {
+        let email, password, name;
         let isValid = true;
         let errorMessage = '';
 
@@ -298,16 +301,26 @@ a:hover {
         messageBox.classList.add('hidden');
 
         if (isRegister) {
-            // Validación de Nombre
-            if (!regNameInput.value.trim()) {
+            // Recolección de datos y validación de Nombre
+            name = regNameInput.value.trim();
+            email = regEmailInput.value.trim();
+            password = regPasswordInput.value;
+            
+            if (!name) {
                 isValid = false;
                 errorMessage = "Por favor, introduce tu nombre.";
             }
-            email = regEmailInput.value.trim();
-            password = regPasswordInput.value;
+
         } else {
+            // Recolección de datos para Login
             email = loginEmailInput.value.trim();
             password = loginPasswordInput.value;
+
+            // En Login, solo comprobamos que no esté vacío
+            if (password.length === 0) {
+                isValid = false;
+                errorMessage = "Por favor, introduce tu contraseña.";
+            }
         }
 
         if (!isValid) {
@@ -329,27 +342,69 @@ a:hover {
                 displayMessage(`Contraseña débil. Sugerencia: ${passwordResult.message}`);
                 return;
             }
-        } else {
-            // En Login, solo comprobamos que no esté vacío
-            if (password.length === 0) {
-                displayMessage("Por favor, introduce tu contraseña.");
-                return;
-            }
         }
+        
+        // --- API CALL ---
+        const endpoint = isRegister ? "/api/register" : "/api/login";
+        const payload = isRegister 
+            ? { name, email, password }
+            : { email, password };
 
+        try {
+            // Mostrar mensaje de carga/procesamiento
+            displayMessage(`Procesando ${isRegister ? 'registro' : 'inicio de sesión'}...`, 'success'); 
+            
+            const res = await fetch(`${API_URL}${endpoint}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
 
-        // --- SIMULACIÓN DE ÉXITO ---
-        const action = isRegister ? "Registro" : "Inicio de sesión";
-        displayMessage(`¡${action} exitoso simulado para ${email}! Ahora se puede redirigir.`, 'success');
+            const data = await res.json();
 
-        // Limpiar campos
-        if (isRegister) {
-            regNameInput.value = '';
-            regEmailInput.value = '';
-            regPasswordInput.value = '';
-        } else {
-            loginEmailInput.value = '';
-            loginPasswordInput.value = '';
+            if (res.ok) {
+                if (isRegister) {
+                    displayMessage("✅ Registro exitoso. ¡Ahora puedes iniciar sesión!", 'success');
+                    
+                    // Cambiar a la vista de login automáticamente
+                    // Se usa toLoginLink.click() para ejecutar el listener existente
+                    toLoginLink.click();
+                    
+                    // Limpiar campos de registro
+                    regNameInput.value = '';
+                    regEmailInput.value = '';
+                    regPasswordInput.value = '';
+
+                } else {
+                    // Login exitoso
+                    if (data.token) {
+                        localStorage.setItem("token", data.token);
+                        localStorage.setItem("userName", data.name || email);
+                    }
+                    
+                    const userName = data.name || email;
+                    displayMessage(`🎉 Inicio de sesión exitoso. ¡Bienvenido, ${userName}! Redirigiendo...`, 'success');
+                    
+                    // Limpiar campos de login
+                    loginEmailInput.value = '';
+                    loginPasswordInput.value = '';
+                    
+                    // Redirige al usuario a la página principal después de un breve retraso
+                    setTimeout(() => {
+                        // Aquí deberías redirigir a tu página principal (ej: home.html)
+                        window.location.href = "home.html";
+                    }, 1500); 
+                }
+
+            } else {
+                // Error de la API (ej: 400, 401, 409)
+                const errorMsg = data.detail || `Error desconocido: ${res.status} ${res.statusText}`;
+                displayMessage(`❌ Error: ${errorMsg}`);
+            }
+
+        } catch (error) {
+            console.error("Fetch error:", error);
+            displayMessage("🚨 Error de conexión con la API. Verifica la URL o tu conexión de red.");
         }
     }
 
@@ -358,7 +413,7 @@ a:hover {
     // 4. LISTENERS (Botones, Enter y Switch)
     // ------------------------------------------
 
-    // Manejo de clicks en botones (usamos type="button" en HTML)
+    // Manejo de clicks en botones
     loginBtn.addEventListener('click', () => handleSubmission(false));
     registerBtn.addEventListener('click', () => handleSubmission(true));
 
