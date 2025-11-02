@@ -1,461 +1,375 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoftSkills360 - Inicia sesión</title>
+
+  <meta charset="UTF-8">
+
+  <title>SoftSkills360 - Inicia sesión</title>
+
 </head>
-  <style>/* 🌌 ESTILO GLOBAL - SoftSkills360 LOGIN/REGISTER */
+
+  <style>/* 🌌 ESTILO GLOBAL - SoftSkills360 LOGIN/REGISTER */
+
 :root {
-  --color-primary: #10b981; /* Esmeralda */
-  --color-accent: #3b82f6;  /* Azul Eléctrico */
-  --color-bg-dark: #0f172a; /* Fondo oscuro */
-  --color-card-dark: #1e293b; /* Tarjeta */
-  --color-text-light: #f1f5f9;
+
+  --color-primary: #10b981; /* Esmeralda */
+
+  --color-accent: #3b82f6;  /* Azul Eléctrico */
+
+  --color-bg-dark: #0f172a; /* Fondo oscuro */
+
+  --color-card-dark: #1e293b; /* Tarjeta */
+
+  --color-text-light: #f1f5f9;
+
 }
+
+
 
 body {
-  font-family: 'Inter', sans-serif;
-  /* Gradiente de fondo con efectos visuales */
-  background: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 60%),
-              radial-gradient(at 100% 100%, #10b981 0%, transparent 60%),
-              var(--color-bg-dark);
-  color: var(--color-text-light);
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  position: relative;
+
+  font-family: 'Inter', sans-serif;
+
+  background: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 60%),
+
+              radial-gradient(at 100% 100%, #10b981 0%, transparent 60%),
+
+              var(--color-bg-dark);
+
+  color: var(--color-text-light);
+
+  margin: 0;
+
+  min-height: 100vh;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  overflow: hidden;
+
+  position: relative;
+
 }
+
+
 
 /* 🌟 EFECTO DE FONDO ANIMADO */
+
 body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 70%),
-              radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
-  z-index: -1;
-  animation: pulseGlow 6s ease-in-out infinite alternate;
+
+  content: '';
+
+  position: fixed;
+
+  inset: 0;
+
+  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 70%),
+
+              radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+
+  z-index: -1;
+
+  animation: pulseGlow 6s ease-in-out infinite alternate;
+
 }
+
 @keyframes pulseGlow {
-  from { opacity: 0.5; }
-  to { opacity: 1; }
+
+  from { opacity: 0.5; }
+
+  to { opacity: 1; }
+
 }
+
+
 
 /* 🧩 CONTENEDOR PRINCIPAL */
+
 .container {
-  background: rgba(30, 41, 59, 0.85);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 1.5rem;
-  padding: 3rem 2.5rem;
-  width: 90%;
-  max-width: 420px;
-  text-align: center;
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1);
-  transform: scale(0.96);
-  transition: all 0.4s ease;
-  animation: popCard 0.6s ease forwards;
+
+  background: rgba(30, 41, 59, 0.85);
+
+  border: 1px solid rgba(148, 163, 184, 0.2);
+
+  border-radius: 1.5rem;
+
+  padding: 3rem 2.5rem;
+
+  width: 90%;
+
+  max-width: 420px;
+
+  text-align: center;
+
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1);
+
+  transform: scale(0.96);
+
+  transition: all 0.4s ease;
+
+  animation: popCard 0.6s ease forwards;
+
 }
+
 .container:hover {
-  transform: scale(1.01);
-  box-shadow: 0 0 35px rgba(16, 185, 129, 0.4), 0 0 25px rgba(59, 130, 246, 0.3);
+
+  transform: scale(1.01);
+
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.4), 0 0 25px rgba(59, 130, 246, 0.3);
+
 }
+
+
 
 /* 💫 ANIMACIÓN DE APARICIÓN */
+
 @keyframes popCard {
-  from {
-    opacity: 0;
-    transform: scale(0.8) translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+
+  from {
+
+    opacity: 0;
+
+    transform: scale(0.8) translateY(10px);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform: scale(1);
+
+  }
+
 }
+
+
 
 /* 🔹 TÍTULOS */
+
 .container h1 {
-  font-size: 2.2rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  color: white;
-  text-shadow: 0 0 8px var(--color-accent);
-  margin-bottom: 2rem;
+
+  font-size: 2.2rem;
+
+  font-weight: 900;
+
+  text-transform: uppercase;
+
+  color: white;
+
+  text-shadow: 0 0 8px var(--color-accent);
+
+  margin-bottom: 2rem;
+
 }
+
+
 
 .container h2 {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--color-primary);
-  text-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
-  margin-bottom: 1.5rem;
+
+  font-size: 1.6rem;
+
+  font-weight: 800;
+
+  color: var(--color-primary);
+
+  text-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+
+  margin-bottom: 1.5rem;
+
 }
+
+
 
 /* ✏️ INPUTS */
+
 input {
-  width: 100%;
-  padding: 0.9rem 1rem;
-  margin: 0.6rem 0;
-  border: 2px solid rgba(100, 116, 139, 0.4);
-  border-radius: 0.75rem;
-  background: rgba(15, 23, 42, 0.8);
-  color: #e2e8f0;
-  font-size: 1rem;
-  outline: none;
-  transition: all 0.3s ease;
-  box-shadow: inset 0 0 5px rgba(59, 130, 246, 0.2);
+
+  width: 100%;
+
+  padding: 0.9rem 1rem;
+
+  margin: 0.6rem 0;
+
+  border: 2px solid rgba(100, 116, 139, 0.4);
+
+  border-radius: 0.75rem;
+
+  background: rgba(15, 23, 42, 0.8);
+
+  color: #e2e8f0;
+
+  font-size: 1rem;
+
+  outline: none;
+
+  transition: all 0.3s ease;
+
+  box-shadow: inset 0 0 5px rgba(59, 130, 246, 0.2);
+
 }
+
 input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
-  transform: scale(1.02);
+
+  border-color: var(--color-primary);
+
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+
+  transform: scale(1.02);
+
 }
+
+
 
 /* 🚀 BOTONES */
+
 button {
-  width: 100%;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
-  color: #0f172a;
-  font-weight: 900;
-  border: none;
-  border-radius: 0.75rem;
-  padding: 0.9rem 2rem;
-  margin-top: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+
+  width: 100%;
+
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+
+  color: #0f172a;
+
+  font-weight: 900;
+
+  border: none;
+
+  border-radius: 0.75rem;
+
+  padding: 0.9rem 2rem;
+
+  margin-top: 1rem;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+
 }
+
 button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+
+  transform: scale(1.05);
+
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+
 }
+
+
 
 /* 🔗 LINKS ENTRE FORMULARIOS */
+
 p {
-  margin-top: 1.2rem;
-  font-size: 0.95rem;
-  color: #cbd5e1;
-}
-a {
-  color: var(--color-accent);
-  cursor: pointer;
-  font-weight: 600;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-a:hover {
-  color: var(--color-primary);
-  text-shadow: 0 0 6px var(--color-primary);
+
+  margin-top: 1.2rem;
+
+  font-size: 0.95rem;
+
+  color: #cbd5e1;
+
 }
 
-/* 💡 MENSAJE DE FEEDBACK */
-#messageBox {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    border-radius: 0.75rem;
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-align: center;
-    border: 1px solid transparent;
-    transition: all 0.3s ease;
+a {
+
+  color: var(--color-accent);
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+
 }
-.msg-error {
-    background: rgba(239, 68, 68, 0.2); /* Red 500/20 */
-    color: #fca5a5; /* Red 300 */
-    border-color: rgba(239, 68, 68, 0.4);
+
+a:hover {
+
+  color: var(--color-primary);
+
+  text-shadow: 0 0 6px var(--color-primary);
+
 }
-.msg-success {
-    background: rgba(16, 185, 129, 0.2); /* Emerald 500/20 */
-    color: #a7f3d0; /* Emerald 300 */
-    border-color: rgba(16, 185, 129, 0.4);
-}
+
+
 
 /* 💡 RESPONSIVIDAD */
+
 @media (max-width: 600px) {
-  .container {
-    padding: 2.2rem 1.5rem;
-  }
-  .container h1 {
-    font-size: 1.8rem;
-  }
-  input, button {
-    font-size: 0.95rem;
-  }
+
+  .container {
+
+    padding: 2.2rem 1.5rem;
+
+  }
+
+  .container h1 {
+
+    font-size: 1.8rem;
+
+  }
+
+  input, button {
+
+    font-size: 0.95rem;
+
+  }
+
 }
+
 </style>
+
 <body>
-  <div class="container">
-    <h1>SoftSkills360</h1>
 
-    <div id="loginForm">
-      <h2>Iniciar sesión</h2>
-      <input id="loginEmail" placeholder="Email" type="email">
-      <input id="loginPassword" placeholder="Contraseña" type="password">
-      <button id="loginBtn" type="button">Entrar</button>
-      <p>¿No tienes cuenta? <a id="toRegister">Regístrate aquí</a></p>
-    </div>
+  <div class="container">
 
-    <div id="registerForm" style="display:none;">
-      <h2>Registro</h2>
-      <input id="regName" placeholder="Nombre">
-      <input id="regEmail" placeholder="Email" type="email">
-      <input id="regPassword" placeholder="Contraseña" type="password">
-      <button id="registerBtn" type="button">Registrarme</button>
-      <p>¿Ya tienes cuenta? <a id="toLogin">Inicia sesión</a></p>
-    </div>
-    
-    <!-- Contenedor para mensajes de feedback/sugerencia -->
-    <div id="messageBox" class="hidden"></div>
-  </div>
-
-  <script>
-    // URL de la API de Render
-    const API_URL = "https://encuestaa.onrender.com";
-
-    // Referencias a los elementos del DOM
-    const loginFormDiv = document.getElementById('loginForm');
-    const registerFormDiv = document.getElementById('registerForm');
-    const toRegisterLink = document.getElementById('toRegister');
-    const toLoginLink = document.getElementById('toLogin');
-    const loginEmailInput = document.getElementById('loginEmail');
-    const loginPasswordInput = document.getElementById('loginPassword');
-    const regNameInput = document.getElementById('regName');
-    const regEmailInput = document.getElementById('regEmail');
-    const regPasswordInput = document.getElementById('regPassword');
-    const loginBtn = document.getElementById('loginBtn');
-    const registerBtn = document.getElementById('registerBtn');
-    const messageBox = document.getElementById('messageBox');
-
-    // ------------------------------------------
-    // 1. FUNCIONES DE VALIDACIÓN
-    // ------------------------------------------
-
-    /**
-     * Valida si el email tiene un formato básico y parece real.
-     */
-    function validateEmail(email) {
-        // Regex estricta: debe tener formato usuario@dominio.tld
-        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
-        return regex.test(email);
-    }
-
-    /**
-     * Evalúa la seguridad de la contraseña y retorna un objeto de resultado.
-     */
-    function getPasswordStrength(password) {
-        if (password.length < 8) {
-            return { valid: false, message: "La contraseña debe tener al menos 8 caracteres." };
-        }
-        if (!/[A-Z]/.test(password)) {
-            return { valid: false, message: "Debe incluir al menos una letra mayúscula (A-Z)." };
-        }
-        if (!/[a-z]/.test(password)) {
-            return { valid: false, message: "Debe incluir al menos una letra minúscula (a-z)." };
-        }
-        if (!/\d/.test(password)) {
-            return { valid: false, message: "Debe incluir al menos un número (0-9)." };
-        }
-        if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
-            return { valid: false, message: "Debe incluir al menos un símbolo (ej: !, @, #)." };
-        }
-
-        return { valid: true, message: "Contraseña segura." };
-    }
+    <h1>SoftSkills360</h1>
 
 
-    // ------------------------------------------
-    // 2. FUNCIÓN DE MENSAJES
-    // ------------------------------------------
 
-    /**
-     * Muestra el mensaje de feedback con el estilo apropiado.
-     */
-    function displayMessage(message, type = 'error') {
-        messageBox.textContent = message;
-        messageBox.classList.remove('hidden', 'msg-error', 'msg-success');
-        
-        if (type === 'success') {
-            messageBox.classList.add('msg-success');
-        } else { // 'error' o sugerencia
-            messageBox.classList.add('msg-error');
-        }
-    }
+    <div id="loginForm">
+
+      <h2>Iniciar sesión</h2>
+
+      <input id="loginEmail" placeholder="Email" type="email">
+
+      <input id="loginPassword" placeholder="Contraseña" type="password">
+
+      <button id="loginBtn">Entrar</button>
+
+      <p>¿No tienes cuenta? <a id="toRegister">Regístrate aquí</a></p>
+
+    </div>
 
 
-    // ------------------------------------------
-    // 3. MANEJADOR DE ENVÍO Y API CALL
-    // ------------------------------------------
 
-    /**
-     * Maneja la lógica de validación y envío real a la API.
-     * @param {boolean} isRegister - True si es el formulario de registro, False para login.
-     */
-    async function handleSubmission(isRegister) {
-        let email, password, name;
-        let isValid = true;
-        let errorMessage = '';
+    <div id="registerForm" style="display:none;">
 
-        // Ocultar mensaje anterior
-        messageBox.classList.add('hidden');
+      <h2>Registro</h2>
 
-        if (isRegister) {
-            // Recolección de datos y validación de Nombre
-            name = regNameInput.value.trim();
-            email = regEmailInput.value.trim();
-            password = regPasswordInput.value;
-            
-            if (!name) {
-                isValid = false;
-                errorMessage = "Por favor, introduce tu nombre.";
-            }
+      <input id="regName" placeholder="Nombre">
 
-        } else {
-            // Recolección de datos para Login
-            email = loginEmailInput.value.trim();
-            password = loginPasswordInput.value;
+      <input id="regEmail" placeholder="Email" type="email">
 
-            // En Login, solo comprobamos que no esté vacío
-            if (password.length === 0) {
-                isValid = false;
-                errorMessage = "Por favor, introduce tu contraseña.";
-            }
-        }
+      <input id="regPassword" placeholder="Contraseña" type="password">
 
-        if (!isValid) {
-            displayMessage(errorMessage);
-            return;
-        }
+      <button id="registerBtn">Registrarme</button>
 
-        // Validación de Email
-        if (!validateEmail(email)) {
-            displayMessage("El formato del correo electrónico no es válido. Debe ser similar a 'usuario@dominio.com'.");
-            return;
-        }
-        
-        // Validación de Contraseña (seguridad estricta solo en REGISTRO)
-        if (isRegister) {
-            const passwordResult = getPasswordStrength(password);
-            if (!passwordResult.valid) {
-                // Mostrar sugerencia de seguridad
-                displayMessage(`Contraseña débil. Sugerencia: ${passwordResult.message}`);
-                return;
-            }
-        }
-        
-        // --- API CALL ---
-        const endpoint = isRegister ? "/api/register" : "/api/login";
-        const payload = isRegister 
-            ? { name, email, password }
-            : { email, password };
+      <p>¿Ya tienes cuenta? <a id="toLogin">Inicia sesión</a></p>
 
-        try {
-            // Mostrar mensaje de carga/procesamiento
-            displayMessage(`Procesando ${isRegister ? 'registro' : 'inicio de sesión'}...`, 'success'); 
-            
-            const res = await fetch(`${API_URL}${endpoint}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
+    </div>
 
-            const data = await res.json();
-
-            if (res.ok) {
-                if (isRegister) {
-                    displayMessage("✅ Registro exitoso. ¡Ahora puedes iniciar sesión!", 'success');
-                    
-                    // Cambiar a la vista de login automáticamente
-                    // Se usa toLoginLink.click() para ejecutar el listener existente
-                    toLoginLink.click();
-                    
-                    // Limpiar campos de registro
-                    regNameInput.value = '';
-                    regEmailInput.value = '';
-                    regPasswordInput.value = '';
-
-                } else {
-                    // Login exitoso
-                    if (data.token) {
-                        localStorage.setItem("token", data.token);
-                        localStorage.setItem("userName", data.name || email);
-                    }
-                    
-                    const userName = data.name || email;
-                    displayMessage(`🎉 Inicio de sesión exitoso. ¡Bienvenido, ${userName}! Redirigiendo...`, 'success');
-                    
-                    // Limpiar campos de login
-                    loginEmailInput.value = '';
-                    loginPasswordInput.value = '';
-                    
-                    // Redirige al usuario a la página principal después de un breve retraso
-                    setTimeout(() => {
-                        // Aquí deberías redirigir a tu página principal (ej: home.html)
-                        window.location.href = "home.html";
-                    }, 1500); 
-                }
-
-            } else {
-                // Error de la API (ej: 400, 401, 409)
-                const errorMsg = data.detail || `Error desconocido: ${res.status} ${res.statusText}`;
-                displayMessage(`❌ Error: ${errorMsg}`);
-            }
-
-        } catch (error) {
-            console.error("Fetch error:", error);
-            displayMessage("🚨 Error de conexión con la API. Verifica la URL o tu conexión de red.");
-        }
-    }
+  </div>
 
 
-    // ------------------------------------------
-    // 4. LISTENERS (Botones, Enter y Switch)
-    // ------------------------------------------
 
-    // Manejo de clicks en botones
-    loginBtn.addEventListener('click', () => handleSubmission(false));
-    registerBtn.addEventListener('click', () => handleSubmission(true));
+  <script src="js/auth.js"></script>
 
-    
-    // Manejo de la tecla ENTER para Login
-    const loginInputs = [loginEmailInput, loginPasswordInput];
-    loginInputs.forEach(input => {
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault(); // Evita el submit por defecto
-                handleSubmission(false);
-            }
-        });
-    });
-
-    // Manejo de la tecla ENTER para Registro
-    const registerInputs = [regNameInput, regEmailInput, regPasswordInput];
-    registerInputs.forEach(input => {
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault(); // Evita el submit por defecto
-                handleSubmission(true);
-            }
-        });
-    });
-
-
-    // Lógica para cambiar entre formularios (Mantener la funcionalidad original)
-    toRegisterLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        loginFormDiv.style.display = 'none';
-        registerFormDiv.style.display = 'block';
-        messageBox.classList.add('hidden'); // Limpiar mensajes al cambiar
-    });
-
-    toLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        registerFormDiv.style.display = 'none';
-        loginFormDiv.style.display = 'block';
-        messageBox.classList.add('hidden'); // Limpiar mensajes al cambiar
-    });
-
-  </script>
 </body>
+
 </html>
