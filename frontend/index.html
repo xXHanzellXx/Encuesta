@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SoftSkills360 - Inicia sesión</title>
 </head>
   <style>/* 🌌 ESTILO GLOBAL - SoftSkills360 LOGIN/REGISTER */
@@ -149,38 +148,6 @@ a:hover {
   text-shadow: 0 0 6px var(--color-primary);
 }
 
-/* 💡 MENSAJE DE FEEDBACK */
-#messageBox {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    border-radius: 0.75rem;
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-align: center;
-    border: 1px solid transparent;
-    transition: all 0.3s ease;
-    min-height: 40px; /* Asegura espacio incluso vacío */
-}
-.msg-error {
-    background: rgba(239, 68, 68, 0.2); /* Red 500/20 */
-    color: #fca5a5; /* Red 300 */
-    border-color: rgba(239, 68, 68, 0.4);
-}
-.msg-success {
-    background: rgba(16, 185, 129, 0.2); /* Emerald 500/20 */
-    color: #a7f3d0; /* Emerald 300 */
-    border-color: rgba(16, 185, 129, 0.4);
-}
-.hidden {
-    visibility: hidden;
-    height: 0;
-    padding: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: hidden;
-}
-
-
 /* 💡 RESPONSIVIDAD */
 @media (max-width: 600px) {
   .container {
@@ -202,7 +169,7 @@ a:hover {
       <h2>Iniciar sesión</h2>
       <input id="loginEmail" placeholder="Email" type="email">
       <input id="loginPassword" placeholder="Contraseña" type="password">
-      <button id="loginBtn" type="button">Entrar</button>
+      <button id="loginBtn">Entrar</button>
       <p>¿No tienes cuenta? <a id="toRegister">Regístrate aquí</a></p>
     </div>
 
@@ -211,267 +178,11 @@ a:hover {
       <input id="regName" placeholder="Nombre">
       <input id="regEmail" placeholder="Email" type="email">
       <input id="regPassword" placeholder="Contraseña" type="password">
-      <button id="registerBtn" type="button">Registrarme</button>
+      <button id="registerBtn">Registrarme</button>
       <p>¿Ya tienes cuenta? <a id="toLogin">Inicia sesión</a></p>
     </div>
-    
-    <!-- Contenedor para mensajes de feedback/sugerencia -->
-    <div id="messageBox" class="hidden"></div>
   </div>
 
-  <script>
-    // URL de la API de Render
-    const API_URL = "https://encuestaa.onrender.com";
-
-    // Referencias a los elementos del DOM
-    const loginFormDiv = document.getElementById('loginForm');
-    const registerFormDiv = document.getElementById('registerForm');
-    const toRegisterLink = document.getElementById('toRegister');
-    const toLoginLink = document.getElementById('toLogin');
-    const loginEmailInput = document.getElementById('loginEmail');
-    const loginPasswordInput = document.getElementById('loginPassword');
-    const regNameInput = document.getElementById('regName');
-    const regEmailInput = document.getElementById('regEmail');
-    const regPasswordInput = document.getElementById('regPassword');
-    const loginBtn = document.getElementById('loginBtn');
-    const registerBtn = document.getElementById('registerBtn');
-    const messageBox = document.getElementById('messageBox');
-
-    // ------------------------------------------
-    // 1. FUNCIONES DE VALIDACIÓN
-    // ------------------------------------------
-
-    /**
-     * Valida si el email tiene un formato básico y parece real.
-     */
-    function validateEmail(email) {
-        // Regex estricta: debe tener formato usuario@dominio.tld
-        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
-        return regex.test(email);
-    }
-
-    /**
-     * Evalúa la seguridad de la contraseña y retorna un objeto de resultado.
-     */
-    function getPasswordStrength(password) {
-        if (password.length < 8) {
-            return { valid: false, message: "La contraseña debe tener al menos 8 caracteres." };
-        }
-        if (!/[A-Z]/.test(password)) {
-            return { valid: false, message: "Debe incluir al menos una letra mayúscula (A-Z)." };
-        }
-        if (!/[a-z]/.test(password)) {
-            return { valid: false, message: "Debe incluir al menos una letra minúscula (a-z)." };
-        }
-        if (!/\d/.test(password)) {
-            return { valid: false, message: "Debe incluir al menos un número (0-9)." };
-        }
-        if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
-            return { valid: false, message: "Debe incluir al menos un símbolo (ej: !, @, #)." };
-        }
-
-        return { valid: true, message: "Contraseña segura." };
-    }
-
-
-    // ------------------------------------------
-    // 2. FUNCIÓN DE MENSAJES
-    // ------------------------------------------
-
-    /**
-     * Muestra el mensaje de feedback con el estilo apropiado.
-     */
-    function displayMessage(message, type = 'error') {
-        messageBox.textContent = message;
-        messageBox.classList.remove('hidden');
-        
-        if (type === 'success') {
-            messageBox.classList.add('msg-success');
-            messageBox.classList.remove('msg-error');
-        } else { // 'error' o sugerencia
-            messageBox.classList.add('msg-error');
-            messageBox.classList.remove('msg-success');
-        }
-    }
-
-    /**
-     * Oculta el contenedor de mensajes.
-     */
-    function hideMessage() {
-        messageBox.classList.add('hidden');
-    }
-
-
-    // ------------------------------------------
-    // 3. MANEJADOR DE ENVÍO Y API CALL
-    // ------------------------------------------
-
-    /**
-     * Maneja la lógica de validación y envío real a la API.
-     * @param {boolean} isRegister - True si es el formulario de registro, False para login.
-     */
-    async function handleSubmission(isRegister) {
-        let email, password, name;
-        let isValid = true;
-        let errorMessage = '';
-
-        hideMessage();
-
-        // 1. Recolección y validación inicial de campos
-        if (isRegister) {
-            name = regNameInput.value.trim();
-            email = regEmailInput.value.trim();
-            password = regPasswordInput.value;
-            
-            if (!name) {
-                isValid = false;
-                errorMessage = "Por favor, introduce tu nombre.";
-            }
-
-        } else {
-            email = loginEmailInput.value.trim();
-            password = loginPasswordInput.value;
-
-            if (password.length === 0) {
-                isValid = false;
-                errorMessage = "Por favor, introduce tu contraseña.";
-            }
-        }
-
-        if (!isValid) {
-            displayMessage(errorMessage);
-            return;
-        }
-
-        // 2. Validación de Email
-        if (!validateEmail(email)) {
-            displayMessage("El formato del correo electrónico no es válido. Debe ser similar a 'usuario@dominio.com'.");
-            return;
-        }
-        
-        // 3. Validación de Contraseña (seguridad estricta solo en REGISTRO)
-        if (isRegister) {
-            const passwordResult = getPasswordStrength(password);
-            if (!passwordResult.valid) {
-                // Mostrar sugerencia de seguridad
-                displayMessage(`Contraseña débil. Sugerencia: ${passwordResult.message}`);
-                return;
-            }
-        }
-        
-        // 4. API CALL
-        const endpoint = isRegister ? "/api/register" : "/api/login";
-        const payload = isRegister 
-            ? { name, email, password }
-            : { email, password };
-
-        try {
-            // Mostrar mensaje de carga/procesamiento
-            displayMessage(`Procesando ${isRegister ? 'registro' : 'inicio de sesión'}...`, 'success'); 
-            
-            const res = await fetch(`${API_URL}${endpoint}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                if (isRegister) {
-                    displayMessage("✅ Registro exitoso. ¡Ahora puedes iniciar sesión!", 'success');
-                    
-                    // Cambiar a la vista de login automáticamente
-                    toLoginLink.click();
-                    
-                    // Limpiar campos de registro
-                    regNameInput.value = '';
-                    regEmailInput.value = '';
-                    regPasswordInput.value = '';
-
-                } else {
-                    // Login exitoso
-                    if (data.token) {
-                        // Usamos localStorage tal como estaba en tu lógica original
-                        localStorage.setItem("token", data.token);
-                        localStorage.setItem("userName", data.name || email);
-                    }
-                    
-                    const userName = data.name || email;
-                    displayMessage(`🎉 Inicio de sesión exitoso. ¡Bienvenido, ${userName}! Redirigiendo...`, 'success');
-                    
-                    // Limpiar campos de login
-                    loginEmailInput.value = '';
-                    loginPasswordInput.value = '';
-                    
-                    // Redirige al usuario a la página principal después de un breve retraso
-                    setTimeout(() => {
-                        window.location.href = "home.html";
-                    }, 1500); 
-                }
-
-            } else {
-                // Error de la API 
-                const errorMsg = data.detail || "Email o contraseña incorrectos.";
-                displayMessage(`❌ Error: ${errorMsg}`);
-            }
-
-        } catch (error) {
-            console.error("Fetch error:", error);
-            displayMessage("🚨 Error de conexión con la API. Verifica la URL o tu conexión de red.");
-        }
-    }
-
-
-    // ------------------------------------------
-    // 4. LISTENERS (Botones, Enter y Switch)
-    // ------------------------------------------
-
-    // Manejo de clicks en botones
-    loginBtn.addEventListener('click', () => handleSubmission(false));
-    registerBtn.addEventListener('click', () => handleSubmission(true));
-
-    
-    // Manejo de la tecla ENTER para Login
-    const loginInputs = [loginEmailInput, loginPasswordInput];
-    loginInputs.forEach(input => {
-        input.addEventListener('keypress', (e) => {
-            // Si es 'Enter', llama a la función de envío (Login)
-            if (e.key === 'Enter') {
-                e.preventDefault(); // Evita el submit por defecto del formulario
-                handleSubmission(false);
-            }
-        });
-    });
-
-    // Manejo de la tecla ENTER para Registro
-    const registerInputs = [regNameInput, regEmailInput, regPasswordInput];
-    registerInputs.forEach(input => {
-        input.addEventListener('keypress', (e) => {
-            // Si es 'Enter', llama a la función de envío (Registro)
-            if (e.key === 'Enter') {
-                e.preventDefault(); // Evita el submit por defecto del formulario
-                handleSubmission(true);
-            }
-        });
-    });
-
-
-    // Lógica para cambiar entre formularios
-    toRegisterLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        loginFormDiv.style.display = 'none';
-        registerFormDiv.style.display = 'block';
-        hideMessage(); // Limpiar mensajes al cambiar
-    });
-
-    toLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        registerFormDiv.style.display = 'none';
-        loginFormDiv.style.display = 'block';
-        hideMessage(); // Limpiar mensajes al cambiar
-    });
-
-  </script>
+  <script src="js/auth.js"></script>
 </body>
 </html>
