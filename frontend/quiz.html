@@ -257,11 +257,6 @@ body::before {
             <div id="questionsContainer" class="min-h-[250px] flex items-center justify-center">
                 <div id="loading" class="text-gray-400 text-lg">Cargando preguntas...</div>
             </div>
-
-            <!-- Indicador de Pregunta (Pie de tarjeta) -->
-            <div class="progress-footer">
-                <p id="progressText" class="text-lg font-mono text-emerald-400 tracking-wider">Cargando...</p>
-            </div>
             
             <div class="quiz-actions">
                 <button id="prevBtn" class="secondary-btn" style="display:none;">Anterior</button>
@@ -269,7 +264,10 @@ body::before {
                 <button id="submitBtn" class="cta-btn" style="display:none;">Finalizar Test</button>
             </div>
         </div>
-        
+        <!-- Indicador de Pregunta (Pie de tarjeta) -->
+            <div class="progress-footer">
+                <p id="progressText" class="text-lg font-mono text-emerald-400 tracking-wider">Cargando...</p>
+            </div>
         <!-- Contenedor de Resultados (Inicialmente oculto) -->
         <div id="result" class="result-card" style="display: none;">
             <h3 class="text-4xl font-extrabold text-center mb-6 text-emerald-500">:: RESULTADOS FINALES :: 🚀</h3>
@@ -648,4 +646,5 @@ body::before {
     </script>
 </body>
 </html>
+
 
