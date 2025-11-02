@@ -3,8 +3,164 @@
 <head>
   <meta charset="UTF-8">
   <title>SoftSkills360 - Inicia sesión</title>
-  <link rel="stylesheet" href="css/styles.css">
 </head>
+  <style>/* 🌌 ESTILO GLOBAL - SoftSkills360 LOGIN/REGISTER */
+:root {
+  --color-primary: #10b981; /* Esmeralda */
+  --color-accent: #3b82f6;  /* Azul Eléctrico */
+  --color-bg-dark: #0f172a; /* Fondo oscuro */
+  --color-card-dark: #1e293b; /* Tarjeta */
+  --color-text-light: #f1f5f9;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 60%),
+              radial-gradient(at 100% 100%, #10b981 0%, transparent 60%),
+              var(--color-bg-dark);
+  color: var(--color-text-light);
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 🌟 EFECTO DE FONDO ANIMADO */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 70%),
+              radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+  z-index: -1;
+  animation: pulseGlow 6s ease-in-out infinite alternate;
+}
+@keyframes pulseGlow {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+/* 🧩 CONTENEDOR PRINCIPAL */
+.container {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 1.5rem;
+  padding: 3rem 2.5rem;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1);
+  transform: scale(0.96);
+  transition: all 0.4s ease;
+  animation: popCard 0.6s ease forwards;
+}
+.container:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.4), 0 0 25px rgba(59, 130, 246, 0.3);
+}
+
+/* 💫 ANIMACIÓN DE APARICIÓN */
+@keyframes popCard {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 🔹 TÍTULOS */
+.container h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: white;
+  text-shadow: 0 0 8px var(--color-accent);
+  margin-bottom: 2rem;
+}
+
+.container h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  text-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+  margin-bottom: 1.5rem;
+}
+
+/* ✏️ INPUTS */
+input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin: 0.6rem 0;
+  border: 2px solid rgba(100, 116, 139, 0.4);
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.8);
+  color: #e2e8f0;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 5px rgba(59, 130, 246, 0.2);
+}
+input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+  transform: scale(1.02);
+}
+
+/* 🚀 BOTONES */
+button {
+  width: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  color: #0f172a;
+  font-weight: 900;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.9rem 2rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+}
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+}
+
+/* 🔗 LINKS ENTRE FORMULARIOS */
+p {
+  margin-top: 1.2rem;
+  font-size: 0.95rem;
+  color: #cbd5e1;
+}
+a {
+  color: var(--color-accent);
+  cursor: pointer;
+  font-weight: 600;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+a:hover {
+  color: var(--color-primary);
+  text-shadow: 0 0 6px var(--color-primary);
+}
+
+/* 💡 RESPONSIVIDAD */
+@media (max-width: 600px) {
+  .container {
+    padding: 2.2rem 1.5rem;
+  }
+  .container h1 {
+    font-size: 1.8rem;
+  }
+  input, button {
+    font-size: 0.95rem;
+  }
+}
+</style>
 <body>
   <div class="container">
     <h1>SoftSkills360</h1>
@@ -30,3 +186,4 @@
   <script src="js/auth.js"></script>
 </body>
 </html>
+
