@@ -1119,7 +1119,7 @@
         }
       }
 
-      // --- GUARDAR RESULTADOS ---
+      // --- GUARDAR RESULTADOS (CORRECCIÓN CLAVE AQUÍ) ---
 
       /** Guarda los resultados en la API */
       async function saveResultsToAPI() {
@@ -1152,8 +1152,20 @@
                 showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil.', false);
                 saveResultBtn.disabled = true; // Deshabilitar después de guardar
             } else {
-                const data = await res.json();
-                showAlert('❌ Error al Guardar ❌', data.detail || 'Ocurrió un error al contactar con el servidor. Intenta nuevamente.', true);
+                // Leer la respuesta JSON si existe, con manejo de errores
+                const data = await res.json().catch(() => ({ detail: 'Respuesta del servidor no legible.' }));
+                let errorMessage = data.detail || 'Ocurrió un error desconocido en el servidor.';
+                
+                // MEJORA: Mensajes específicos basados en el código de estado HTTP
+                if (res.status === 401) {
+                    errorMessage = 'Tu sesión ha expirado o no estás autorizado. Por favor, vuelve a Iniciar Sesión.';
+                } else if (res.status === 400) {
+                    errorMessage = 'Datos inválidos. Asegúrate de que el test se completó correctamente.';
+                } else if (res.status >= 500) {
+                    errorMessage = 'Error interno del servidor (Render). El servicio podría estar inactivo. Inténtalo más tarde.';
+                }
+
+                showAlert('❌ Error al Guardar', errorMessage, true);
                 saveResultBtn.disabled = false; // Permitir reintentar
             }
 
@@ -1168,10 +1180,9 @@
 
       document.addEventListener('DOMContentLoaded', () => {
         
-        // --- ASIGNACIÓN DE EVENT LISTENERS (CORRECCIÓN CLAVE) ---
-        // Se reasignan todos los listeners dentro de DOMContentLoaded para garantizar que los elementos existen.
+        // --- ASIGNACIÓN DE EVENT LISTENERS ---
         
-        // 1. Redirecciones (Botón "Volver" arreglado)
+        // 1. Redirecciones 
         backBtn.addEventListener('click', () => (window.location.href = 'home.html'));
         goHomeFromQuizBtn.addEventListener('click', () => (window.location.href = 'home.html'));
 
@@ -1197,7 +1208,6 @@
 
 
         // --- INICIALIZACIÓN (Carga Rápida) ---
-        // CORRECCIÓN: Ocultar el mensaje de carga y renderizar la primera pregunta inmediatamente.
         loadingEl.style.display = 'none'; 
         renderQuestion(currentQuestionIndex);
         
