@@ -1025,72 +1025,90 @@
         return 'bg-red-500'; // Necesita enfoque
       }
 
-      /** Procesa las respuestas para calcular las métricas finales. */
-      function calculateResults() {
-        // 🚨 VALIDACIÓN FINAL: Asegurarse de que todas las preguntas están respondidas
-        if (Object.keys(userAnswers).length !== QUIZ_DATA.length) {
-          showAlert('Faltan Respuestas', 'Por favor, asegúrate de responder todas las preguntas antes de finalizar.', true);
-          // Busca la primera pregunta sin responder y redirige
-          for (let i = 0; i < QUIZ_DATA.length; i++) {
+      /** Procesa las respuestas para calcular las métricas finales y prepara el objeto completo para la API. */
+function calculateResults() {
+    // 🚨 VALIDACIÓN FINAL: Asegurarse de que todas las preguntas están respondidas
+    if (Object.keys(userAnswers).length !== QUIZ_DATA.length) {
+        showAlert('Faltan Respuestas', 'Por favor, asegúrate de responder todas las preguntas antes de finalizar.', true);
+        // Busca la primera pregunta sin responder y redirige
+        for (let i = 0; i < QUIZ_DATA.length; i++) {
             const qId = `q${i + 1}`;
             if (!userAnswers[qId]) {
-              currentQuestionIndex = i;
-              renderQuestion(currentQuestionIndex);
-              break;
+                currentQuestionIndex = i;
+                renderQuestion(currentQuestionIndex);
+                break;
             }
-          }
-          return;
         }
+        return;
+    }
 
-        const skillScores = {};
-        const skillCounts = {};
-        const MAX_SCORE_PER_QUESTION = 4; // Puntaje máximo por pregunta
+    const skillScores = {};
+    const skillCounts = {};
+    const MAX_SCORE_PER_QUESTION = 4; // Puntaje máximo por pregunta
+    const detailedAnswers = []; // ✅ NUEVO: Lista para el campo 'answers'
 
-        // 1. Recolectar puntajes brutos por habilidad
-        QUIZ_DATA.forEach(q => {
-          const qId = `q${q.id}`;
-          const answerText = userAnswers[qId];
-          const scoreValue = q.valueMap[answerText];
-          const skill = q.skill;
+    // 1. Recolectar puntajes brutos por habilidad y construir lista de respuestas
+    QUIZ_DATA.forEach(q => {
+        const qId = `q${q.id}`;
+        const answerText = userAnswers[qId];
+        const scoreValue = q.valueMap[answerText];
+        const skill = q.skill;
 
-          if (!skillScores[skill]) {
+        if (!skillScores[skill]) {
             skillScores[skill] = 0;
             skillCounts[skill] = 0;
-          }
-          
-          skillScores[skill] += scoreValue;
-          skillCounts[skill]++;
+        }
+        
+        skillScores[skill] += scoreValue;
+        skillCounts[skill]++;
+        
+        // 🔹 GUARDAR LA RESPUESTA DETALLADA (para el campo 'answers')
+        detailedAnswers.push({
+            id: q.id,
+            question: q.text,
+            skill: skill,
+            answer: answerText,
+            score: scoreValue
         });
+    });
 
-        // 2. Calcular porcentajes (0-100) y encontrar las habilidades más fuertes
-        const finalScores = [];
-        let maxPossibleScore = 0;
+    // 2. Calcular porcentajes (0-100) y encontrar las habilidades más fuertes
+    const finalScores = []; // Esta será el campo 'softSkills'
+    let maxPossibleScore = 0;
 
-        for (const skill in skillScores) {
-          maxPossibleScore = skillCounts[skill] * MAX_SCORE_PER_QUESTION;
-          const percentage = Math.round((skillScores[skill] / maxPossibleScore) * 100);
-          finalScores.push({ skill, score: percentage });
-        }
+    for (const skill in skillScores) {
+        maxPossibleScore = skillCounts[skill] * MAX_SCORE_PER_QUESTION;
+        const percentage = Math.round((skillScores[skill] / maxPossibleScore) * 100);
         
-        // 3. Determinar el perfil del usuario
-        finalScores.sort((a, b) => b.score - a.score);
-        const topSkills = finalScores.slice(0, 3).map(s => s.skill);
-        let userProfile = PROFILES.find(p => p.skills.every(skill => topSkills.includes(skill)));
+        // Usa el formato que el backend espera para softSkills
+        finalScores.push({ skill, score: percentage }); 
+    }
+    
+    // 3. Determinar el perfil del usuario
+    finalScores.sort((a, b) => b.score - a.score);
+    const topSkills = finalScores.slice(0, 3).map(s => s.skill);
+    let userProfile = PROFILES.find(p => p.skills.every(skill => topSkills.includes(skill)));
 
-        // Si no se encuentra un perfil específico, usar el perfil "Integral"
-        if (!userProfile) {
-            userProfile = PROFILES.find(p => p.name === "EL DESARROLLADOR INTEGRAL");
-        }
+    // Si no se encuentra un perfil específico, usar el perfil "Integral"
+    if (!userProfile) {
+        userProfile = PROFILES.find(p => p.name === "EL DESARROLLADOR INTEGRAL");
+    }
+    
+    // 4. Guardar resultado final con todos los campos que el backend espera
+    window.finalQuizResult = {
+        // ✅ CAMPOS REQUERIDOS POR EL BACKEND (RESUELVE 422)
+        answers: detailedAnswers,                     // Campo 'answers'
+        softSkills: finalScores,                      // Campo 'softSkills'
+        date: new Date().toISOString().split('T')[0], // Campo 'date' (YYYY-MM-DD)
         
-        // 4. Guardar resultado final
-        window.finalQuizResult = {
-            scores: finalScores,
-            profile: userProfile.name,
-        };
+        // Otros campos de resumen
+        profileName: userProfile.name,
+        profileDescription: userProfile.description,
+    };
 
-        // 5. Renderizar y mostrar resultados
-        renderResults(finalScores, userProfile);
-      }
+    // 5. Renderizar y mostrar resultados
+    renderResults(finalScores, userProfile);
+}
 
       /** Renderiza los resultados en la tarjeta de resultados. */
       function renderResults(scores, profile) {
@@ -1128,14 +1146,7 @@
 /** Guarda los resultados en la API con manejo robusto de errores de FastAPI */
 async function saveResultsToAPI() {
     const token = localStorage.getItem('token');
-    if (!token) {
-        showAlert('Acceso Denegado', 'Debes iniciar sesión para guardar tus resultados.', true);
-        return;
-    }
-    if (!window.finalQuizResult) {
-        showAlert('Error', 'No hay resultados que guardar.', true);
-        return;
-    }
+    // ... (validaciones de token y finalQuizResult)
 
     saveResultBtn.disabled = true;
     saveResultBtn.textContent = 'Guardando...';
@@ -1148,7 +1159,7 @@ async function saveResultsToAPI() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify(window.finalQuizResult),
+            body: JSON.stringify(window.finalQuizResult), // YA CORREGIDO EN calculateResults
         });
         
         saveResultBtn.textContent = 'Guardar Resultado';
@@ -1157,40 +1168,31 @@ async function saveResultsToAPI() {
             showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil. ✅', false);
             saveResultBtn.disabled = true; 
         } else {
-            // 2. Manejo de error: Intenta obtener el JSON, si falla, usa un objeto vacío
             const data = await res.json().catch(() => ({}));
             let errorMessage = '';
 
+            // 🚨 Esta lógica diagnostica el 422
             if (res.status === 404) {
                 errorMessage = '🚨 ERROR 404: La ruta /api/quiz no fue encontrada. Revisa tu backend de Render.';
             } else if (res.status === 401 || res.status === 403) {
                 errorMessage = 'Tu sesión ha expirado o no estás autorizado (Token inválido). Por favor, vuelve a Iniciar Sesión.';
-            } else if (data.detail) {
-                if (Array.isArray(data.detail)) {
-                    // 🚨 Manejo de Error 422 (Validación Pydantic)
-                    errorMessage = '🚨 Error de Validación de Datos (422):\n\n';
-                    data.detail.forEach(err => {
-                        const field = err.loc && err.loc.length > 1 ? err.loc[1] : 'Datos';
-                        errorMessage += `• El campo "${field}" es inválido: ${err.msg}\n`;
-                    });
-                } else if (typeof data.detail === 'string') {
-                    // Manejo de Error 400/401 estándar
-                    errorMessage = data.detail;
-                } else {
-                    errorMessage = `Error ${res.status}: Respuesta del servidor no legible.`;
-                }
+            } else if (data.detail && Array.isArray(data.detail)) {
+                 // Diagnóstico de error 422
+                 errorMessage = '🚨 Error de Validación de Datos (422):\n\n';
+                 data.detail.forEach(err => {
+                     const field = err.loc && err.loc.length > 1 ? err.loc[1] : 'Datos';
+                     errorMessage += `• El campo "${field}" es inválido: ${err.msg}\n`;
+                 });
             } else {
-                errorMessage = `Error HTTP ${res.status}. Vuelve a intentarlo.`;
+                 errorMessage = data.detail || `Error HTTP ${res.status}. Vuelve a intentarlo.`;
             }
 
             showAlert('❌ Error al Guardar', errorMessage, true);
-            saveResultBtn.disabled = false; // Permitir reintentar
+            saveResultBtn.disabled = false;
         }
 
     } catch (error) {
-        saveResultBtn.textContent = 'Guardar Resultado';
-        saveResultBtn.disabled = false;
-        showAlert('🚨 Error de Conexión', 'No se pudo contactar con la API (Problema de red o servidor inactivo).', true);
+        // ... (Manejo de error de conexión)
     }
 }
       
@@ -1260,6 +1262,7 @@ async function saveResultsToAPI() {
     </script>
   </body>
 </html>
+
 
 
 
