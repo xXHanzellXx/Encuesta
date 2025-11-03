@@ -392,7 +392,7 @@
 
       <div id="result" class="result-card" style="display: none">
         <h3 class="text-4xl font-extrabold text-center mb-6 text-emerald-500">
-          :: RESULTADOS FINALES :: 🚀
+        🚀 :: RESULTADOS FINALES :: 🚀
         </h3>
         <div id="resultContent" class="text-gray-300">
           <div
@@ -1174,11 +1174,11 @@
             saveResultBtn.textContent = 'Guardar Resultado'; // Restablecer texto
             
             if (res.ok) {
-                showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil.', false);
+                showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil.' ✅, false);
                 saveResultBtn.disabled = true; // Deshabilitar después de guardar
             } else {
                 const data = await res.json();
-                showAlert('❌ Error al Guardar', data.detail || 'Ocurrió un error al contactar con el servidor.', true);
+                showAlert('❌ Error al Guardar ❌', data.detail || 'Ocurrió un error al contactar con el servidor.', true);
                 saveResultBtn.disabled = false; // Permitir reintentar
             }
 
@@ -1233,3 +1233,4 @@
     </script>
   </body>
 </html>
+
