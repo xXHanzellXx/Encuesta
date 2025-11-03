@@ -1025,7 +1025,7 @@
         return 'bg-red-500'; // Necesita enfoque
       }
 
-      /** Procesa las respuestas para calcular las métricas finales y prepara el objeto completo para la API. */
+     /** Procesa las respuestas para calcular las métricas finales y prepara el objeto completo para la API. */
 function calculateResults() {
     // 🚨 VALIDACIÓN FINAL: Asegurarse de que todas las preguntas están respondidas
     if (Object.keys(userAnswers).length !== QUIZ_DATA.length) {
@@ -1045,9 +1045,8 @@ function calculateResults() {
     const skillScores = {};
     const skillCounts = {};
     const MAX_SCORE_PER_QUESTION = 4; // Puntaje máximo por pregunta
-    const detailedAnswers = []; // ✅ NUEVO: Lista para el campo 'answers'
 
-    // 1. Recolectar puntajes brutos por habilidad y construir lista de respuestas
+    // 1. Recolectar puntajes brutos por habilidad (userAnswers ya contiene las respuestas como diccionario)
     QUIZ_DATA.forEach(q => {
         const qId = `q${q.id}`;
         const answerText = userAnswers[qId];
@@ -1062,14 +1061,7 @@ function calculateResults() {
         skillScores[skill] += scoreValue;
         skillCounts[skill]++;
         
-        // 🔹 GUARDAR LA RESPUESTA DETALLADA (para el campo 'answers')
-        detailedAnswers.push({
-            id: q.id,
-            question: q.text,
-            skill: skill,
-            answer: answerText,
-            score: scoreValue
-        });
+        // ❌ ELIMINADO: Ya NO necesitamos detailedAnswers.push, ya que usaremos userAnswers
     });
 
     // 2. Calcular porcentajes (0-100) y encontrar las habilidades más fuertes
@@ -1096,13 +1088,17 @@ function calculateResults() {
     
     // 4. Guardar resultado final con todos los campos que el backend espera
     window.finalQuizResult = {
-        // ✅ CAMPOS REQUERIDOS POR EL BACKEND (RESUELVE 422)
-        answers: detailedAnswers,                     // Campo 'answers'
-        softSkills: finalScores,                      // Campo 'softSkills'
-        date: new Date().toISOString().split('T')[0], // Campo 'date' (YYYY-MM-DD)
+        // ✅ CORRECCIÓN 1: Usamos userAnswers (el diccionario) para 'answers'
+        answers: userAnswers,                         
         
-        // Otros campos de resumen
-        profileName: userProfile.name,
+        // ✅ CORRECCIÓN 2: Se mantiene 'softSkills'
+        softSkills: finalScores,                      
+        
+        // ✅ CORRECCIÓN 3: Se añade el campo 'profile' (String)
+        profile: userProfile.name,                    
+        
+        // Otros campos (date ya no dio error, se asume que está bien)
+        date: new Date().toISOString().split('T')[0], 
         profileDescription: userProfile.description,
     };
 
@@ -1275,6 +1271,7 @@ async function saveResultsToAPI() {
     </script>
   </body>
 </html>
+
 
 
 
