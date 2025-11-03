@@ -440,7 +440,7 @@
           class="cta-btn bg-red-600 hover:bg-red-700 mt-6 text-white"
           onclick="closeAlertModal()"
         >
-          ACEPTAR
+          ACECEPTAR
         </button>
       </div>
     </div>
@@ -1120,7 +1120,7 @@
         }
       }
 
-      // --- GUARDAR RESULTADOS (VERSIÓN CORREGIDA Y ROBUSTA) ---
+      // --- GUARDAR RESULTADOS (CORRECCIÓN DE RUTA A /api/resultados) ---
 
       /** Guarda los resultados en la API */
       async function saveResultsToAPI() {
@@ -1138,8 +1138,8 @@
         saveResultBtn.textContent = 'Guardando...';
 
         try {
-            // LÍNEA CORREGIDA: Se usa la ruta directa '/resultados' para resolver el error 404.
-            const res = await fetch(`${API_URL}/resultados`, { 
+            // LÍNEA CORREGIDA: Revertimos a '/api/resultados' ya que '/resultados' causó 404.
+            const res = await fetch(`${API_URL}/api/resultados`, { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1161,7 +1161,7 @@
                 
                 // Diagnóstico basado en el código de estado HTTP
                 if (res.status === 404) {
-                    errorMessage = '🚨 ERROR 404 (RUTA NO ENCONTRADA): El API de Render no tiene el endpoint "/resultados" configurado. Revisa tu backend.';
+                    errorMessage = '🚨 ERROR 404 (RUTA INCORRECTA): La ruta "/api/resultados" no es la correcta. ¡Debes revisar el código de tu FastAPI para ver la ruta exacta!';
                 } else if (res.status === 401 || res.status === 403) {
                     errorMessage = 'Tu sesión ha expirado o no estás autorizado (Token inválido). Por favor, vuelve a Iniciar Sesión.';
                 } else if (res.status === 400) {
