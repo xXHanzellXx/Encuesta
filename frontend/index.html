@@ -261,219 +261,222 @@ HTML
 
     <script>
         // Configuración de la URL de tu API
-        const API_URL = "https://encuestaa.onrender.com"; 
+const API_URL = "https://encuestaa.onrender.com"; 
 
-        // --- LÓGICA DEL MODAL (Reemplazo de alert) ---
-        const modal = document.getElementById("messageModal");
-        const modalCloseBtn = document.getElementById("modalCloseBtn");
-        const modalTitle = document.getElementById("modalTitle");
-        const modalMessage = document.getElementById("modalMessage");
-        const modalIcon = document.getElementById("modalIcon");
-        const modalContent = modal.querySelector('div');
+// --- LÓGICA DEL MODAL (Reemplazo de alert) ---
+const modal = document.getElementById("messageModal");
+const modalCloseBtn = document.getElementById("modalCloseBtn");
+const modalTitle = document.getElementById("modalTitle");
+const modalMessage = document.getElementById("modalMessage");
+const modalIcon = document.getElementById("modalIcon");
+const modalContent = modal.querySelector('div');
 
-        modalCloseBtn.onclick = () => hideMessage();
-        
-        function showMessage(title, message, isSuccess = true) {
-            // Configurar el estilo del modal
-            const iconHTML = isSuccess 
-                ? '<i data-lucide="check-circle" class="text-green-600"></i>' 
-                : '<i data-lucide="x-circle" class="text-red-600"></i>';
-            const iconBg = isSuccess ? 'bg-green-100' : 'bg-red-100';
+// Obtener los botones para deshabilitarlos
+const registerBtn = document.getElementById("registerBtn");
+const loginBtn = document.getElementById("loginBtn");
 
-            modalIcon.innerHTML = iconHTML;
-            modalIcon.className = `w-8 h-8 rounded-full flex items-center justify-center mr-3 ${iconBg}`;
-            modalTitle.textContent = title;
-            modalMessage.textContent = message;
+modalCloseBtn.onclick = () => hideMessage();
+ 
+function showMessage(title, message, isSuccess = true) {
+    // Configurar el estilo del modal
+    const iconHTML = isSuccess 
+        ? '<i data-lucide="check-circle" class="text-green-600"></i>' 
+        : '<i data-lucide="x-circle" class="text-red-600"></i>';
+    const iconBg = isSuccess ? 'bg-green-100' : 'bg-red-100';
 
-            // Mostrar el modal con transición
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.add('opacity-100');
-                modalContent.classList.remove('scale-90');
-            }, 10);
+    modalIcon.innerHTML = iconHTML;
+    modalIcon.className = `w-8 h-8 rounded-full flex items-center justify-center mr-3 ${iconBg}`;
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+
+    // Mostrar el modal con transición
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.classList.add('opacity-100');
+        modalContent.classList.remove('scale-90');
+    }, 10);
+    
+    // Re-renderizar los iconos de lucide
+    lucide.createIcons();
+}
+
+function hideMessage() {
+    modal.classList.remove('opacity-100');
+    modalContent.classList.add('scale-90');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+}
+ 
+// --- LÓGICA DE VALIDACIÓN ---
+
+function isValidEmail(email) {
+    // Regex básico para validar el formato de correo
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+function getPasswordSuggestion(password) {
+    let suggestions = [];
+    if (password.length < 8) {
+        suggestions.push("Debe tener al menos 8 caracteres.");
+    }
+    if (!/[A-Z]/.test(password)) {
+        suggestions.push("Incluye al menos una letra mayúscula.");
+    }
+    if (!/[a-z]/.test(password)) {
+        suggestions.push("Incluye al menos una letra minúscula.");
+    }
+    if (!/\d/.test(password)) {
+        suggestions.push("Incluye al menos un número.");
+    }
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+        suggestions.push("Incluye al menos un símbolo (!@#$, etc.).");
+    }
+    return suggestions;
+}
+
+function isStrongPassword(password) {
+    const suggestions = getPasswordSuggestion(password);
+    return suggestions.length === 0;
+}
+
+// --- MANEJO DE VISTAS ---
+document.getElementById("toRegister").onclick = () => {
+    document.getElementById("loginForm").style.display = "none";
+    document.getElementById("registerForm").style.display = "block";
+};
+document.getElementById("toLogin").onclick = () => {
+    document.getElementById("registerForm").style.display = "none";
+    document.getElementById("loginForm").style.display = "block";
+};
+
+// --- HANDLERS PRINCIPALES DE FORMULARIO ---
+
+// ---- Registro Handler (CON CORRECCIÓN DE DOBLE ENVÍO Y MANEJO DE UNICIDAD) ----
+async function handleRegister() {
+    const name = document.getElementById("regName").value;
+    const email = document.getElementById("regEmail").value.trim();
+    const password = document.getElementById("regPassword").value;
+    const emailTip = document.getElementById("emailValidationTip");
+    const passwordTip = document.getElementById("passwordValidationTip");
+
+    // 1. Validaciones de formato (cliente)
+    if (!isValidEmail(email)) {
+        emailTip.classList.remove("hidden");
+        return;
+    } else {
+        emailTip.classList.add("hidden");
+    }
+
+    if (!isStrongPassword(password)) {
+        const suggestions = getPasswordSuggestion(password);
+        passwordTip.innerHTML = `⚠️ Contraseña débil. Sugerencias:<ul>${suggestions.map(s => `<li>${s}</li>`).join('')}</ul>`;
+        passwordTip.classList.remove("hidden");
+        return;
+    } else {
+        passwordTip.classList.add("hidden");
+    }
+
+    // --- Deshabilitar el botón para prevenir doble envío ---
+    registerBtn.disabled = true;
+    registerBtn.textContent = 'Registrando...';
+
+    // 2. Llamada a la API
+    try {
+        const res = await fetch(`${API_URL}/api/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+            showMessage("Registro Exitoso", "¡Tu cuenta ha sido creada! Por favor, inicia sesión.", true);
+            // Cambiar a la vista de login automáticamente
+            document.getElementById("toLogin").click();
+        } else {
+            // --- Manejo de error de duplicidad ---
+            let errorMessage = data.detail || "Error desconocido.";
             
-            // Re-renderizar los iconos de lucide
-            lucide.createIcons();
-        }
+            if (typeof errorMessage === 'string') {
+                if (errorMessage.includes("Email already registered")) {
+                    errorMessage = "El correo electrónico ya está registrado. Intenta iniciar sesión.";
+                } else if (errorMessage.includes("Username already taken")) {
+                    errorMessage = "El nombre de usuario ya está en uso. Elige otro.";
+                }
+            }
 
-        function hideMessage() {
-            modal.classList.remove('opacity-100');
-            modalContent.classList.add('scale-90');
+            showMessage("Error al Registrar", errorMessage, false);
+        }
+    } catch (error) {
+        showMessage("Error de Conexión", "No se pudo conectar con la API. Verifica la URL de Render.", false);
+    } finally {
+        // --- Volver a habilitar el botón ---
+        registerBtn.disabled = false;
+        registerBtn.textContent = 'Registrarse';
+    }
+}
+    
+// ---- Login Handler (CON CORRECCIÓN DE DOBLE ENVÍO) ----
+async function handleLogin() {
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    // --- Deshabilitar el botón para prevenir doble envío ---
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Iniciando...';
+
+    try {
+        const res = await fetch(`${API_URL}/api/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            // Nota: Se recomienda Firebase/Firestore para persistencia
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("userName", data.name);
+            showMessage("Inicio Exitoso", `¡Bienvenido, ${data.name}! Redirigiendo...`, true);
+            
+            // Pequeño retardo para que el usuario vea el mensaje
             setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
+                window.location.href = "home.html";
+            }, 1000);
+
+        } else {
+            showMessage("Error de Acceso", `${data.detail || "Email o contraseña incorrectos."}`, false);
         }
-        
-        // --- LÓGICA DE VALIDACIÓN ---
-
-        function isValidEmail(email) {
-            // Regex básico para validar el formato de correo
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-
-        function getPasswordSuggestion(password) {
-            let suggestions = [];
-            if (password.length < 8) {
-                suggestions.push("Debe tener al menos 8 caracteres.");
-            }
-            if (!/[A-Z]/.test(password)) {
-                suggestions.push("Incluye al menos una letra mayúscula.");
-            }
-            if (!/[a-z]/.test(password)) {
-                suggestions.push("Incluye al menos una letra minúscula.");
-            }
-            if (!/\d/.test(password)) {
-                suggestions.push("Incluye al menos un número.");
-            }
-            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-                suggestions.push("Incluye al menos un símbolo (!@#$, etc.).");
-            }
-            return suggestions;
-        }
-
-        function isStrongPassword(password) {
-            const suggestions = getPasswordSuggestion(password);
-            return suggestions.length === 0;
-        }
-
-        // --- MANEJO DE VISTAS ---
-        document.getElementById("toRegister").onclick = () => {
-            document.getElementById("loginForm").style.display = "none";
-            document.getElementById("registerForm").style.display = "block";
-        };
-        document.getElementById("toLogin").onclick = () => {
-            document.getElementById("registerForm").style.display = "none";
-            document.getElementById("loginForm").style.display = "block";
-        };
-
-        // --- HANDLERS PRINCIPALES DE FORMULARIO ---
-        // Obtener los botones para deshabilitarlos
-        const registerBtn = document.getElementById("registerBtn");
-        const loginBtn = document.getElementById("loginBtn");
-
-        // ---- Registro Handler (CON CORRECCIONES) ----
-        async function handleRegister() {
-            const name = document.getElementById("regName").value;
-            const email = document.getElementById("regEmail").value.trim();
-            const password = document.getElementById("regPassword").value;
-            const emailTip = document.getElementById("emailValidationTip");
-            const passwordTip = document.getElementById("passwordValidationTip");
-
-            // 1. Validar Email
-            if (!isValidEmail(email)) {
-                emailTip.classList.remove("hidden");
-                return;
-            } else {
-                emailTip.classList.add("hidden");
-            }
-
-            // 2. Validar Contraseña Segura
-            if (!isStrongPassword(password)) {
-                const suggestions = getPasswordSuggestion(password);
-                passwordTip.innerHTML = `⚠️ Contraseña débil. ⚠️ Sugerencias:<ul>${suggestions.map(s => `<li>${s}</li>`).join('')}</ul>`;
-                passwordTip.classList.remove("hidden");
-                return;
-            } else {
-                passwordTip.classList.add("hidden");
-            }
-
-            // CORRECCIÓN 1: Deshabilitar el botón para prevenir doble envío
-            registerBtn.disabled = true;
-            registerBtn.textContent = 'Registrando...';
-
-            // 3. Llamada a la API
-            try {
-                const res = await fetch(`${API_URL}/api/register`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, email, password }),
-                });
-
-                const data = await res.json();
-                if (res.ok) {
-                    showMessage("Registro Exitoso", "¡Tu cuenta ha sido creada! Por favor, inicia sesión.", true);
-                    // Cambiar a la vista de login automáticamente
-                    document.getElementById("toLogin").click();
-                } else {
-                    // CORRECCIÓN 2: Manejo de error de duplicidad (asumiendo que el backend envía un error específico)
-                    let errorMessage = data.detail || "Error desconocido.";
-            
-                    if (typeof errorMessage === 'string') {
-                        if (errorMessage.includes("Email already registered")) {
-                            errorMessage = "El correo electrónico ya está registrado. Intenta iniciar sesión.";
-                        } else if (errorMessage.includes("Username already taken")) {
-                            errorMessage = "El nombre de usuario ya está en uso. Elige otro.";
-                        }
-                    }
-                    showMessage("Error al Registrar", errorMessage, false);
-                }
-            } catch (error) {
-                showMessage("Error de Conexión", "No se pudo conectar con la API. Verifica la URL de Render.", false);
-            } finally {
-                // CORRECCIÓN 1: Volver a habilitar el botón
-                registerBtn.disabled = false;
-                registerBtn.textContent = 'Registrarse';
-            }
-        }
-        
-        // ---- Login Handler (CON CORRECCIÓN DE DOBLE ENVÍO) ----
-        async function handleLogin() {
-            const email = document.getElementById("loginEmail").value;
-            const password = document.getElementById("loginPassword").value;
-
-            // Deshabilitar el botón para prevenir doble envío
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Iniciando...';
-
-            try {
-                const res = await fetch(`${API_URL}/api/login`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("userName", data.name);
-                    showMessage("Inicio Exitoso", `¡Bienvenido, ${data.name}! Redirigiendo...`, true);
-                    
-                    // Pequeño retardo para que el usuario vea el mensaje
-                    setTimeout(() => {
-                        window.location.href = "home.html";
-                    }, 1000);
-
-                } else {
-                    showMessage("Error de Acceso", `${data.detail || "Email o contraseña incorrectos."}`, false);
-                }
-            } catch (error) {
-                showMessage("Error de Conexión", "No se pudo conectar con la API. Verifica la URL de Render.", false);
-            } finally {
-                // Volver a habilitar el botón
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Iniciar Sesión';
-            }
-        }
-        
-        // --- ASIGNACIÓN DE HANDLERS Y SUBMIT POR ENTER ---
-        
-        // 1. Asignar handlers al evento submit de los formularios
-        document.getElementById("registerForm").addEventListener('submit', function(e) {
-            e.preventDefault(); // Detiene el envío de formulario nativo
-            handleRegister();
-        });
-        
-        document.getElementById("loginForm").addEventListener('submit', function(e) {
-            e.preventDefault(); // Detiene el envío de formulario nativo
-            handleLogin();
-        });
-        
-        // 2. Los listeners de click originales ya no son necesarios
-        // document.getElementById("registerBtn").onclick = () => { /* No hacer nada aquí */ };
-        // document.getElementById("loginBtn").onclick = () => { /* No hacer nada aquí */ };
+    } catch (error) {
+        showMessage("Error de Conexión", "No se pudo conectar con la API. Verifica la URL de Render.", false);
+    } finally {
+        // --- Volver a habilitar el botón ---
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Iniciar Sesión';
+    }
+}
+    
+// --- ASIGNACIÓN DE HANDLERS Y SUBMIT POR ENTER (¡FINAL!) ---
+    
+// 1. Asignar handlers al evento submit de los formularios
+document.getElementById("registerForm").addEventListener('submit', function(e) {
+    e.preventDefault(); // Detiene el envío de formulario nativo
+    handleRegister();
+});
+    
+document.getElementById("loginForm").addEventListener('submit', function(e) {
+    e.preventDefault(); // Detiene el envío de formulario nativo
+    handleLogin();
+});
+    
+// 2. Eliminar listeners de click innecesarios (se usa el submit del formulario)
+document.getElementById("registerBtn").onclick = () => { /* No hacer nada aquí */ };
+document.getElementById("loginBtn").onclick = () => { /* No hacer nada aquí */ };
     </script>
 </body>
 </html>
+
 
