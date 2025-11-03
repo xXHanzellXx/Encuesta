@@ -1122,7 +1122,7 @@
 
       // --- GUARDAR RESULTADOS (CORRECCIÓN DE RUTA A /api/resultados) ---
 
-      /** Guarda los resultados en la API */
+      /** Guarda los resultados en la API con manejo robusto de errores de FastAPI */
 async function saveResultsToAPI() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -1138,7 +1138,7 @@ async function saveResultsToAPI() {
     saveResultBtn.textContent = 'Guardando...';
 
     try {
-        // ✅ CORRECCIÓN DEFINITIVA: Usando la ruta correcta del backend: /api/quiz
+        // 1. Usa la ruta correcta: /api/quiz
         const res = await fetch(`${API_URL}/api/quiz`, { 
             method: 'POST',
             headers: {
@@ -1148,27 +1148,36 @@ async function saveResultsToAPI() {
             body: JSON.stringify(window.finalQuizResult),
         });
         
-        saveResultBtn.textContent = 'Guardar Resultado'; // Restablecer texto
+        saveResultBtn.textContent = 'Guardar Resultado';
         
         if (res.ok) {
-            // ÉXITO: Mensaje corregido y proceso completado.
             showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil. ✅', false);
-            saveResultBtn.disabled = true; // Deshabilitar después de guardar
+            saveResultBtn.disabled = true; 
         } else {
-            // Manejo de errores 4xx y 5xx.
-            const data = await res.json().catch(() => ({ detail: `Error HTTP ${res.status}. Respuesta del servidor no legible.` }));
-            let errorMessage = data.detail || 'Ocurrió un error desconocido en el servidor.';
-            
-            // Diagnóstico basado en el código de estado HTTP
+            // 2. Manejo de error: Intenta obtener el JSON, si falla, usa un objeto vacío
+            const data = await res.json().catch(() => ({}));
+            let errorMessage = '';
+
             if (res.status === 404) {
-                // Este error ya NO debería salir si el backend está actualizado
-                errorMessage = '🚨 ERROR 404 (RUTA INCORRECTA): ¡Hay una discrepancia en la ruta del API! Revisa main.py y quiz.html.';
+                errorMessage = '🚨 ERROR 404: La ruta /api/quiz no fue encontrada. Revisa tu backend de Render.';
             } else if (res.status === 401 || res.status === 403) {
                 errorMessage = 'Tu sesión ha expirado o no estás autorizado (Token inválido). Por favor, vuelve a Iniciar Sesión.';
-            } else if (res.status === 400) {
-                errorMessage = 'Datos inválidos. Asegúrate de que el test se completó correctamente.';
-            } else if (res.status >= 500) {
-                errorMessage = 'Error interno del servidor (Render). El servicio podría estar inactivo o fallando. ¡Inténtalo de nuevo!';
+            } else if (data.detail) {
+                if (Array.isArray(data.detail)) {
+                    // 🚨 Manejo de Error 422 (Validación Pydantic)
+                    errorMessage = '🚨 Error de Validación de Datos (422):\n\n';
+                    data.detail.forEach(err => {
+                        const field = err.loc && err.loc.length > 1 ? err.loc[1] : 'Datos';
+                        errorMessage += `• El campo "${field}" es inválido: ${err.msg}\n`;
+                    });
+                } else if (typeof data.detail === 'string') {
+                    // Manejo de Error 400/401 estándar
+                    errorMessage = data.detail;
+                } else {
+                    errorMessage = `Error ${res.status}: Respuesta del servidor no legible.`;
+                }
+            } else {
+                errorMessage = `Error HTTP ${res.status}. Vuelve a intentarlo.`;
             }
 
             showAlert('❌ Error al Guardar', errorMessage, true);
@@ -1178,8 +1187,7 @@ async function saveResultsToAPI() {
     } catch (error) {
         saveResultBtn.textContent = 'Guardar Resultado';
         saveResultBtn.disabled = false;
-        // Error de conexión de red (no se pudo contactar al servidor)
-        showAlert('🚨 Error de Conexión', 'No se pudo contactar con la API (Render inactivo o URL incorrecta). Inténtalo de nuevo o revisa el estado del servidor.', true);
+        showAlert('🚨 Error de Conexión', 'No se pudo contactar con la API (Problema de red o servidor inactivo).', true);
     }
 }
       
@@ -1249,4 +1257,5 @@ async function saveResultsToAPI() {
     </script>
   </body>
 </html>
+
 
