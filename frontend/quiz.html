@@ -1146,53 +1146,66 @@ function calculateResults() {
 /** Guarda los resultados en la API con manejo robusto de errores de FastAPI */
 async function saveResultsToAPI() {
     const token = localStorage.getItem('token');
-    // ... (validaciones de token y finalQuizResult)
+    if (!token) {
+        showAlert('Acceso Denegado', 'Debes iniciar sesión para guardar tus resultados.', true);
+        return;
+    }
+    if (!window.finalQuizResult) {
+        showAlert('Error', 'No hay resultados que guardar.', true);
+        return;
+    }
 
+    // 1. Iniciar estado de carga
     saveResultBtn.disabled = true;
     saveResultBtn.textContent = 'Guardando...';
 
     try {
-        // 1. Usa la ruta correcta: /api/quiz
+        // Intentar la petición a la ruta corregida
         const res = await fetch(`${API_URL}/api/quiz`, { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify(window.finalQuizResult), // YA CORREGIDO EN calculateResults
+            body: JSON.stringify(window.finalQuizResult),
         });
         
+        // 2. Resetear el texto del botón ANTES de manejar la respuesta
         saveResultBtn.textContent = 'Guardar Resultado';
         
         if (res.ok) {
+            // Éxito
             showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil. ✅', false);
             saveResultBtn.disabled = true; 
         } else {
+            // Error de la API (400, 401, 422, etc.)
             const data = await res.json().catch(() => ({}));
             let errorMessage = '';
 
-            // 🚨 Esta lógica diagnostica el 422
             if (res.status === 404) {
-                errorMessage = '🚨 ERROR 404: La ruta /api/quiz no fue encontrada. Revisa tu backend de Render.';
+                errorMessage = '🚨 ERROR 404: La ruta /api/quiz no fue encontrada.';
             } else if (res.status === 401 || res.status === 403) {
-                errorMessage = 'Tu sesión ha expirado o no estás autorizado (Token inválido). Por favor, vuelve a Iniciar Sesión.';
+                errorMessage = 'Tu sesión ha expirado o no estás autorizado.';
             } else if (data.detail && Array.isArray(data.detail)) {
-                 // Diagnóstico de error 422
-                 errorMessage = '🚨 Error de Validación de Datos (422):\n\n';
-                 data.detail.forEach(err => {
-                     const field = err.loc && err.loc.length > 1 ? err.loc[1] : 'Datos';
-                     errorMessage += `• El campo "${field}" es inválido: ${err.msg}\n`;
-                 });
+                // Diagnóstico de error 422
+                errorMessage = '🚨 Error de Validación de Datos (422):\n\n';
+                data.detail.forEach(err => {
+                    const field = err.loc && err.loc.length > 1 ? err.loc[1] : 'Datos';
+                    errorMessage += `• El campo "${field}" es inválido: ${err.msg}\n`;
+                });
             } else {
-                 errorMessage = data.detail || `Error HTTP ${res.status}. Vuelve a intentarlo.`;
+                errorMessage = data.detail || `Error HTTP ${res.status}. Vuelve a intentarlo.`;
             }
 
             showAlert('❌ Error al Guardar', errorMessage, true);
-            saveResultBtn.disabled = false;
+            saveResultBtn.disabled = false; // Re-habilitar para reintentar
         }
 
     } catch (error) {
-        // ... (Manejo de error de conexión)
+        // ⚠️ CORRECCIÓN CLAVE: Este bloque se ejecuta si hay un fallo de red/promesa (se cuelga)
+        saveResultBtn.textContent = 'Guardar Resultado';
+        saveResultBtn.disabled = false;
+        showAlert('🚨 Error de Conexión', 'No se pudo contactar con la API (Problema de red, servidor inactivo o timeout).', true);
     }
 }
       
@@ -1262,6 +1275,7 @@ async function saveResultsToAPI() {
     </script>
   </body>
 </html>
+
 
 
 
