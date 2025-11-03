@@ -288,7 +288,7 @@
       .modal-content {
         background-color: var(--color-card-dark);
         padding: 1.5rem;
-        border-radius: 1rem;
+        border-radius: 1.0rem;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         max-width: 380px;
         text-align: center;
@@ -911,15 +911,11 @@
       }
       window.closeAlertModal = closeAlertModal; // Hacer accesible desde el onclick del HTML
 
-      // Redirecciones (asumiendo que existen home.html)
-      backBtn.onclick = () => (window.location.href = 'home.html');
-      goHomeFromQuizBtn.onclick = () => (window.location.href = 'home.html');
-
       // --- RENDERIZADO ---
 
       /** Renderiza la pregunta actual en la interfaz. */
       function renderQuestion(index) {
-        loadingEl.style.display = 'none'; // Oculta el mensaje de carga
+        // CORRECCIÓN: Se eliminó el ocultar el loading aquí, se hace al inicio del DOMContentLoaded.
         questionsContainer.innerHTML = '';
         const questionData = QUIZ_DATA[index];
         const questionNumber = index + 1;
@@ -1018,26 +1014,7 @@
         }
       }
 
-      // --- NAVEGACIÓN ---
-
-      prevBtn.addEventListener('click', () => {
-        if (currentQuestionIndex > 0) {
-          currentQuestionIndex--;
-          renderQuestion(currentQuestionIndex);
-        }
-      });
-
-      nextBtn.addEventListener('click', () => {
-        const questionId = `q${currentQuestionIndex + 1}`;
-        if (userAnswers[questionId]) {
-          currentQuestionIndex++;
-          renderQuestion(currentQuestionIndex);
-        }
-      });
-
       // --- CÁLCULO DE RESULTADOS ---
-
-      submitBtn.addEventListener('click', calculateResults);
 
       /** Determina el color de la barra de habilidad según el puntaje (0-100). */
       function getBarColor(score) {
@@ -1145,8 +1122,6 @@
       // --- GUARDAR RESULTADOS ---
 
       /** Guarda los resultados en la API */
-      saveResultBtn.addEventListener('click', saveResultsToAPI);
-
       async function saveResultsToAPI() {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -1174,29 +1149,59 @@
             saveResultBtn.textContent = 'Guardar Resultado'; // Restablecer texto
             
             if (res.ok) {
-                showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil.' ✅, false);
+                showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil.', false);
                 saveResultBtn.disabled = true; // Deshabilitar después de guardar
             } else {
                 const data = await res.json();
-                showAlert('❌ Error al Guardar ❌', data.detail || 'Ocurrió un error al contactar con el servidor.', true);
+                showAlert('❌ Error al Guardar ❌', data.detail || 'Ocurrió un error al contactar con el servidor. Intenta nuevamente.', true);
                 saveResultBtn.disabled = false; // Permitir reintentar
             }
 
         } catch (error) {
             saveResultBtn.textContent = 'Guardar Resultado';
             saveResultBtn.disabled = false;
-            showAlert('🚨 Error de Conexión', 'No se pudo conectar con la API.', true);
+            showAlert('🚨 Error de Conexión', 'No se pudo conectar con la API. Verifica la URL de Render.', true);
         }
       }
       
-      // --- INICIALIZACIÓN Y ANIMACIÓN ---
+      // --- INICIALIZACIÓN Y ANIMACIÓN (Asegura que el DOM esté cargado para los listeners) ---
 
       document.addEventListener('DOMContentLoaded', () => {
-        // Inicializar la primera pregunta
+        
+        // --- ASIGNACIÓN DE EVENT LISTENERS (CORRECCIÓN CLAVE) ---
+        // Se reasignan todos los listeners dentro de DOMContentLoaded para garantizar que los elementos existen.
+        
+        // 1. Redirecciones (Botón "Volver" arreglado)
+        backBtn.addEventListener('click', () => (window.location.href = 'home.html'));
+        goHomeFromQuizBtn.addEventListener('click', () => (window.location.href = 'home.html'));
+
+        // 2. Navegación del quiz
+        prevBtn.addEventListener('click', () => {
+          if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            renderQuestion(currentQuestionIndex);
+          }
+        });
+
+        nextBtn.addEventListener('click', () => {
+          const questionId = `q${currentQuestionIndex + 1}`;
+          if (userAnswers[questionId]) {
+            currentQuestionIndex++;
+            renderQuestion(currentQuestionIndex);
+          }
+        });
+
+        // 3. Finalizar y Guardar
+        submitBtn.addEventListener('click', calculateResults);
+        saveResultBtn.addEventListener('click', saveResultsToAPI);
+
+
+        // --- INICIALIZACIÓN (Carga Rápida) ---
+        // CORRECCIÓN: Ocultar el mensaje de carga y renderizar la primera pregunta inmediatamente.
+        loadingEl.style.display = 'none'; 
         renderQuestion(currentQuestionIndex);
         
         // --- Lógica de la Tarjeta 3D (Animación) ---
-        // Se pone aquí para asegurar que quizCard ya existe en el DOM
         const quizCardEl = document.querySelector('.quiz-card');
 
         if(quizCardEl) {
@@ -1210,12 +1215,9 @@
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
 
-                // Rotación inversa: si el ratón va a la derecha (X > centerX), el eje Y rota a la derecha (positivo)
-                // Rotación normal: si el ratón va abajo (Y > centerY), el eje X rota hacia abajo (negativo)
-                const rotateX = ((y - centerY) / centerY) * 5; // grados de inclinación vertical (se invierte en el transform)
-                const rotateY = ((x - centerX) / centerX) * 5; // grados de inclinación horizontal
+                const rotateX = ((y - centerY) / centerY) * 5; 
+                const rotateY = ((x - centerX) / centerX) * 5; 
                 
-                // Reducción de la rotación para hacerlo más sutil (de 10 a 5)
                 card.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
             });
 
@@ -1225,7 +1227,6 @@
             });
 
             quizCardEl.addEventListener('mouseenter', () => {
-                // Al entrar, deshabilitar la transición suave para que la rotación sea instantánea
                 quizCardEl.style.transition = 'none';
             });
         }
@@ -1233,5 +1234,3 @@
     </script>
   </body>
 </html>
-
-
