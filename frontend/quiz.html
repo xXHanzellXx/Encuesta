@@ -1138,7 +1138,8 @@
         saveResultBtn.textContent = 'Guardando...';
 
         try {
-            const res = await fetch(`${API_URL}/api/resultados`, {
+            // LÍNEA CORREGIDA: Se usa la ruta directa '/resultados' para resolver el error 404.
+            const res = await fetch(`${API_URL}/resultados`, { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1154,18 +1155,19 @@
                 showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil. ✅', false);
                 saveResultBtn.disabled = true; // Deshabilitar después de guardar
             } else {
-                // Manejo de errores de HTTP (4xx, 5xx)
-                // Intenta leer JSON, si falla, usa un mensaje por defecto.
+                // Manejo de errores 4xx y 5xx.
                 const data = await res.json().catch(() => ({ detail: `Error HTTP ${res.status}. Respuesta del servidor no legible.` }));
                 let errorMessage = data.detail || 'Ocurrió un error desconocido en el servidor.';
                 
-                // MEJORA: Diagnóstico basado en el código de estado HTTP
-                if (res.status === 401 || res.status === 403) {
+                // Diagnóstico basado en el código de estado HTTP
+                if (res.status === 404) {
+                    errorMessage = '🚨 ERROR 404 (RUTA NO ENCONTRADA): El API de Render no tiene el endpoint "/resultados" configurado. Revisa tu backend.';
+                } else if (res.status === 401 || res.status === 403) {
                     errorMessage = 'Tu sesión ha expirado o no estás autorizado (Token inválido). Por favor, vuelve a Iniciar Sesión.';
                 } else if (res.status === 400) {
                     errorMessage = 'Datos inválidos. Asegúrate de que el test se completó correctamente.';
                 } else if (res.status >= 500) {
-                    errorMessage = 'Error interno del servidor (Render). El servicio podría estar inactivo o fallando. Por favor, ¡inténtalo de nuevo!';
+                    errorMessage = 'Error interno del servidor (Render). El servicio podría estar inactivo o fallando. ¡Inténtalo de nuevo!';
                 }
 
                 showAlert('❌ Error al Guardar', errorMessage, true);
