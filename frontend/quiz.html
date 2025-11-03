@@ -1123,6 +1123,9 @@
       // --- GUARDAR RESULTADOS (CORRECCIÓN DE RUTA A /api/resultados) ---
 
       /** Guarda los resultados en la API con manejo robusto de errores de FastAPI */
+// --- GUARDAR RESULTADOS (CORRECCIÓN DE RUTA A /api/quiz) ---
+
+/** Guarda los resultados en la API con manejo robusto de errores de FastAPI */
 async function saveResultsToAPI() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -1257,5 +1260,6 @@ async function saveResultsToAPI() {
     </script>
   </body>
 </html>
+
 
 
