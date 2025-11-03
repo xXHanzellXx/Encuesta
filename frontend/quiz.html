@@ -1123,64 +1123,65 @@
       // --- GUARDAR RESULTADOS (CORRECCIÓN DE RUTA A /api/resultados) ---
 
       /** Guarda los resultados en la API */
-      async function saveResultsToAPI() {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            showAlert('Acceso Denegado', 'Debes iniciar sesión para guardar tus resultados.', true);
-            return;
-        }
-        if (!window.finalQuizResult) {
-            showAlert('Error', 'No hay resultados que guardar.', true);
-            return;
-        }
+async function saveResultsToAPI() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        showAlert('Acceso Denegado', 'Debes iniciar sesión para guardar tus resultados.', true);
+        return;
+    }
+    if (!window.finalQuizResult) {
+        showAlert('Error', 'No hay resultados que guardar.', true);
+        return;
+    }
 
-        saveResultBtn.disabled = true;
-        saveResultBtn.textContent = 'Guardando...';
+    saveResultBtn.disabled = true;
+    saveResultBtn.textContent = 'Guardando...';
 
-        try {
-            // LÍNEA CORREGIDA: Revertimos a '/api/resultados' ya que '/resultados' causó 404.
-            const res = await fetch(`${API_URL}/api/resultados`, { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify(window.finalQuizResult),
-            });
+    try {
+        // ✅ CORRECCIÓN DEFINITIVA: Usando la ruta correcta del backend: /api/quiz
+        const res = await fetch(`${API_URL}/api/quiz`, { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(window.finalQuizResult),
+        });
+        
+        saveResultBtn.textContent = 'Guardar Resultado'; // Restablecer texto
+        
+        if (res.ok) {
+            // ÉXITO: Mensaje corregido y proceso completado.
+            showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil. ✅', false);
+            saveResultBtn.disabled = true; // Deshabilitar después de guardar
+        } else {
+            // Manejo de errores 4xx y 5xx.
+            const data = await res.json().catch(() => ({ detail: `Error HTTP ${res.status}. Respuesta del servidor no legible.` }));
+            let errorMessage = data.detail || 'Ocurrió un error desconocido en el servidor.';
             
-            saveResultBtn.textContent = 'Guardar Resultado'; // Restablecer texto
-            
-            if (res.ok) {
-                // ÉXITO: Mensaje corregido y proceso completado.
-                showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil. ✅', false);
-                saveResultBtn.disabled = true; // Deshabilitar después de guardar
-            } else {
-                // Manejo de errores 4xx y 5xx.
-                const data = await res.json().catch(() => ({ detail: `Error HTTP ${res.status}. Respuesta del servidor no legible.` }));
-                let errorMessage = data.detail || 'Ocurrió un error desconocido en el servidor.';
-                
-                // Diagnóstico basado en el código de estado HTTP
-                if (res.status === 404) {
-                    errorMessage = '🚨 ERROR 404 (RUTA INCORRECTA): La ruta "/api/resultados" no es la correcta. ¡Debes revisar el código de tu FastAPI para ver la ruta exacta!';
-                } else if (res.status === 401 || res.status === 403) {
-                    errorMessage = 'Tu sesión ha expirado o no estás autorizado (Token inválido). Por favor, vuelve a Iniciar Sesión.';
-                } else if (res.status === 400) {
-                    errorMessage = 'Datos inválidos. Asegúrate de que el test se completó correctamente.';
-                } else if (res.status >= 500) {
-                    errorMessage = 'Error interno del servidor (Render). El servicio podría estar inactivo o fallando. ¡Inténtalo de nuevo!';
-                }
-
-                showAlert('❌ Error al Guardar', errorMessage, true);
-                saveResultBtn.disabled = false; // Permitir reintentar
+            // Diagnóstico basado en el código de estado HTTP
+            if (res.status === 404) {
+                // Este error ya NO debería salir si el backend está actualizado
+                errorMessage = '🚨 ERROR 404 (RUTA INCORRECTA): ¡Hay una discrepancia en la ruta del API! Revisa main.py y quiz.html.';
+            } else if (res.status === 401 || res.status === 403) {
+                errorMessage = 'Tu sesión ha expirado o no estás autorizado (Token inválido). Por favor, vuelve a Iniciar Sesión.';
+            } else if (res.status === 400) {
+                errorMessage = 'Datos inválidos. Asegúrate de que el test se completó correctamente.';
+            } else if (res.status >= 500) {
+                errorMessage = 'Error interno del servidor (Render). El servicio podría estar inactivo o fallando. ¡Inténtalo de nuevo!';
             }
 
-        } catch (error) {
-            saveResultBtn.textContent = 'Guardar Resultado';
-            saveResultBtn.disabled = false;
-            // Error de conexión de red (no se pudo contactar al servidor)
-            showAlert('🚨 Error de Conexión', 'No se pudo contactar con la API (Render inactivo o URL incorrecta). Inténtalo de nuevo o revisa el estado del servidor.', true);
+            showAlert('❌ Error al Guardar', errorMessage, true);
+            saveResultBtn.disabled = false; // Permitir reintentar
         }
-      }
+
+    } catch (error) {
+        saveResultBtn.textContent = 'Guardar Resultado';
+        saveResultBtn.disabled = false;
+        // Error de conexión de red (no se pudo contactar al servidor)
+        showAlert('🚨 Error de Conexión', 'No se pudo contactar con la API (Render inactivo o URL incorrecta). Inténtalo de nuevo o revisa el estado del servidor.', true);
+    }
+}
       
       // --- INICIALIZACIÓN Y EVENT LISTENERS ---
 
@@ -1248,3 +1249,4 @@
     </script>
   </body>
 </html>
+
