@@ -440,7 +440,7 @@
           class="cta-btn bg-red-600 hover:bg-red-700 mt-6 text-white"
           onclick="closeAlertModal()"
         >
-          ACEPTAR
+          ACECEPTAR
         </button>
       </div>
     </div>
@@ -912,9 +912,8 @@
       window.closeAlertModal = closeAlertModal; // Hacer accesible desde el onclick del HTML
 
       // Redirecciones (asumiendo que existen home.html)
-      // Se moverán al DOMContentLoaded para asegurar que los elementos existen
-      // backBtn.onclick = () => (window.location.href = 'home.html');
-      // goHomeFromQuizBtn.onclick = () => (window.location.href = 'home.html');
+      backBtn.onclick = () => (window.location.href = 'home.html');
+      goHomeFromQuizBtn.onclick = () => (window.location.href = 'home.html');
 
       // --- RENDERIZADO ---
 
@@ -1019,7 +1018,26 @@
         }
       }
 
+      // --- NAVEGACIÓN ---
+
+      prevBtn.addEventListener('click', () => {
+        if (currentQuestionIndex > 0) {
+          currentQuestionIndex--;
+          renderQuestion(currentQuestionIndex);
+        }
+      });
+
+      nextBtn.addEventListener('click', () => {
+        const questionId = `q${currentQuestionIndex + 1}`;
+        if (userAnswers[questionId]) {
+          currentQuestionIndex++;
+          renderQuestion(currentQuestionIndex);
+        }
+      });
+
       // --- CÁLCULO DE RESULTADOS ---
+
+      submitBtn.addEventListener('click', calculateResults);
 
       /** Determina el color de la barra de habilidad según el puntaje (0-100). */
       function getBarColor(score) {
@@ -1124,9 +1142,11 @@
         }
       }
 
-      // --- GUARDAR RESULTADOS (VERSIÓN CORREGIDA) ---
+      // --- GUARDAR RESULTADOS ---
 
       /** Guarda los resultados en la API */
+      saveResultBtn.addEventListener('click', saveResultsToAPI);
+
       async function saveResultsToAPI() {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -1154,69 +1174,30 @@
             saveResultBtn.textContent = 'Guardar Resultado'; // Restablecer texto
             
             if (res.ok) {
-                // CORRECCIÓN: Se eliminó el carácter extra '✅' que causaba un error de sintaxis en el código original.
-                showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil.', false);
+                // CORRECCIÓN DE SINTAXIS APLICADA AQUÍ:
+                showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil. ✅', false); 
                 saveResultBtn.disabled = true; // Deshabilitar después de guardar
             } else {
-                // CORRECCIÓN: Manejo de errores más robusto: intenta leer JSON, si falla, usa un mensaje genérico.
-                const data = await res.json().catch(() => ({ detail: `Error HTTP ${res.status}. Respuesta del servidor no legible.` }));
-                let errorMessage = data.detail || 'Ocurrió un error desconocido en el servidor.';
-                
-                // MEJORA: Mensajes específicos basados en el código de estado HTTP
-                if (res.status === 401 || res.status === 403) {
-                    errorMessage = 'Tu sesión ha expirado o no estás autorizado. Por favor, vuelve a Iniciar Sesión.';
-                } else if (res.status === 400) {
-                    errorMessage = 'Datos inválidos. Asegúrate de que el test se completó correctamente.';
-                } else if (res.status >= 500) {
-                    errorMessage = 'Error interno del servidor (Render). El servicio podría estar inactivo o fallando. Inténtalo más tarde.';
-                }
-
-                showAlert('❌ Error al Guardar', errorMessage, true);
+                const data = await res.json();
+                showAlert('❌ Error al Guardar ❌', data.detail || 'Ocurrió un error al contactar con el servidor.', true);
                 saveResultBtn.disabled = false; // Permitir reintentar
             }
 
         } catch (error) {
             saveResultBtn.textContent = 'Guardar Resultado';
             saveResultBtn.disabled = false;
-            // Error de conexión de red (no se pudo contactar al servidor)
-            showAlert('🚨 Error de Conexión', 'No se pudo conectar con la API. Verifica la URL de Render o tu conexión a internet.', true);
+            showAlert('🚨 Error de Conexión', 'No se pudo conectar con la API.', true);
         }
       }
       
-      // --- INICIALIZACIÓN Y EVENT LISTENERS ---
+      // --- INICIALIZACIÓN Y ANIMACIÓN ---
 
       document.addEventListener('DOMContentLoaded', () => {
         // Inicializar la primera pregunta
         renderQuestion(currentQuestionIndex);
         
-        // --- ASIGNACIÓN DE EVENT LISTENERS (Movidos a DOMContentLoaded) ---
-        
-        // 1. Redirecciones 
-        backBtn.addEventListener('click', () => (window.location.href = 'home.html'));
-        goHomeFromQuizBtn.addEventListener('click', () => (window.location.href = 'home.html'));
-
-        // 2. Navegación del quiz
-        prevBtn.addEventListener('click', () => {
-          if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            renderQuestion(currentQuestionIndex);
-          }
-        });
-
-        nextBtn.addEventListener('click', () => {
-          const questionId = `q${currentQuestionIndex + 1}`;
-          if (userAnswers[questionId]) {
-            currentQuestionIndex++;
-            renderQuestion(currentQuestionIndex);
-          }
-        });
-
-        // 3. Finalizar y Guardar
-        submitBtn.addEventListener('click', calculateResults);
-        saveResultBtn.addEventListener('click', saveResultsToAPI);
-
-        
         // --- Lógica de la Tarjeta 3D (Animación) ---
+        // Se pone aquí para asegurar que quizCard ya existe en el DOM
         const quizCardEl = document.querySelector('.quiz-card');
 
         if(quizCardEl) {
@@ -1230,9 +1211,12 @@
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
 
-                const rotateX = ((y - centerY) / centerY) * 5; 
-                const rotateY = ((x - centerX) / centerX) * 5; 
+                // Rotación inversa: si el ratón va a la derecha (X > centerX), el eje Y rota a la derecha (positivo)
+                // Rotación normal: si el ratón va abajo (Y > centerY), el eje X rota hacia abajo (negativo)
+                const rotateX = ((y - centerY) / centerY) * 5; // grados de inclinación vertical (se invierte en el transform)
+                const rotateY = ((x - centerX) / centerX) * 5; // grados de inclinación horizontal
                 
+                // Reducción de la rotación para hacerlo más sutil (de 10 a 5)
                 card.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
             });
 
@@ -1242,6 +1226,7 @@
             });
 
             quizCardEl.addEventListener('mouseenter', () => {
+                // Al entrar, deshabilitar la transición suave para que la rotación sea instantánea
                 quizCardEl.style.transition = 'none';
             });
         }
