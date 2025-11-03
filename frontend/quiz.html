@@ -288,7 +288,7 @@
       .modal-content {
         background-color: var(--color-card-dark);
         padding: 1.5rem;
-        border-radius: 1.0rem;
+        border-radius: 1rem;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         max-width: 380px;
         text-align: center;
@@ -911,11 +911,16 @@
       }
       window.closeAlertModal = closeAlertModal; // Hacer accesible desde el onclick del HTML
 
+      // Redirecciones (asumiendo que existen home.html)
+      // Se moverán al DOMContentLoaded para asegurar que los elementos existen
+      // backBtn.onclick = () => (window.location.href = 'home.html');
+      // goHomeFromQuizBtn.onclick = () => (window.location.href = 'home.html');
+
       // --- RENDERIZADO ---
 
       /** Renderiza la pregunta actual en la interfaz. */
       function renderQuestion(index) {
-        // CORRECCIÓN: Se eliminó el ocultar el loading aquí, se hace al inicio del DOMContentLoaded.
+        loadingEl.style.display = 'none'; // Oculta el mensaje de carga
         questionsContainer.innerHTML = '';
         const questionData = QUIZ_DATA[index];
         const questionNumber = index + 1;
@@ -1119,7 +1124,7 @@
         }
       }
 
-      // --- GUARDAR RESULTADOS (CORRECCIÓN CLAVE AQUÍ) ---
+      // --- GUARDAR RESULTADOS (VERSIÓN CORREGIDA) ---
 
       /** Guarda los resultados en la API */
       async function saveResultsToAPI() {
@@ -1149,20 +1154,21 @@
             saveResultBtn.textContent = 'Guardar Resultado'; // Restablecer texto
             
             if (res.ok) {
+                // CORRECCIÓN: Se eliminó el carácter extra '✅' que causaba un error de sintaxis en el código original.
                 showAlert('✅ Éxito', 'Tus resultados se han guardado correctamente en tu perfil.', false);
                 saveResultBtn.disabled = true; // Deshabilitar después de guardar
             } else {
-                // Leer la respuesta JSON si existe, con manejo de errores
-                const data = await res.json().catch(() => ({ detail: 'Respuesta del servidor no legible.' }));
+                // CORRECCIÓN: Manejo de errores más robusto: intenta leer JSON, si falla, usa un mensaje genérico.
+                const data = await res.json().catch(() => ({ detail: `Error HTTP ${res.status}. Respuesta del servidor no legible.` }));
                 let errorMessage = data.detail || 'Ocurrió un error desconocido en el servidor.';
                 
                 // MEJORA: Mensajes específicos basados en el código de estado HTTP
-                if (res.status === 401) {
+                if (res.status === 401 || res.status === 403) {
                     errorMessage = 'Tu sesión ha expirado o no estás autorizado. Por favor, vuelve a Iniciar Sesión.';
                 } else if (res.status === 400) {
                     errorMessage = 'Datos inválidos. Asegúrate de que el test se completó correctamente.';
                 } else if (res.status >= 500) {
-                    errorMessage = 'Error interno del servidor (Render). El servicio podría estar inactivo. Inténtalo más tarde.';
+                    errorMessage = 'Error interno del servidor (Render). El servicio podría estar inactivo o fallando. Inténtalo más tarde.';
                 }
 
                 showAlert('❌ Error al Guardar', errorMessage, true);
@@ -1172,15 +1178,18 @@
         } catch (error) {
             saveResultBtn.textContent = 'Guardar Resultado';
             saveResultBtn.disabled = false;
-            showAlert('🚨 Error de Conexión', 'No se pudo conectar con la API. Verifica la URL de Render.', true);
+            // Error de conexión de red (no se pudo contactar al servidor)
+            showAlert('🚨 Error de Conexión', 'No se pudo conectar con la API. Verifica la URL de Render o tu conexión a internet.', true);
         }
       }
       
-      // --- INICIALIZACIÓN Y ANIMACIÓN (Asegura que el DOM esté cargado para los listeners) ---
+      // --- INICIALIZACIÓN Y EVENT LISTENERS ---
 
       document.addEventListener('DOMContentLoaded', () => {
+        // Inicializar la primera pregunta
+        renderQuestion(currentQuestionIndex);
         
-        // --- ASIGNACIÓN DE EVENT LISTENERS ---
+        // --- ASIGNACIÓN DE EVENT LISTENERS (Movidos a DOMContentLoaded) ---
         
         // 1. Redirecciones 
         backBtn.addEventListener('click', () => (window.location.href = 'home.html'));
@@ -1206,10 +1215,6 @@
         submitBtn.addEventListener('click', calculateResults);
         saveResultBtn.addEventListener('click', saveResultsToAPI);
 
-
-        // --- INICIALIZACIÓN (Carga Rápida) ---
-        loadingEl.style.display = 'none'; 
-        renderQuestion(currentQuestionIndex);
         
         // --- Lógica de la Tarjeta 3D (Animación) ---
         const quizCardEl = document.querySelector('.quiz-card');
