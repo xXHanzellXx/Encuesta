@@ -688,79 +688,80 @@ const SKILL_FEEDBACK = {
 };
 
 // Reemplaza toda la función calculateResults en tu quiz.html
+// Reemplaza toda la función calculateResults en tu quiz.html
 function calculateResults() {
-    // 🚨 VALIDACIÓN FINAL: Asegurarse de que todas las preguntas están respondidas
-    if (Object.keys(userAnswers).length !== QUIZ_DATA.length) {
-        showAlert('Faltan Respuestas', 'Por favor, asegúrate de responder todas las preguntas antes de finalizar.', true);
-        for (let i = 0; i < QUIZ_DATA.length; i++) {
-            const qId = `q${i + 1}`;
-            if (!userAnswers[qId]) {
-                currentQuestionIndex = i;
-                renderQuestion(currentQuestionIndex);
-                break;
-            }
-        }
-        return;
-    }
+    // 🚨 VALIDACIÓN FINAL: Asegurarse de que todas las preguntas están respondidas
+    if (Object.keys(userAnswers).length !== QUIZ_DATA.length) {
+        showAlert('Faltan Respuestas', 'Por favor, asegúrate de responder todas las preguntas antes de finalizar.', true);
+        for (let i = 0; i < QUIZ_DATA.length; i++) {
+            const qId = `q${i + 1}`;
+            if (!userAnswers[qId]) {
+                currentQuestionIndex = i;
+                renderQuestion(currentQuestionIndex);
+                break;
+            }
+        }
+        return;
+    }
 
-    const skillScores = {};
-    const skillCounts = {};
-    const MAX_SCORE_PER_QUESTION = 4; // Puntaje máximo por pregunta
+    const skillScores = {};
+    const skillCounts = {};
+    const MAX_SCORE_PER_QUESTION = 4; // Puntaje máximo por pregunta
 
-    // 1. Recolectar puntajes brutos por habilidad y construir el objeto 'answers' para el API
-    const answersForApi = {}; 
+    // 1. Recolectar puntajes brutos por habilidad y construir el objeto 'answers' para el API
+    const answersForApi = {}; 
 
-    QUIZ_DATA.forEach(q => {
-        const qId = `q${q.id}`;
-        const answerText = userAnswers[qId];
-        const scoreValue = q.valueMap[answerText];
-        const skill = q.skill;
+    QUIZ_DATA.forEach(q => {
+        const qId = `q${q.id}`;
+        const answerText = userAnswers[qId];
+        const scoreValue = q.valueMap[answerText];
+        const skill = q.skill;
 
-        if (!skillScores[skill]) {
-            skillScores[skill] = 0;
-            skillCounts[skill] = 0;
-        }
-        
-        skillScores[skill] += scoreValue;
-        skillCounts[skill]++;
+        if (!skillScores[skill]) {
+            skillScores[skill] = 0;
+            skillCounts[skill] = 0;
+        }
+        
+        skillScores[skill] += scoreValue;
+        skillCounts[skill]++;
 
-        // 🟢 NUEVO: Guardamos el valor numérico (scoreValue + 1 para obtener 1-5) COMO STRING para el API
-        // Usamos el ID original de la pregunta (q.id) para que la clave sea 'q1', 'q2', etc.
-        answersForApi[`q${q.id}`] = (scoreValue + 1).toString();
-    });
+        // 🟢 NUEVO: Guardamos el valor numérico (scoreValue + 1 para obtener 1-5) COMO STRING para el API
+        // Usamos el ID original de la pregunta (q.id) para que la clave sea 'q1', 'q2', etc.
+        answersForApi[`q${q.id}`] = (scoreValue + 1).toString();
+    });
 
-    // 2. Calcular porcentajes (0-100)
-    const finalScores = [];
-    let maxPossibleScore = 0;
+    // 2. Calcular porcentajes (0-100)
+    const finalScores = [];
+    let maxPossibleScore = 0;
 
-    for (const skill in skillScores) {
-        maxPossibleScore = skillCounts[skill] * MAX_SCORE_PER_QUESTION;
-        const percentage = Math.round((skillScores[skill] / maxPossibleScore) * 100);
-        finalScores.push({ skill, score: percentage });
-    }
-    
-    // 3. Determinar el perfil del usuario
-    finalScores.sort((a, b) => b.score - a.score);
-    const topSkills = finalScores.slice(0, 3).map(s => s.skill);
-    let userProfile = PROFILES.find(p => p.skills.filter(skill => topSkills.includes(skill)).length >= 2);
+    for (const skill in skillScores) {
+        maxPossibleScore = skillCounts[skill] * MAX_SCORE_PER_QUESTION;
+        const percentage = Math.round((skillScores[skill] / maxPossibleScore) * 100);
+        finalScores.push({ skill, score: percentage });
+    }
+    
+    // 3. Determinar el perfil del usuario
+    finalScores.sort((a, b) => b.score - a.score);
+    const topSkills = finalScores.slice(0, 3).map(s => s.skill);
+    let userProfile = PROFILES.find(p => p.skills.filter(skill => topSkills.includes(skill)).length >= 2);
 
-    if (!userProfile) {
-        userProfile = PROFILES.find(p => p.name === "EL DESARROLLADOR INTEGRAL");
-    }
-    
-    // 4. Guardar resultado final con la estructura COMPLETA esperada por el backend
-    window.finalQuizResult = {
-        answers: answersForApi, // Dict[str, str] (q1: "4", q2: "2", etc.)
-        softSkills: finalScores.map(s => ({ skill: s.skill, score: s.score })), // List[{skill: str, score: int}]
-        profile: userProfile.name, // str
-        date: new Date().toISOString().split('T')[0], // str (YYYY-MM-DD)
-        profileDescription: userProfile.description // str
-    };
+    if (!userProfile) {
+        userProfile = PROFILES.find(p => p.name === "EL DESARROLLADOR INTEGRAL");
+    }
+    
+    // 4. Guardar resultado final con la estructura COMPLETA esperada por el backend
+    window.finalQuizResult = {
+        answers: answersForApi, // Dict[str, str] (q1: "4", q2: "2", etc.)
+        softSkills: finalScores.map(s => ({ skill: s.skill, score: s.score })), // List[{skill: str, score: int}]
+        profile: userProfile.name, // str
+        date: new Date().toISOString().split('T')[0], // str (YYYY-MM-DD)
+        profileDescription: userProfile.description // str
+    };
 
-    // 5. Renderizar y mostrar resultados
-    renderResults(finalScores, userProfile);
+    // 5. Renderizar y mostrar resultados
+    renderResults(finalScores, userProfile);
 }
-      
+      
 // --- VARIABLES GLOBALES ---
 let currentQuestionIndex = 0;
 let userAnswers = [];
@@ -771,380 +772,360 @@ let quizEl, resultEl, questionsContainer, progressBarFill, progressText, prevBtn
 
 // --- UTILIDADES ---
 function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
 function showAlertModal(title, message, isError = true) {
-    if (!alertModal) return;
-    alertTitle.textContent = title;
-    alertMessage.textContent = message;
-    const ctaBtn = alertModal.querySelector('.cta-btn');
-    if (ctaBtn) {
-        ctaBtn.className = isError 
-            ? 'cta-btn mt-6 text-white w-full py-2 rounded bg-red-600 hover:bg-red-700' 
-            : 'cta-btn mt-6 text-white w-full py-2 rounded bg-emerald-600 hover:bg-emerald-700';
-    }
-    alertModal.classList.add('open');
+    if (!alertModal) return;
+    alertTitle.textContent = title;
+    alertMessage.textContent = message;
+    const ctaBtn = alertModal.querySelector('.cta-btn');
+    if (ctaBtn) {
+        ctaBtn.className = isError 
+            ? 'cta-btn mt-6 text-white w-full py-2 rounded bg-red-600 hover:bg-red-700' 
+            : 'cta-btn mt-6 text-white w-full py-2 rounded bg-emerald-600 hover:bg-emerald-700';
+    }
+    alertModal.classList.add('open');
 }
 
 window.closeAlertModal = function() {
-    if (alertModal) alertModal.classList.remove('open');
+    if (alertModal) alertModal.classList.remove('open');
 }
 
-// --- LÓGICA DE COOLDOWN Y COMPARACIÓN ---
-function isQuizOnCooldown() {
-    const lastCompletion = localStorage.getItem(LAST_QUIZ_KEY);
-    if (!lastCompletion) return false;
-    const lastDate = new Date(lastCompletion);
-    const cooldownExpiry = new Date(lastDate.getTime() + COOLDOWN_DAYS * 24 * 60 * 60 * 1000);
-    return new Date() < cooldownExpiry;
+// --- LÓGICA DE COOLDOWN Y COMPARACIÓN (ACTUALIZADA A ASYNC/AWAIT Y DB) ---
+
+const COOLDOWN_DAYS = 7; 
+
+async function isQuizOnCooldown() {
+    const token = localStorage.getItem('token');
+    
+    // Si no hay token, el usuario no está logueado o está expirado.
+    if (!token) return false; 
+
+    try {
+        const res = await fetch(`${API_URL}/api/quiz/cooldown`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}` 
+            }
+        });
+
+        if (!res.ok) {
+            console.error("Error al consultar cooldown:", res.status);
+            // Si el servidor falla, asumimos que no hay bloqueo para no detener la aplicación.
+            return false;
+        }
+
+        const data = await res.json();
+        const lastCompletionDateStr = data.last_completion_date;
+
+        if (!lastCompletionDateStr) {
+            return false; // No hay quizzes previos en la base de datos.
+        }
+
+        // Crear objeto Date a partir de la fecha de la base de datos (YYYY-MM-DD)
+        const lastDate = new Date(lastCompletionDateStr);
+        
+        // Calcular la fecha de expiración: Último Quiz + 7 días (en milisegundos)
+        const cooldownExpiry = new Date(lastDate.getTime() + COOLDOWN_DAYS * 24 * 60 * 60 * 1000);
+
+        // Devolvemos TRUE si la fecha de expiración es FUTURA.
+        return new Date() < cooldownExpiry;
+
+    } catch (error) {
+        console.error("Error de red al consultar cooldown:", error);
+        return false; 
+    }
 }
+
 
 function getPreviousResult() {
-    const result = localStorage.getItem(PREVIOUS_RESULT_KEY);
-    return result ? JSON.parse(result) : null;
+    const result = localStorage.getItem(PREVIOUS_RESULT_KEY);
+    return result ? JSON.parse(result) : null;
 }
 
 // --- FUNCIONES DE NAVEGACIÓN Y RENDERIZADO ---
 function renderQuestion(index) {
-    if (!questionsContainer) return;
-    const loadingEl = document.getElementById('loading');
-    if (loadingEl) loadingEl.style.display = 'none';
-    
-    questionsContainer.innerHTML = '';
-    const questionData = QUIZ_DATA[index];
-    const questionNumber = index + 1;
-    const scale = ANSWER_SCALES[questionData.scaleType || DEFAULT_SCALE];
+    if (!questionsContainer) return;
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) loadingEl.style.display = 'none';
+    
+    questionsContainer.innerHTML = '';
+    const questionData = QUIZ_DATA[index];
+    const questionNumber = index + 1;
+    const scale = ANSWER_SCALES[questionData.scaleType || DEFAULT_SCALE];
 
-    questionsContainer.innerHTML = `
-        <div class="question-item">
-            <p class="question-text font-bold text-xl mb-6">(${questionNumber}/${QUIZ_DATA.length}) ${questionData.text}</p>
-        </div>
-        <div class="options-group" id="optionsGroup">
-            ${scale.options.map((option, i) => `
-                <button class="option-btn ${userAnswers[index] === (i + 1) ? 'selected' : ''}" 
-                         data-value="${i + 1}">
-                    ${option}
-                </button>
-            `).join('')}
-        </div>
-    `;
+    questionsContainer.innerHTML = `
+        <div class="question-item">
+            <p class="question-text font-bold text-xl mb-6">(${questionNumber}/${QUIZ_DATA.length}) ${questionData.text}</p>
+        </div>
+        <div class="options-group" id="optionsGroup">
+            ${scale.options.map((option, i) => `
+                <button class="option-btn ${userAnswers[index] === (i + 1) ? 'selected' : ''}" 
+                         data-value="${i + 1}">
+                    ${option}
+                </button>
+            `).join('')}
+        </div>
+    `;
 
-    document.getElementById('optionsGroup').addEventListener('click', handleOptionClick);
-    updateUIState();
+    document.getElementById('optionsGroup').addEventListener('click', handleOptionClick);
+    updateUIState();
 }
 
 function handleOptionClick(e) {
-    const target = e.target.closest('.option-btn');
-    if (!target) return;
+    const target = e.target.closest('.option-btn');
+    if (!target) return;
 
-    Array.from(target.parentNode.children).forEach(btn => btn.classList.remove('selected'));
-    target.classList.add('selected');
+    Array.from(target.parentNode.children).forEach(btn => btn.classList.remove('selected'));
+    target.classList.add('selected');
 
-    const value = parseInt(target.dataset.value);
-    userAnswers[currentQuestionIndex] = value;
-    
-    localStorage.setItem('quiz_progress_answers', JSON.stringify(userAnswers));
-    localStorage.setItem('quiz_progress_index', currentQuestionIndex);
+    const value = parseInt(target.dataset.value);
+    userAnswers[currentQuestionIndex] = value;
+    
+    localStorage.setItem('quiz_progress_answers', JSON.stringify(userAnswers));
+    localStorage.setItem('quiz_progress_index', currentQuestionIndex);
 
-    setTimeout(() => {
-        if (currentQuestionIndex < QUIZ_DATA.length - 1) {
-            currentQuestionIndex++;
-            renderQuestion(currentQuestionIndex);
-        } else {
-            updateUIState();
-        }
-    }, 200);
+    setTimeout(() => {
+        if (currentQuestionIndex < QUIZ_DATA.length - 1) {
+            currentQuestionIndex++;
+            renderQuestion(currentQuestionIndex);
+        } else {
+            updateUIState();
+        }
+    }, 200);
 }
 
 function updateUIState() {
-    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
-    const pct = ((currentQuestionIndex + 1) / QUIZ_DATA.length) * 100;
-    if (progressBarFill) progressBarFill.style.width = `${pct}%`;
-    if (progressText) progressText.textContent = `PREGUNTA ${currentQuestionIndex + 1} DE ${QUIZ_DATA.length}`;
+    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+    const pct = ((currentQuestionIndex + 1) / QUIZ_DATA.length) * 100;
+    if (progressBarFill) progressBarFill.style.width = `${pct}%`;
+    if (progressText) progressText.textContent = `PREGUNTA ${currentQuestionIndex + 1} DE ${QUIZ_DATA.length}`;
 
-    if (prevBtn) prevBtn.style.display = currentQuestionIndex > 0 ? 'block' : 'none';
-    
-    const isLast = currentQuestionIndex === QUIZ_DATA.length - 1;
-    const isAnswered = userAnswers[currentQuestionIndex] != null;
+    if (prevBtn) prevBtn.style.display = currentQuestionIndex > 0 ? 'block' : 'none';
+    
+    const isLast = currentQuestionIndex === QUIZ_DATA.length - 1;
+    const isAnswered = userAnswers[currentQuestionIndex] != null;
 
-    if (nextBtn) nextBtn.style.display = (!isLast) ? 'block' : 'none';
-    if (submitBtn) submitBtn.style.display = (isLast && isAnswered) ? 'block' : 'none';
+    if (nextBtn) nextBtn.style.display = (!isLast) ? 'block' : 'none';
+    if (submitBtn) submitBtn.style.display = (isLast && isAnswered) ? 'block' : 'none';
 }
 
 // --- CÁLCULO Y RESULTADOS ---
 // --- CÁLCULO Y RESULTADOS ---
 function submitQuiz() {
-    if (userAnswers.filter(a => a).length < QUIZ_DATA.length) {
-        showAlertModal("Incompleto", "Por favor responde todas las preguntas.");
-        return;
-    }
+    if (userAnswers.filter(a => a).length < QUIZ_DATA.length) {
+        showAlertModal("Incompleto", "Por favor responde todas las preguntas.");
+        return;
+    }
 
-    const skillScores = {};
-    const maxScores = {};
-    Object.keys(SKILL_FEEDBACK).forEach(k => { skillScores[k] = 0; maxScores[k] = 0; });
+    const skillScores = {};
+    const maxScores = {};
+    Object.keys(SKILL_FEEDBACK).forEach(k => { skillScores[k] = 0; maxScores[k] = 0; });
 
-    QUIZ_DATA.forEach((q, idx) => {
-        const val = userAnswers[idx];
-        q.scores.forEach(impact => {
-            let score = (impact.polarity === 1) ? (val - 1) : (MAX_SCORE_PER_QUESTION_RAW - val);
-            skillScores[impact.skill] += score;
-            maxScores[impact.skill] += 4; 
-        });
-    });
+    QUIZ_DATA.forEach((q, idx) => {
+        const val = userAnswers[idx];
+        q.scores.forEach(impact => {
+            let score = (impact.polarity === 1) ? (val - 1) : (MAX_SCORE_PER_QUESTION_RAW - val);
+            skillScores[impact.skill] += score;
+            maxScores[impact.skill] += 4; 
+        });
+    });
 
-    const results = [];
-    Object.keys(skillScores).forEach(skill => {
-        const max = maxScores[skill];
-        const pct = max > 0 ? Math.round((skillScores[skill] / max) * 100) : 0;
-        results.push({ name: skill, percentage: pct });
-    });
-    
-    results.sort((a, b) => b.percentage - a.percentage);
-    
-    let profile = PROFILES.find(p => p.name.includes("INTEGRAL"));
-    const top3Names = results.slice(0,3).map(r => r.name);
-    
-    for (const p of PROFILES) {
-        const matches = p.skills.filter(s => top3Names.includes(s)).length;
-        if (matches >= 2) { profile = p; break; }
-    }
+    const results = [];
+    Object.keys(skillScores).forEach(skill => {
+        const max = maxScores[skill];
+        const pct = max > 0 ? Math.round((skillScores[skill] / max) * 100) : 0;
+        results.push({ name: skill, percentage: pct });
+    });
+    
+    results.sort((a, b) => b.percentage - a.percentage);
+    
+    let profile = PROFILES.find(p => p.name.includes("INTEGRAL"));
+    const top3Names = results.slice(0,3).map(r => r.name);
+    
+    for (const p of PROFILES) {
+        const matches = p.skills.filter(s => top3Names.includes(s)).length;
+        if (matches >= 2) { profile = p; break; }
+    }
 
-    quizResults = { skills: results, profile: profile, date: new Date().toISOString() };
-    
-    // CORRECCIÓN CLAVE: Estructura final con valores de respuesta como STRING y todas las claves necesarias
-    window.finalQuizResult = {
-        answers: userAnswers.reduce((acc, val, idx) => ({...acc, [`q${QUIZ_DATA[idx].id}`]: val.toString()}), {}), 
-        softSkills: results.map(r => ({ skill: r.name, score: r.percentage })),
-        profile: profile.name,
-        date: new Date().toISOString().split('T')[0],
-        profileDescription: profile.description
-    };
+    quizResults = { skills: results, profile: profile, date: new Date().toISOString() };
+    
+    // CORRECCIÓN CLAVE: Estructura final con valores de respuesta como STRING y todas las claves necesarias
+    window.finalQuizResult = {
+        answers: userAnswers.reduce((acc, val, idx) => ({...acc, [`q${QUIZ_DATA[idx].id}`]: val.toString()}), {}), 
+        softSkills: results.map(r => ({ skill: r.name, score: r.percentage })),
+        profile: profile.name,
+        date: new Date().toISOString().split('T')[0],
+        profileDescription: profile.description
+    };
 
-    localStorage.setItem(LAST_QUIZ_KEY, new Date().toISOString());
-    localStorage.setItem(PREVIOUS_RESULT_KEY, JSON.stringify(quizResults));
-    localStorage.removeItem('quiz_progress_answers');
-    localStorage.removeItem('quiz_progress_index');
+    localStorage.setItem(LAST_QUIZ_KEY, new Date().toISOString());
+    localStorage.setItem(PREVIOUS_RESULT_KEY, JSON.stringify(quizResults));
+    localStorage.removeItem('quiz_progress_answers');
+    localStorage.removeItem('quiz_progress_index');
 
-    renderResultsView();
+    renderResultsView();
 }
 
 async function saveResultsToAPI() {
-    const token = localStorage.getItem('token');
-    // En modo de prueba con el backend, no necesitamos el token, pero lo dejamos si quieres el flujo completo:
-    // if (!token) return showAlertModal("Error", "Debes iniciar sesión.", true); 
+    const token = localStorage.getItem('token');
+    if (!token) return showAlertModal("Error", "Debes iniciar sesión.", true);
+    
+    saveResultBtn.disabled = true;
+    saveResultBtn.textContent = "Guardando...";
+    
+    try {
+        // CORRECCIÓN 2: Se asegura la barra inclinada final en la URL
+        const res = await fetch(`${API_URL}/api/quiz/`, { 
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${token}` // Ahora es obligatorio para guardar el email del usuario
+            },
+            body: JSON.stringify(window.finalQuizResult)
+        });
+        
+        if (res.status === 422) {
+            const data = await res.json();
+            let errorMessage = '🚨 Error de Validación de Datos (422):\n\n';
+            if (data.detail && Array.isArray(data.detail)) {
+                data.detail.forEach(err => {
+                    const field = err.loc[err.loc.length - 1];
+                    errorMessage += `• El campo "${field}" es inválido: ${err.msg}\n`;
+                });
+            } else {
+                errorMessage += "Estructura de datos incorrecta. Revisa el archivo schemas.py.";
+            }
+            throw new Error(errorMessage);
+        }
 
-    saveResultBtn.disabled = true;
-    saveResultBtn.textContent = "Guardando...";
-    
-    try {
-        // CORRECCIÓN 2: Se asegura la barra inclinada final en la URL
-        const res = await fetch(`${API_URL}/api/quiz/`, { 
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${token}` // Puedes comentar esta línea si el backend no lo requiere
-            },
-            body: JSON.stringify(window.finalQuizResult)
-        });
-        
-        if (res.status === 422) {
-            const data = await res.json();
-            let errorMessage = '🚨 Error de Validación de Datos (422):\n\n';
-            if (data.detail && Array.isArray(data.detail)) {
-                data.detail.forEach(err => {
-                    const field = err.loc[err.loc.length - 1];
-                    errorMessage += `• El campo "${field}" es inválido: ${err.msg}\n`;
-                });
-            } else {
-                errorMessage += "Estructura de datos incorrecta. Revisa el archivo schemas.py.";
-            }
-            throw new Error(errorMessage);
-        }
-
-        if (res.ok) {
-            showAlertModal("Guardado", "Resultados guardados correctamente en tu perfil.", false);
-            saveResultBtn.disabled = true;
-            saveResultBtn.textContent = "Guardado";
-        } else {
-            throw new Error(`Error en el servidor: Código ${res.status}`);
-        }
-    } catch (e) {
-        saveResultBtn.disabled = false;
-        saveResultBtn.textContent = "Guardar Resultado";
-        let displayMessage = e.message.includes('422') ? e.message : "No se pudo conectar con el servidor. (Error de red o servidor inactivo)";
-        showAlertModal("Error", displayMessage, true);
-    }
+        if (res.ok) {
+            showAlertModal("Guardado", "Resultados guardados correctamente en tu perfil.", false);
+            saveResultBtn.disabled = true;
+            saveResultBtn.textContent = "Guardado";
+        } else {
+            throw new Error(`Error en el servidor: Código ${res.status}`);
+        }
+    } catch (e) {
+        saveResultBtn.disabled = false;
+        saveResultBtn.textContent = "Guardar Resultado";
+        let displayMessage = e.message.includes('422') ? e.message : "No se pudo conectar con el servidor. (Error de red o servidor inactivo)";
+        showAlertModal("Error", displayMessage, true);
+    }
 }
 function renderResultsView() {
-    if (!quizEl || !resultEl) return;
-    quizEl.style.display = 'none';
-    resultEl.style.display = 'block';
+    if (!quizEl || !resultEl) return;
+    quizEl.style.display = 'none';
+    resultEl.style.display = 'block';
 
-    const { profile, skills } = quizResults;
-    
-    if (profileNameEl) profileNameEl.textContent = profile.name;
-    if (profileDescriptionEl) profileDescriptionEl.textContent = profile.description;
-    
-    if (topSkillsPillsEl) {
-        topSkillsPillsEl.innerHTML = skills.slice(0, 3).map(s => 
-            `<span class="bg-emerald-600 text-white text-xs px-3 py-1 rounded-full shadow border border-emerald-400">${s.name}</span>`
-        ).join('');
-    }
+    const { profile, skills } = quizResults;
+    
+    if (profileNameEl) profileNameEl.textContent = profile.name;
+    if (profileDescriptionEl) profileDescriptionEl.textContent = profile.description;
+    
+    if (topSkillsPillsEl) {
+        topSkillsPillsEl.innerHTML = skills.slice(0, 3).map(s => 
+            `<span class="bg-emerald-600 text-white text-xs px-3 py-1 rounded-full shadow border border-emerald-400">${s.name}</span>`
+        ).join('');
+    }
 
-    const prev = getPreviousResult();
-    
-    // GENERAR RESUMEN COMPARATIVO INTELIGENTE
-    let comparisonSummary = '';
-    if (prev) {
-        const improved = [];
-        const declined = [];
-        skills.forEach(s => {
-            const old = prev.skills.find(o => o.name === s.name);
-            if (old) {
-                if (s.percentage > old.percentage + 5) improved.push(s.name);
-                if (s.percentage < old.percentage - 5) declined.push(s.name);
-            }
-        });
-        
-        let narrative = "Comparando con tu última sesión: ";
-        if (improved.length > 0) narrative += `Has mostrado una evolución notable en <span class="text-emerald-400 font-bold">${improved.join(", ")}</span>. `;
-        if (declined.length > 0) narrative += `Sin embargo, se detecta un retroceso en <span class="text-red-400 font-bold">${declined.join(", ")}</span> que requiere atención. `;
-        if (improved.length === 0 && declined.length === 0) narrative += "Tus métricas se mantienen estables. Es momento de romper la meseta con nuevos desafíos.";
-        
-        comparisonSummary = `
-            <div class="p-5 bg-slate-800/80 border-l-4 border-blue-500 rounded shadow mb-8">
-                <h4 class="text-blue-400 font-bold text-lg mb-2">📊 Informe de Progreso Evolutivo</h4>
-                <p class="text-sm text-gray-300 leading-relaxed">${narrative}</p>
-            </div>
-        `;
-    }
+    const prev = getPreviousResult();
+    
+    // GENERAR RESUMEN COMPARATIVO INTELIGENTE
+    let comparisonSummary = '';
+    if (prev) {
+        const improved = [];
+        const declined = [];
+        skills.forEach(s => {
+            const old = prev.skills.find(o => o.name === s.name);
+            if (old) {
+                if (s.percentage > old.percentage + 5) improved.push(s.name);
+                if (s.percentage < old.percentage - 5) declined.push(s.name);
+            }
+        });
+        
+        let narrative = "Comparando con tu última sesión: ";
+        if (improved.length > 0) narrative += `Has mostrado una evolución notable en <span class="text-emerald-400 font-bold">${improved.join(", ")}</span>. `;
+        if (declined.length > 0) narrative += `Sin embargo, se detecta un retroceso en <span class="text-red-400 font-bold">${declined.join(", ")}</span> que requiere atención. `;
+        if (improved.length === 0 && declined.length === 0) narrative += "Tus métricas se mantienen estables. Es momento de romper la meseta con nuevos desafíos.";
+        
+        comparisonSummary = `
+            <div class="p-5 bg-slate-800/80 border-l-4 border-blue-500 rounded shadow mb-8">
+                <h4 class="text-blue-400 font-bold text-lg mb-2">📊 Informe de Progreso Evolutivo</h4>
+                <p class="text-sm text-gray-300 leading-relaxed text-justify">${narrative}</p>
+            </div>
+        `;
+    }
 
-    const listHTML = skills.map(s => {
-        const fb = SKILL_FEEDBACK[s.name];
-        const isHigh = s.percentage >= 75;
-        const detail = isHigh ? fb.high : fb.low;
-        
-        let diffDisplay = '';
-        if (prev) {
-            const oldSkill = prev.skills.find(os => os.name === s.name);
-            if (oldSkill) {
-                const diff = s.percentage - oldSkill.percentage;
-                if (diff !== 0) {
-                    const color = diff > 0 ? 'text-emerald-400' : 'text-red-400';
-                    const arrow = diff > 0 ? '⬆' : '⬇';
-                    diffDisplay = `<span class="${color} text-sm font-bold ml-3 bg-slate-900 px-2 py-1 rounded border border-slate-700">${arrow} ${Math.abs(diff)}%</span>`;
-                }
-            }
-        }
+    const listHTML = skills.map(s => {
+        const fb = SKILL_FEEDBACK[s.name];
+        const isHigh = s.percentage >= 75;
+        const detail = isHigh ? fb.high : fb.low;
+        
+        let diffDisplay = '';
+        if (prev) {
+            const oldSkill = prev.skills.find(os => os.name === s.name);
+            if (oldSkill) {
+                const diff = s.percentage - oldSkill.percentage;
+                if (diff !== 0) {
+                    const color = diff > 0 ? 'text-emerald-400' : 'text-red-400';
+                    const arrow = diff > 0 ? '⬆' : '⬇';
+                    diffDisplay = `<span class="${color} text-sm font-bold ml-3 bg-slate-900 px-2 py-1 rounded border border-slate-700">${arrow} ${Math.abs(diff)}%</span>`;
+                }
+            }
+        }
 
-        return `
-        <div class="mb-8 p-6 bg-slate-800 rounded-xl border border-slate-700 shadow-xl hover:border-slate-500 transition-colors">
-            <div class="flex justify-between items-end mb-4 border-b border-slate-700 pb-4">
-                <div>
-                    <h3 class="text-xl font-bold text-white mb-1">${s.name}</h3>
-                    <span class="text-xs uppercase tracking-wider font-semibold ${isHigh ? 'text-emerald-500' : 'text-orange-500'}">
-                        ${detail.title}
-                    </span>
-                </div>
-                <div class="flex items-center">
-                    <span class="text-3xl font-black text-white">${s.percentage}%</span>
-                    ${diffDisplay}
-                </div>
-            </div>
-            
-            <div class="grid md:grid-cols-2 gap-6">
-                <div>
-                    <h4 class="text-sm font-bold text-slate-400 mb-2 uppercase">Diagnóstico & Impacto</h4>
-                    <p class="text-sm text-gray-300 leading-relaxed text-justify">${isHigh ? detail.strength : detail.weakness}</p>
-                </div>
-                <div class="bg-slate-700/30 p-4 rounded-lg border-l-2 ${isHigh ? 'border-emerald-500' : 'border-orange-500'}">
-                    <h4 class="text-sm font-bold ${isHigh ? 'text-emerald-400' : 'text-orange-400'} mb-2 uppercase">⚡ Plan de Acción Táctico</h4>
-                    <p class="text-sm text-gray-300 italic leading-relaxed">${detail.tip}</p>
-                </div>
-            </div>
-        </div>`;
-    }).join('');
+        return `
+        <div class="mb-8 p-6 bg-slate-800 rounded-xl border border-slate-700 shadow-xl hover:border-slate-500 transition-colors">
+            <div class="flex justify-between items-end mb-4 border-b border-slate-700 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-1">${s.name}</h3>
+                    <span class="text-xs uppercase tracking-wider font-semibold ${isHigh ? 'text-emerald-500' : 'text-orange-500'}">
+                        ${detail.title}
+                    </span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-3xl font-black text-white">${s.percentage}%</span>
+                    ${diffDisplay}
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-sm font-bold text-slate-400 mb-2 uppercase">Diagnóstico & Impacto</h4>
+                    <p class="text-sm text-gray-300 leading-relaxed text-justify">${isHigh ? detail.strength : detail.weakness}</p>
+                </div>
+                <div class="bg-slate-700/30 p-4 rounded-lg border-l-2 ${isHigh ? 'border-emerald-500' : 'border-orange-500'}">
+                    <h4 class="text-sm font-bold ${isHigh ? 'text-emerald-400' : 'text-orange-400'} mb-2 uppercase">⚡ Plan de Acción Táctico</h4>
+                    <p class="text-sm text-gray-300 italic leading-relaxed">${detail.tip}</p>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
 
-    // Bloqueo de Reflexión (Cooldown UI)
-    const cooldownBlock = `
-        <div class="mt-10 p-6 bg-indigo-900/40 border border-indigo-500/50 rounded-xl text-center">
-            <h3 class="text-xl font-bold text-indigo-300 mb-2">🔒 Periodo de Asimilación Activo</h3>
-            <p class="text-sm text-indigo-100 mb-4">Para garantizar que este análisis se convierta en crecimiento real, el test se bloqueará por <strong>${COOLDOWN_DAYS} días</strong>. No consuma información; ejecute el plan.</p>
-            <div class="inline-block bg-indigo-900 text-white text-xs px-3 py-1 rounded">Próxima evaluación disponible: ${new Date(Date.now() + COOLDOWN_DAYS * 86400000).toLocaleDateString()}</div>
-        </div>
-    `;
+    // Bloqueo de Reflexión (Cooldown UI)
+    const cooldownBlock = `
+        <div class="mt-10 p-6 bg-indigo-900/40 border border-indigo-500/50 rounded-xl text-center">
+            <h3 class="text-xl font-bold text-indigo-300 mb-2">🔒 Periodo de Asimilación Activo</h3>
+            <p class="text-sm text-indigo-100 mb-4">Para garantizar que este análisis se convierta en crecimiento real, el test se bloqueará por <strong>${COOLDOWN_DAYS} días</strong>. No consuma información; ejecute el plan.</p>
+            <div class="inline-block bg-indigo-900 text-white text-xs px-3 py-1 rounded">Próxima evaluación disponible: ${new Date(Date.now() + COOLDOWN_DAYS * 86400000).toLocaleDateString()}</div>
+        </div>
+    `;
 
-    if (skillsList) skillsList.innerHTML = comparisonSummary + listHTML + cooldownBlock;
-    
-    if (saveResultBtn) saveResultBtn.disabled = false;
+    if (skillsList) skillsList.innerHTML = comparisonSummary + listHTML + cooldownBlock;
+    
+    if (saveResultBtn) saveResultBtn.disabled = false;
 }
 
-async function saveResultsToAPI() {
-    const token = localStorage.getItem('token');
-    if (!token) return showAlertModal("Error", "Debes iniciar sesión.", true);
-    
-    saveResultBtn.disabled = true;
-    saveResultBtn.textContent = "Guardando...";
-    
-    try {
-        // CORRECCIÓN 2: Se agrega la barra inclinada final para asegurar que FastAPI reciba la ruta correctamente
-        const res = await fetch(`${API_URL}/api/quiz/`, { 
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${token}` 
-            },
-            body: JSON.stringify(window.finalQuizResult)
-        });
-        
-        // El servidor puede devolver 422 si hay un error de validación; necesitamos ver el detalle
-        if (res.status === 422) {
-            const data = await res.json();
-            let errorMessage = '🚨 Error de Validación de Datos (422):\n\n';
-            if (data.detail && Array.isArray(data.detail)) {
-                data.detail.forEach(err => {
-                    const field = err.loc[err.loc.length - 1];
-                    errorMessage += `• El campo "${field}" es inválido: ${err.msg}\n`;
-                });
-            } else {
-                errorMessage += "Estructura de datos incorrecta. Revisa el archivo schemas.py.";
-            }
-            throw new Error(errorMessage);
-        }
+// ... (saveResultsToAPI, restartQuiz, etc. siguen aquí)
 
-        if (res.ok) {
-            showAlertModal("Guardado", "Resultados guardados correctamente en tu perfil.", false);
-            saveResultBtn.disabled = true;
-            saveResultBtn.textContent = "Guardado";
-        } else {
-            // Si no es 422 pero tampoco es OK, es otro error de servidor (500, etc.)
-            throw new Error(`Error en el servidor: Código ${res.status}`);
-        }
-    } catch (e) {
-        saveResultBtn.disabled = false;
-        saveResultBtn.textContent = "Guardar Resultado";
-        // Aquí mostramos el detalle del error, incluyendo el 422 si ocurrió.
-        let displayMessage = e.message.includes('422') ? e.message : "No se pudo conectar con el servidor. (Error de red o servidor inactivo)";
-        showAlertModal("Error", displayMessage, true);
-    }
-}
-
-function restartQuiz() {
-    if(confirm("¿Estás seguro? Esto borrará tu progreso actual.")) {
-        localStorage.removeItem('quiz_progress_answers');
-        localStorage.removeItem('quiz_progress_index');
-        // Nota: No borramos LAST_QUIZ_KEY para mantener el historial de cooldown si aplicara
-        location.reload();
-    }
-}
-
-// --- INIT ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Bind DOM elements
+// --- INIT (ACTUALIZADO para usar async/await) ---
+document.addEventListener('DOMContentLoaded', async () => {
+    // Bind DOM elements (déjalo como está)
     quizEl = document.getElementById('quiz');
     resultEl = document.getElementById('result');
     questionsContainer = document.getElementById('questionsContainer');
@@ -1166,7 +1147,7 @@ document.addEventListener('DOMContentLoaded', () => {
     profileDescriptionEl = document.getElementById('profileDescription');
     restartQuizBtn = document.getElementById('restartQuizBtn');
 
-    // Listeners
+    // Listeners (déjalo como está)
     if(backBtn) backBtn.onclick = () => window.location.href = 'home.html';
     if(goHomeFromQuizBtn) goHomeFromQuizBtn.onclick = () => window.location.href = 'home.html';
     if(prevBtn) prevBtn.onclick = () => { if(currentQuestionIndex > 0) { currentQuestionIndex--; renderQuestion(currentQuestionIndex); }};
@@ -1175,14 +1156,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if(saveResultBtn) saveResultBtn.onclick = saveResultsToAPI;
     if(restartQuizBtn) restartQuizBtn.onclick = restartQuiz;
 
-    // Cooldown check
-    if (isQuizOnCooldown()) {
-        const saved = getPreviousResult();
+    // 🌟 COOLDOWN CHECK ASÍNCRONO CONTRA LA BASE DE DATOS
+    const isOnCooldown = await isQuizOnCooldown();
+
+    if (isOnCooldown) {
+        const saved = getPreviousResult(); // Usamos el resultado de localStorage para la vista
         if (saved) {
             quizResults = saved;
             renderResultsView();
-            showAlertModal("Modo Reflexión", `Estás en el periodo de asimilación de 7 días. Se muestran tus últimos resultados para que trabajes en ellos.`, false);
+            showAlertModal("Modo Reflexión", `Estás en el periodo de asimilación de ${COOLDOWN_DAYS} días. Se muestran tus últimos resultados.`, false);
         } else {
+            // Manejo si está bloqueado pero no tiene resultados locales
             quizEl.innerHTML = `<div class="text-center text-white p-10 bg-slate-800 rounded-xl">
                 <h3 class="text-2xl font-bold text-yellow-400 mb-4">⏳ Enfriamiento Activo</h3>
                 <p class="mb-6">Has realizado el test recientemente. Tómate un tiempo para aplicar lo aprendido.</p> 
@@ -1190,10 +1174,10 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
             if(loadingEl) loadingEl.style.display = 'none';
         }
-        return;
+        return; // Detiene la carga del quiz.
     }
 
-    // Load Progress & Start
+    // Load Progress & Start (solo se ejecuta si NO hay bloqueo)
     const savedAns = localStorage.getItem('quiz_progress_answers');
     if (savedAns) userAnswers = JSON.parse(savedAns);
     const savedIdx = localStorage.getItem('quiz_progress_index');
@@ -1207,6 +1191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </script>
   </body>
 </html>
+
 
 
 
