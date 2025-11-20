@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
 import bcrypt
 from typing import Optional 
-
+from typing import Dict
 from .models import users_collection, all_responses_collection 
 from .schemas import User, UserLogin, QuizResult
 from .auth import create_token, verify_token
@@ -52,18 +52,25 @@ def login_user(user: UserLogin):
 # --- RUTAS DEL QUIZ ---
 
 # ---------- Guardar Quiz (VERSION DE PRUEBA EXITOSA) ----------
-# Nota: La ruta ahora es "/api/quiz/" con la barra final.
+
+# ...
+# ---------- Guardar Quiz (PRUEBA FINAL DE RECEPCIÓN) ----------
 @app.post("/api/quiz/") 
-def save_quiz(result: QuizResult):
-    # En modo de prueba, el email es fijo.
-    email = "temp_user@test.com" 
+def save_quiz_FINAL_TEST(result: Dict): # <--- CAMBIO CLAVE: Usamos Dict
     
-    quiz_data = result.dict()
-    quiz_data["user_email"] = email
+    # Esto guardará CUALQUIER JSON que el frontend envíe
+    print(f"✅ ¡JSON RECIBIDO! Las claves son: {result.keys()}") 
+    
+    # Nota: Si el JSON está vacío, la base de datos podría fallar,
+    # pero el error 422 DESAPARECERÍA y aparecería un 500 (Internal Server Error).
+
+    # Usamos un email temporal y guardamos el diccionario recibido
+    quiz_data = result
+    quiz_data["user_email"] = "temp_user@final.test" 
     
     all_responses_collection.insert_one(quiz_data)
 
-    return {"message": "¡PRUEBA EXITOSA! Quiz guardado."}
+    return {"message": "¡PRUEBA EXITOSA! El servidor recibe el JSON."}
 
 
 # ---------- Obtener quizzes del usuario ----------
@@ -90,3 +97,4 @@ def get_user_info(authorization: Optional[str] = Header(None)):
         
     user = users_collection.find_one({"email": user_data["email"]}, {"_id": 0, "name": 1, "email": 1})
     return user
+
