@@ -131,3 +131,4 @@ def get_user_info(authorization: Optional[str] = Header(None)):
         
     user = users_collection.find_one({"email": user_data["email"]}, {"_id": 0, "name": 1, "email": 1})
     return user
+
