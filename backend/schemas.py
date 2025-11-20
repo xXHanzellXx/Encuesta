@@ -1,6 +1,18 @@
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 
+class SoftSkillScore(BaseModel):
+    skill: str
+    score: int
+
+class QuizResult(BaseModel):
+    # La clave 'answers' ahora usa strings ("1", "2", etc.)
+    answers: Dict[str, str]
+    softSkills: List[SoftSkillScore]
+    profile: str
+    date: str
+    profileDescription: str # Necesitas agregar esta clave si no estaba antes
+
 # Modelo para una sola habilidad con su puntaje
 class SoftSkillScore(BaseModel):
     skill: str
@@ -24,3 +36,4 @@ class QuizResult(BaseModel):
     date: str
     # Campos opcionales para metadatos extra si los envías
     profileDescription: Optional[str] = None
+
