@@ -63,7 +63,7 @@ def login_user(user: UserLogin):
     return {"token": token, "name": db_user["name"]}
 
 # ---------- Guardar Quiz (USA COLECCIÓN SEPARADA) ----------
-@app.post("/api/quiz")
+@app.post("/api/quiz/") # ¡Añadir la barra inclinada final!
 def save_quiz(result: QuizResult, authorization: Optional[str] = Header(None)):
     token = authorization.split(" ")[1] if authorization and " " in authorization else None
     user_data = verify_token(token)
@@ -108,4 +108,5 @@ def get_user_info(authorization: Optional[str] = Header(None)):
     # Obtiene solo el nombre y el email del usuario
     user = users_collection.find_one({"email": user_data["email"]}, {"_id": 0, "name": 1, "email": 1})
     return user
+
 
