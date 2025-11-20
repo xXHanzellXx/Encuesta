@@ -876,6 +876,7 @@ function updateUIState() {
 }
 
 // --- CÁLCULO Y RESULTADOS ---
+// --- CÁLCULO Y RESULTADOS ---
 function submitQuiz() {
     if (userAnswers.filter(a => a).length < QUIZ_DATA.length) {
         showAlertModal("Incompleto", "Por favor responde todas las preguntas.");
@@ -914,8 +915,8 @@ function submitQuiz() {
 
     quizResults = { skills: results, profile: profile, date: new Date().toISOString() };
     
+    // CORRECCIÓN CLAVE: Estructura final con valores de respuesta como STRING y todas las claves necesarias
     window.finalQuizResult = {
-        // CORRECCIÓN 1: Convertimos el valor a String para que coincida con el schema Pydantic
         answers: userAnswers.reduce((acc, val, idx) => ({...acc, [`q${QUIZ_DATA[idx].id}`]: val.toString()}), {}), 
         softSkills: results.map(r => ({ skill: r.name, score: r.percentage })),
         profile: profile.name,
@@ -931,6 +932,53 @@ function submitQuiz() {
     renderResultsView();
 }
 
+async function saveResultsToAPI() {
+    const token = localStorage.getItem('token');
+    // En modo de prueba con el backend, no necesitamos el token, pero lo dejamos si quieres el flujo completo:
+    // if (!token) return showAlertModal("Error", "Debes iniciar sesión.", true); 
+
+    saveResultBtn.disabled = true;
+    saveResultBtn.textContent = "Guardando...";
+    
+    try {
+        // CORRECCIÓN 2: Se asegura la barra inclinada final en la URL
+        const res = await fetch(`${API_URL}/api/quiz/`, { 
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${token}` // Puedes comentar esta línea si el backend no lo requiere
+            },
+            body: JSON.stringify(window.finalQuizResult)
+        });
+        
+        if (res.status === 422) {
+            const data = await res.json();
+            let errorMessage = '🚨 Error de Validación de Datos (422):\n\n';
+            if (data.detail && Array.isArray(data.detail)) {
+                data.detail.forEach(err => {
+                    const field = err.loc[err.loc.length - 1];
+                    errorMessage += `• El campo "${field}" es inválido: ${err.msg}\n`;
+                });
+            } else {
+                errorMessage += "Estructura de datos incorrecta. Revisa el archivo schemas.py.";
+            }
+            throw new Error(errorMessage);
+        }
+
+        if (res.ok) {
+            showAlertModal("Guardado", "Resultados guardados correctamente en tu perfil.", false);
+            saveResultBtn.disabled = true;
+            saveResultBtn.textContent = "Guardado";
+        } else {
+            throw new Error(`Error en el servidor: Código ${res.status}`);
+        }
+    } catch (e) {
+        saveResultBtn.disabled = false;
+        saveResultBtn.textContent = "Guardar Resultado";
+        let displayMessage = e.message.includes('422') ? e.message : "No se pudo conectar con el servidor. (Error de red o servidor inactivo)";
+        showAlertModal("Error", displayMessage, true);
+    }
+}
 function renderResultsView() {
     if (!quizEl || !resultEl) return;
     quizEl.style.display = 'none';
@@ -1159,6 +1207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </script>
   </body>
 </html>
+
 
 
 
