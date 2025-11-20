@@ -14,334 +14,379 @@
     
     <style>
       :root {
-        --color-primary: #10b981; /* Esmeralda 500 */
-        --color-accent: #059669; /* Esmeralda 600 */
-        --color-bg-dark: #0f172a; /* Fondo oscuro */
-        --color-card-dark: #1e293b; /* Fondo de tarjetas */
-        --color-text-light: #f8fafc; /* Texto claro */
-        --color-border: #475569; /* Borde neutro */
-      }
+        --color-primary: #10b981; /* Esmeralda 500 */
+        --color-accent: #059669; /* Esmeralda 600 */
+        --color-bg-dark: #0f172a; /* Fondo oscuro */
+        --color-card-dark: #1e293b; /* Fondo de tarjetas */
+        --color-text-light: #f8fafc; /* Texto claro */
+        --color-border: #475569; /* Borde neutro */
+      }
 
-      .quiz-container {
-        perspective: 1200px; /* 🔹 Más profundidad */
+      /* El perspective se mantiene aquí, pero se elimina el conflicto de body */
+      .quiz-container {
+        perspective: 1200px; /* 🔹 Más profundidad */
+      }
+      
+      .quiz-card {
+        transform-style: preserve-3d;
+        transition: transform 0.3s ease;
+        will-change: transform;
+      }
+
+/* ❗ AJUSTE CLAVE: body */
+body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--color-bg-dark);
+        min-height: 100vh;
+        color: var(--color-text-light);
+        display: flex;
+        flex-direction: column;
+        /* Eliminamos justify-content: center para que el contenido empiece desde arriba. */
+        align-items: center; /* Centra el quiz-container horizontalmente */
+        overflow-y: auto;
+        margin: 0;
+        padding-top: 5rem; /* Espacio para el navbar fijo */
+      }
+
+      /* 🔹 NAVBAR (Ajuste menor de padding y fuente) */
+      .navbar {
+        background-color: rgba(15, 23, 42, 0.9);
+        backdrop-filter: blur(6px);
+        border-bottom: 2px solid var(--color-primary);
+        padding: 0.8rem 1.5rem; /* Más padding */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 20;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+      }
+
+      .navbar h1 {
+        font-size: 1.4rem; /* Ligeramente más grande */
+        font-weight: 900;
+        color: var(--color-text-light);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+      }
+
+      /* 🧩 CONTENEDOR DEL QUIZ (Ajuste de ancho y centrado) */
+      .quiz-container {
+        max-width: 850px; /* Más ancho para desktop */
+        width: 95%; /* Asegura que no se desborde en móvil */
+        margin: 0 auto 3rem auto; /* Centrado y más margen inferior */
+        padding: 1rem;
+        position: relative;
+        perspective: 1000px;
+        transform: scale(1); /* Eliminar scale(0.95) inicial */
+      }
+
+      /* 💫 TARJETA DEL QUIZ (Ajuste de padding y animación) */
+      .quiz-card,
+      .result-card {
+        background-color: var(--color-card-dark);
+        border: 1px solid var(--color-border);
+        border-radius: 1rem;
+        padding: 2.5rem; /* Más relleno interior */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        transition: all 0.5s ease, box-shadow 0.3s ease;
+        animation: popCard 0.6s ease forwards;
+      }
+
+      .quiz-card:hover {
+        transform: scale(1.005); /* Menos exagerado */
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+      }
+
+      @keyframes popCard {
+        from {
+          opacity: 0;
+          transform: scale(0.95); /* Solo escala */
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      /* 🔸 BARRA DE PROGRESO (Ajuste de altura y margen) */
+      .progress-bar {
+        width: 100%;
+        height: 10px; /* Más grueso */
+        background: #334155;
+        border-radius: 9999px;
+        margin-bottom: 1.5rem; /* Más margen */
+      }
+
+      .progress-fill {
+        background: var(--color-primary);
+        height: 10px; /* Más grueso */
+        width: 0%;
+        border-radius: 9999px;
+        box-shadow: 0 0 10px var(--color-primary);
+        transition: width 0.6s ease-in-out;
+      }
+
+      /* ❓ PREGUNTA (Ajuste de tamaño de fuente y margen) */
+      .question-item {
+        text-align: center;
+      }
+
+      .question-item p {
+        font-size: 1.8rem; /* Más grande y legible */
+        font-weight: 800;
+        color: var(--color-text-light);
+        margin-bottom: 2rem; /* Más margen */
+        text-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+      }
+
+      /* ⚡ OPCIONES (Ajuste de gap, padding y ancho) */
+      .options-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem; /* Más espacio entre botones */
+        margin-top: 1.5rem; /* Más margen superior */
+      }
+
+      .option-btn {
+        background-color: #334155;
+        border: 1px solid var(--color-border);
+        color: var(--color-text-light);
+        padding: 0.8rem 1.5rem; /* Más relleno */
+        font-size: 1.05rem; /* Ligeramente más grande */
+        font-weight: 700;
+        border-radius: 0.7rem; /* Ligeramente más redondeado */
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 150px; /* Mayor tamaño mínimo */
+        max-width: 250px;
+        flex-grow: 1; /* Distribución uniforme */
+        text-align: center;
+      }
+
+      .option-btn:hover {
+        background-color: #475569;
+        transform: scale(1.03); /* Menos exagerado */
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+      }
+
+      .option-btn.selected {
+        background: var(--color-primary);
+        color: #0f172a;
+        border: 3px solid white; /* Borde más grueso */
+        font-weight: 900;
+        transform: scale(1.08);
+        box-shadow: 0 0 10px var(--color-primary);
+      }
+
+      /* 🔻 BOTONES DE ACCIÓN (Ajuste de distribución y padding) */
+      .quiz-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem; /* Más margen superior */
+        flex-wrap: wrap;
+        gap: 1rem; /* Más espacio */
+      }
+
+      .cta-btn, .secondary-btn {
+        flex: 1; /* Distribución uniforme */
+        text-align: center;
+        min-width: 150px;
       }
       
-      /* ... (Resto de tu CSS original) ... */
+      .cta-btn {
+        background-color: var(--color-primary);
+        color: #0f172a;
+        font-weight: 900;
+        padding: 0.8rem 1.6rem; /* Más padding */
+        border-radius: 0.6rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+        font-size: 1rem; /* Más grande */
+      }
 
-      .quiz-card {
-        transform-style: preserve-3d;
-        transition: transform 0.3s ease;
-        will-change: transform;
-      }
+      .cta-btn:hover {
+        background-color: var(--color-accent);
+        transform: scale(1.03); /* Menos exagerado */
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+      }
 
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: var(--color-bg-dark);
-        min-height: 100vh;
-        color: var(--color-text-light);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        overflow-y: auto;
-        margin: 0;
-      }
+      .secondary-btn {
+        background-color: #334155;
+        color: var(--color-text-light);
+        font-weight: 700;
+        padding: 0.8rem 1.6rem; /* Más padding */
+        border-radius: 0.6rem;
+        transition: all 0.3s ease;
+        font-size: 1rem; /* Más grande */
+      }
 
-      /* 🔹 NAVBAR */
-      .navbar {
-        background-color: rgba(15, 23, 42, 0.9);
-        backdrop-filter: blur(6px);
-        border-bottom: 2px solid var(--color-primary);
-        padding: 0.6rem 1.2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: fixed;
-        top: 0;
-        width: 100%;
-        z-index: 20;
-        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-      }
+      .secondary-btn:hover {
+        background-color: #475569;
+        transform: scale(1.03);
+      }
 
-      .navbar h1 {
-        font-size: 1.3rem;
-        font-weight: 900;
-        color: var(--color-text-light);
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
-      }
+      /* 💬 RESULTADOS (Ajuste de alineación y tamaño) */
+      .result-card {
+        text-align: left; /* Alineado a la izquierda para mejor lectura */
+        padding: 3rem; /* Más relleno */
+        margin-bottom: 2rem;
+      }
 
-      /* 🧩 CONTENEDOR DEL QUIZ */
-      .quiz-container {
-        max-width: 700px;
-        margin: 5rem auto 2rem auto;
-        padding: 1rem;
-        position: relative;
-        perspective: 1000px;
-        transform: scale(0.95);
-      }
+      .result-card .text-emerald-500 {
+        font-size: 2.2rem; /* Más grande */
+        font-weight: 900;
+        color: var(--color-primary);
+        text-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+      }
 
-      /* 💫 TARJETA DEL QUIZ */
-      .quiz-card,
-      .result-card {
-        background-color: var(--color-card-dark);
-        border: 1px solid var(--color-border);
-        border-radius: 1rem;
-        padding: 1.8rem;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-        transition: all 0.5s ease, box-shadow 0.3s ease;
-        animation: popCard 0.6s ease forwards;
-      }
+      .result-card p {
+        font-size: 1.1rem; /* Más grande */
+        color: #d1d5db;
+      }
 
-      .quiz-card:hover {
-        transform: scale(1.01);
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
-      }
+      .skill-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0; /* Más padding */
+      }
 
-      @keyframes popCard {
-        from {
-          opacity: 0;
-          transform: scale(0.9) translateY(10px);
+      .skill-name {
+        font-weight: 600;
+        color: var(--color-text-light);
+        width: 30%;
+        text-align: left;
+      }
+
+      .skill-bar-container {
+        flex-grow: 1;
+        height: 10px; /* Más grueso */
+        background-color: #334155;
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+
+      .skill-bar {
+        height: 100%;
+        background-color: var(--color-primary);
+        transition: width 0.5s ease-out;
+        box-shadow: 0 0 4px rgba(16, 185, 129, 0.6);
+      }
+
+      /* Modal (Ajuste de tamaño) */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 50;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+      }
+
+      .modal-overlay.open {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal-content {
+        background-color: var(--color-card-dark);
+        padding: 2rem; /* Más relleno */
+        border-radius: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        max-width: 450px; /* Más ancho */
+        text-align: center;
+        border: 2px solid var(--color-primary);
+      }
+
+      .modal-content h3 {
+        font-size: 1.5rem; /* Más grande */
+        font-weight: 800;
+        color: var(--color-primary);
+        margin-bottom: 1rem; /* Más margen */
+      }
+
+      /* 🌟 EFECTO DE FONDO */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          circle at 50% 50%,
+          rgba(16, 185, 129, 0.06) 0%,
+          transparent 70%
+        );
+        z-index: -1;
+      }
+
+/* ❗ AJUSTE CLAVE: Responsividad mejorada para tablets y móviles */
+@media (max-width: 800px) {
+    .quiz-container {
+        max-width: 95%;
+        padding: 0;
+    }
+
+    .quiz-card,
+    .result-card {
+        padding: 2rem;
+    }
+}
+
+      @media (max-width: 640px) {
+        body {
+            padding-top: 4.5rem; /* Ajuste para navbar */
         }
-        to {
-          opacity: 1;
-          transform: scale(1);
+        
+        .navbar {
+            padding: 0.6rem 1rem;
         }
-      }
+        
+        .question-item p {
+          font-size: 1.5rem; /* Más grande que tu original, pero mejor en móvil */
+        }
 
-      /* 🔸 BARRA DE PROGRESO */
-      .progress-bar {
-        width: 100%;
-        height: 8px;
-        background: #334155; /* gris azulado */
-        border-radius: 9999px;
-        margin-bottom: 1rem;
-      }
-
-      .progress-fill {
-        background: var(--color-primary);
-        height: 8px;
-        width: 0%;
-        border-radius: 9999px;
-        box-shadow: 0 0 10px var(--color-primary);
-        transition: width 0.6s ease-in-out;
-      }
-
-      /* ❓ PREGUNTA */
-      .question-item {
-        text-align: center;
-      }
-
-      .question-item p {
-        font-size: 1.6rem;
-        font-weight: 800;
-        color: var(--color-text-light);
-        margin-bottom: 1.2rem;
-        text-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
-      }
-
-      /* ⚡ OPCIONES */
-      .options-group {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.8rem;
-        margin-top: 1rem;
-      }
-
-      .option-btn {
-        background-color: #334155;
-        border: 1px solid var(--color-border);
-        color: var(--color-text-light);
-        padding: 0.6rem 1.4rem;
-        font-size: 1rem;
-        font-weight: 700;
-        border-radius: 0.6rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        min-width: 120px;
-        max-width: 220px;
-        text-align: center;
-      }
-
-      .option-btn:hover {
-        background-color: #475569;
-        transform: scale(1.05);
-        box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
-      }
-
-      .option-btn.selected {
-        background: var(--color-primary);
-        color: #0f172a;
-        border: 2px solid white;
-        font-weight: 900;
-        transform: scale(1.08);
-        box-shadow: 0 0 10px var(--color-primary);
-      }
-
-      /* 🔻 BOTONES DE ACCIÓN */
-      .quiz-actions {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 1.5rem;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-
-      .cta-btn {
-        background-color: var(--color-primary);
-        color: #0f172a;
-        font-weight: 900;
-        padding: 0.7rem 1.6rem;
-        border-radius: 0.6rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-        font-size: 0.95rem;
-      }
-
-      .cta-btn:hover {
-        background-color: var(--color-accent);
-        transform: scale(1.05);
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
-      }
-
-      .secondary-btn {
-        background-color: #334155;
-        color: var(--color-text-light);
-        font-weight: 700;
-        padding: 0.7rem 1.6rem;
-        border-radius: 0.6rem;
-        transition: all 0.3s ease;
-        font-size: 0.95rem;
-      }
-
-      .secondary-btn:hover {
-        background-color: #475569;
-        transform: scale(1.03);
-      }
-
-      /* 💬 RESULTADOS */
-      .result-card {
-        text-align: center;
-        padding: 1.8rem;
-        margin-bottom: 2rem;
-      }
-
-      .result-card .text-emerald-500 {
-        font-size: 1.8rem;
-        font-weight: 900;
-        color: var(--color-primary);
-        text-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
-      }
-
-      .result-card p {
-        font-size: 1rem;
-        color: #d1d5db;
-      }
-
-      .skill-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.4rem 0;
-      }
-
-      .skill-name {
-        font-weight: 600;
-        color: var(--color-text-light);
-        width: 30%;
-        text-align: left;
-      }
-
-      .skill-bar-container {
-        flex-grow: 1;
-        height: 8px;
-        background-color: #334155;
-        border-radius: 9999px;
-        overflow: hidden;
-      }
-
-      .skill-bar {
-        height: 100%;
-        background-color: var(--color-primary);
-        transition: width 0.5s ease-out;
-        box-shadow: 0 0 4px rgba(16, 185, 129, 0.6);
-      }
-
-      /* Modal */
-      .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 50;
-        opacity: 0; /* Controlado por JS */
-        visibility: hidden; /* Controlado por JS */
-        transition: opacity 0.3s ease;
-      }
-
-      .modal-overlay.open {
-        opacity: 1;
-        visibility: visible;
-      }
-
-      .modal-content {
-        background-color: var(--color-card-dark);
-        padding: 1.5rem;
-        border-radius: 1rem;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        max-width: 380px;
-        text-align: center;
-        border: 2px solid var(--color-primary);
-      }
-
-      .modal-content h3 {
-        font-size: 1.3rem;
-        font-weight: 800;
-        color: var(--color-primary);
-        margin-bottom: 0.8rem;
-      }
-
-      /* 🌟 EFECTO DE FONDO */
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(
-          circle at 50% 50%,
-          rgba(16, 185, 129, 0.06) 0%,
-          transparent 70%
-        );
-        z-index: -1;
-      }
-
-      /* 📱 RESPONSIVIDAD */
-      @media (max-width: 640px) {
-        .question-item p {
-          font-size: 1.3rem;
+        .options-group {
+            flex-direction: column; /* Botones de opción en columna */
+            gap: 0.8rem;
         }
 
-        .option-btn {
+        .option-btn {
+          width: 100%;
+          min-width: unset;
+          max-width: unset;
+          padding: 0.7rem 1.4rem;
+        }
+
+        .quiz-card,
+        .result-card {
+          padding: 1.5rem;
+        }
+        
+        .quiz-actions {
+            flex-direction: column; /* Botones de acción en columna */
+            gap: 0.8rem;
+        }
+        
+        .cta-btn,
+        .secondary-btn {
+          padding: 0.7rem 1.2rem;
           width: 100%;
-        }
-
-        .quiz-card,
-        .result-card {
-          padding: 1.5rem;
-        }
-
-        .cta-btn,
-        .secondary-btn {
-          padding: 0.6rem 1.2rem;
-          font-size: 0.9rem;
-        }
-      }
+          min-width: unset;
+          flex: unset;
+          font-size: 0.95rem; /* Ligeramente más grande que tu original */
+        }
+      }
     </style>
   </head>
   </html>
@@ -1233,6 +1278,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     </script>
   </body>
 </html>
+
 
 
 
