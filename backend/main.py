@@ -63,23 +63,24 @@ def login_user(user: UserLogin):
     return {"token": token, "name": db_user["name"]}
 
 # ---------- Guardar Quiz (USA COLECCIÓN SEPARADA) ----------
-@app.post("/api/quiz/") # ¡Añadir la barra inclinada final!
-def save_quiz(result: QuizResult, authorization: Optional[str] = Header(None)):
-    token = authorization.split(" ")[1] if authorization and " " in authorization else None
-    user_data = verify_token(token)
-    if not user_data:
-        raise HTTPException(status_code=401, detail="Token inválido o expirado")
+# ---------- Guardar Quiz (TEMPORAL PARA DEBUGGING) ----------
+@app.post("/api/quiz/") # Mantenemos la barra final que corrigió el 404
+def save_quiz(result: QuizResult):
+    # Ya no se requiere el token ni el Header.
+    # Usaremos un email temporal para no romper MongoDB.
+    
+    email = "temp_user@test.com" # <--- EMAIL TEMPORAL
 
-    email = user_data["email"]
+    print(f"✅ ¡JSON RECIBIDO! Intentando guardar resultado para {email}")
 
-    # Preparar el documento del quiz añadiendo el email del usuario para enlazarlo
+    # Preparar el documento del quiz
     quiz_data = result.dict()
     quiz_data["user_email"] = email
     
-    # CORRECTO: Insertar en la colección dedicada de todas las respuestas
+    # Insertar en la colección
     all_responses_collection.insert_one(quiz_data)
 
-    return {"message": "Quiz guardado correctamente en la colección de respuestas"}
+    return {"message": "¡PRUEBA EXITOSA! Quiz guardado (sin verificación de usuario)."}
 
 # ---------- Obtener quizzes del usuario (CONSULTA COLECCIÓN SEPARADA) ----------
 @app.get("/api/quizzes")
@@ -108,5 +109,6 @@ def get_user_info(authorization: Optional[str] = Header(None)):
     # Obtiene solo el nombre y el email del usuario
     user = users_collection.find_one({"email": user_data["email"]}, {"_id": 0, "name": 1, "email": 1})
     return user
+
 
 
