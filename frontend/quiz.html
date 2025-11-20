@@ -454,8 +454,7 @@ body::before {
     </div>
 
     <script>
-     // --- URL DE LA API ---
-const API_URL = "https://encuestaa.onrender.com"; 
+    const API_URL = "https://encuestaa.onrender.com"; 
 
 // --- CONSTANTES Y CONFIGURACIÓN ---
 const MAX_SCORE_PER_QUESTION_RAW = 5;
@@ -463,116 +462,228 @@ const COOLDOWN_DAYS = 7;
 const LAST_QUIZ_KEY = 'lastQuizCompletion';
 const PREVIOUS_RESULT_KEY = 'previousQuizResult';
 
-// Escalas de respuesta
+// Escalas de respuesta (Contextualizadas)
 const ANSWER_SCALES = {
     'attitude': {
         options: ["Totalmente en desacuerdo", "En desacuerdo", "Neutral/Depende", "De acuerdo", "Totalmente de acuerdo"]
     },
     'frequency': {
-        options: ["Casi nunca lo hago", "Raramente lo hago", "A veces lo hago", "Lo hago frecuentemente", "Casi siempre lo hago"]
+        options: ["Nunca / Casi nunca", "Raramente", "A veces", "Frecuentemente", "Siempre / Casi siempre"]
     }
 };
 const DEFAULT_SCALE = 'frequency';
 
-// --- DATA COMPLETA (40 PREGUNTAS MULTIFACTORIALES) ---
+// --- 40 PREGUNTAS MULTIFACTORIALES (Escaneo Profundo) ---
 const QUIZ_DATA = [
     { id: 1, text: "Al inicio de un proyecto, ¿dedicas más tiempo a la planificación detallada (milestones, dependencias) que a la ejecución inmediata?", scores: [{ skill: "Gestión del tiempo", polarity: 1 }, { skill: "Proactividad", polarity: -1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
-    { id: 2, text: "Si un requisito clave de un cliente cambia a última hora, ¿te frustras o lo ves como una oportunidad para demostrar flexibilidad?", scores: [{ skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'attitude' },
-    { id: 3, text: "En una reunión de ideas, ¿sientes que es tu deber señalar los defectos de una idea 'loca' en lugar de intentar mejorarla?", scores: [{ skill: "Creatividad e innovación", polarity: -1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: -1 }], scaleType: 'attitude' },
+    { id: 2, text: "Si un requisito clave de un cliente cambia a última hora, ¿te frustras visiblemente o lo ves como una oportunidad para demostrar flexibilidad?", scores: [{ skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'attitude' },
+    { id: 3, text: "En una reunión de ideas, ¿sientes que es tu deber señalar los defectos de una idea 'loca' inmediatamente en lugar de intentar mejorarla primero?", scores: [{ skill: "Creatividad e innovación", polarity: -1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: -1 }], scaleType: 'attitude' },
     { id: 4, text: "¿Buscas tomar todas las decisiones importantes del equipo para asegurar que se hagan 'bien', restando autonomía a tus compañeros?", scores: [{ skill: "Liderazgo", polarity: -1 }, { skill: "Trabajo en equipo", polarity: -1 }, { skill: "Empatía", polarity: -1 }], scaleType: 'frequency' },
-    { id: 5, text: "Cuando un colega te pide ayuda o te explica un problema, ¿le interrumpes para ofrecerle la solución apenas crees entender la causa?", scores: [{ skill: "Comunicación efectiva", polarity: -1 }, { skill: "Empatía", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }], scaleType: 'frequency' },
+    { id: 5, text: "Cuando un colega te pide ayuda, ¿le interrumpes para ofrecerle la solución apenas crees entender la causa, sin dejar que termine?", scores: [{ skill: "Comunicación efectiva", polarity: -1 }, { skill: "Empatía", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }], scaleType: 'frequency' },
     { id: 6, text: "¿Realizas o exploras una nueva herramienta o curso por iniciativa propia, incluso si no tiene una aplicación directa en tu trabajo actual?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: 1 }, { skill: "Creatividad e innovación", polarity: 1 }], scaleType: 'frequency' },
-    { id: 7, text: "Si fallas un plazo importante, ¿te cuesta días recuperarte emocionalmente y volver a concentrarte en otras tareas?", scores: [{ skill: "Resiliencia", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }], scaleType: 'attitude' },
-    { id: 8, text: "En un debate intenso, ¿priorizas alcanzar un acuerdo que satisfaga a todos sobre imponer tu punto de vista lógicamente superior?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }], scaleType: 'attitude' },
-    { id: 9, text: "¿Te sientes muy incómodo cuando un software o proceso que dominas es reemplazado por uno nuevo sin previo aviso?", scores: [{ skill: "Adaptabilidad al cambio", polarity: -1 }, { skill: "Aprendizaje continuo", polarity: -1 }, { skill: "Resiliencia", polarity: -1 }], scaleType: 'attitude' },
+    { id: 7, text: "Si fallas un plazo importante, ¿te cuesta días recuperarte emocionalmente y volver a concentrarte plenamente en otras tareas?", scores: [{ skill: "Resiliencia", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }], scaleType: 'attitude' },
+    { id: 8, text: "En un debate intenso, ¿priorizas alcanzar un acuerdo que satisfaga a todos sobre imponer tu punto de vista, aunque este sea lógicamente superior?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }], scaleType: 'attitude' },
+    { id: 9, text: "¿Te sientes ansioso o molesto cuando un software o proceso que dominas es reemplazado por uno nuevo sin previo aviso?", scores: [{ skill: "Adaptabilidad al cambio", polarity: -1 }, { skill: "Aprendizaje continuo", polarity: -1 }, { skill: "Resiliencia", polarity: -1 }], scaleType: 'attitude' },
     { id: 10, text: "¿Eres de los que prefiere 'pedir perdón antes que permiso' cuando ves una oportunidad clara de mejora o eficiencia?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Gestión del tiempo", polarity: 1 }], scaleType: 'attitude' },
-    { id: 11, text: "¿Ante un problema conocido, primero revisas si existe un proceso o solución estándar, antes de intentar crear una nueva?", scores: [{ skill: "Creatividad e innovación", polarity: -1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
-    { id: 12, text: "¿Crees que los problemas personales de un empleado son irrelevantes y no deberían afectar la planificación ni los objetivos laborales del equipo?", scores: [{ skill: "Liderazgo", polarity: -1 }, { skill: "Empatía", polarity: -1 }], scaleType: 'attitude' },
-    { id: 13, text: "¿Simplificas intencionalmente los detalles técnicos complejos cuando hablas con personas no técnicas para evitar confusiones, a pesar de la pérdida de precisión?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }], scaleType: 'frequency' },
-    { id: 14, text: "Cuando el equipo atraviesa una crisis o un error grave, ¿logras mantener la moral alta y el enfoque positivo en la solución?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'frequency' },
-    { id: 15, text: "¿Sueles trabajar en una sola tarea importante a la vez (Deep Work) o prefieres saltar entre varias tareas pequeñas para sentirte productivo?", scores: [{ skill: "Gestión del tiempo", polarity: 1 }, { skill: "Proactividad", polarity: -1 }], scaleType: 'frequency' },
+    { id: 11, text: "¿Ante un problema conocido, revisas primero si existe una solución estándar antes de intentar crear una nueva desde cero?", scores: [{ skill: "Creatividad e innovación", polarity: -1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
+    { id: 12, text: "¿Crees que los problemas personales de un empleado son irrelevantes y no deberían afectar la planificación del equipo bajo ninguna circunstancia?", scores: [{ skill: "Liderazgo", polarity: -1 }, { skill: "Empatía", polarity: -1 }], scaleType: 'attitude' },
+    { id: 13, text: "¿Simplificas intencionalmente los detalles técnicos complejos cuando hablas con personas no técnicas, aunque se pierda precisión?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }], scaleType: 'frequency' },
+    { id: 14, text: "Cuando el equipo atraviesa una crisis, ¿logras mantener la moral alta y el enfoque positivo en la solución?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'frequency' },
+    { id: 15, text: "¿Sueles trabajar en una sola tarea importante a la vez (Deep Work) evitando saltar entre varias tareas pequeñas?", scores: [{ skill: "Gestión del tiempo", polarity: 1 }, { skill: "Proactividad", polarity: -1 }], scaleType: 'frequency' },
     { id: 16, text: "¿Buscas activamente tutoriales o documentación avanzada sobre un tema, incluso si ya puedes resolver las tareas básicas con lo que sabes?", scores: [{ skill: "Aprendizaje continuo", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
-    { id: 17, text: "¿Modificas tu estilo de comunicación (formal/informal, directo/suave) según la personalidad o estado de ánimo de la persona con la que interactúas?", scores: [{ skill: "Empatía", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }], scaleType: 'frequency' },
-    { id: 18, text: "¿Te sientes responsable de la formación y el crecimiento de tus compañeros, incluso si no eres su jefe directo?", scores: [{ skill: "Liderazgo", polarity: 1 }, { skill: "Proactividad", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: 1 }], scaleType: 'attitude' },
-    { id: 19, text: "¿Evitas dar feedback negativo directo a un colega para preservar una relación armoniosa, prefiriendo comunicarlo indirectamente?", scores: [{ skill: "Comunicación efectiva", polarity: -1 }, { skill: "Trabajo en equipo", polarity: -1 }, { skill: "Empatía", polarity: -1 }], scaleType: 'frequency' },
-    { id: 20, text: "Cuando tienes una idea muy innovadora, ¿el miedo al fracaso te detiene o te motiva a probarla?", scores: [{ skill: "Creatividad e innovación", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }], scaleType: 'attitude' },
-    { id: 21, text: "¿Tienes una lista clara de 'no hacer' para evitar distracciones durante tus bloques de trabajo más importantes?", scores: [{ skill: "Gestión del tiempo", polarity: 1 }, { skill: "Proactividad", polarity: 1 }], scaleType: 'frequency' },
-    { id: 22, text: "¿Consideras que el éxito de un proyecto es la suma de los logros individuales o el resultado de la sinergia colectiva?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'attitude' },
-    { id: 23, text: "¿Buscas datos y métricas para validar tus suposiciones, incluso si tu intuición ya te dice cuál es la respuesta correcta?", scores: [{ skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: 1 }], scaleType: 'frequency' },
-    { id: 24, text: "¿Eres el primero en el equipo en experimentar con cambios en las herramientas del entorno de desarrollo, a pesar de los posibles errores que pueda causar a otros?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Trabajo en equipo", polarity: -1 }], scaleType: 'frequency' },
+    { id: 17, text: "¿Modificas tu estilo de comunicación (tono, formalidad) según la personalidad de la persona con la que interactúas?", scores: [{ skill: "Empatía", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }], scaleType: 'frequency' },
+    { id: 18, text: "¿Te sientes responsable del crecimiento profesional de tus compañeros, incluso si no eres su jefe directo?", scores: [{ skill: "Liderazgo", polarity: 1 }, { skill: "Proactividad", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: 1 }], scaleType: 'attitude' },
+    { id: 19, text: "¿Evitas dar feedback negativo directo a un colega para preservar una relación armoniosa?", scores: [{ skill: "Comunicación efectiva", polarity: -1 }, { skill: "Trabajo en equipo", polarity: -1 }, { skill: "Empatía", polarity: -1 }], scaleType: 'frequency' },
+    { id: 20, text: "Cuando tienes una idea muy innovadora, ¿el miedo al fracaso te detiene de compartirla?", scores: [{ skill: "Creatividad e innovación", polarity: -1 }, { skill: "Resiliencia", polarity: -1 }], scaleType: 'attitude' },
+    { id: 21, text: "¿Utilizas una lista de 'no hacer' o bloqueadores de sitios web para evitar distracciones?", scores: [{ skill: "Gestión del tiempo", polarity: 1 }, { skill: "Proactividad", polarity: 1 }], scaleType: 'frequency' },
+    { id: 22, text: "¿Consideras que el éxito de un proyecto es mérito del equipo y no solo de tu esfuerzo individual?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'attitude' },
+    { id: 23, text: "¿Buscas datos y métricas para validar tus suposiciones, incluso si tu intuición ya te dice cuál es la respuesta?", scores: [{ skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: 1 }], scaleType: 'frequency' },
+    { id: 24, text: "¿Eres el primero en el equipo en experimentar con nuevas herramientas, a pesar de los posibles errores iniciales?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Trabajo en equipo", polarity: -1 }], scaleType: 'frequency' },
     { id: 25, text: "¿Cuando un colega habla, centras tu atención en lo que dice y no en lo que vas a responder a continuación?", scores: [{ skill: "Empatía", polarity: 1 }, { skill: "Comunicación efectiva", polarity: 1 }], scaleType: 'frequency' },
-    { id: 26, text: "¿Tienes estrategias definidas (ej. ejercicio, pausas) para manejar picos de estrés que de otra forma afectarían tu productividad?", scores: [{ skill: "Resiliencia", polarity: 1 }, { skill: "Gestión del tiempo", polarity: 1 }], scaleType: 'frequency' },
-    { id: 27, text: "¿Utilizas analogías o ideas de otros campos (arte, naturaleza) para explicar o resolver problemas técnicos complejos?", scores: [{ skill: "Creatividad e innovación", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }], scaleType: 'frequency' },
-    { id: 28, text: "¿Te aseguras de que todos los involucrados en una decisión crucial entiendan las implicaciones antes de proceder, no solo los directamente afectados?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'frequency' },
-    { id: 29, text: "Si el equipo falla en un objetivo, ¿asumes tu parte de la responsabilidad públicamente en lugar de enfocarte en las fallas ajenas?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }], scaleType: 'frequency' },
-    { id: 30, text: "Antes de implementar una solución importante, ¿suele ser necesario que un colega te cuestione para que encuentres los puntos débiles de tu diseño?", scores: [{ skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }, { skill: "Proactividad", polarity: -1 }], scaleType: 'frequency' },
-    { id: 31, text: "¿Sientes que estás perdiendo tiempo si pasas un día entero aprendiendo una nueva librería sin producir código para el proyecto actual?", scores: [{ skill: "Gestión del tiempo", polarity: -1 }, { skill: "Aprendizaje continuo", polarity: -1 }], scaleType: 'attitude' },
-    { id: 32, text: "¿Delegas tareas complejas, no solo las sencillas, para fomentar el crecimiento y la confianza de los miembros de tu equipo?", scores: [{ skill: "Liderazgo", polarity: 1 }, { skill: "Trabajo en equipo", polarity: 1 }], scaleType: 'frequency' },
-    { id: 33, text: "¿Antes de intentar convencer a alguien de tu punto de vista, puedes resumir con precisión la posición de la otra persona para demostrar que la entendiste?", scores: [{ skill: "Empatía", polarity: 1 }, { skill: "Comunicación efectiva", polarity: 1 }], scaleType: 'frequency' },
-    { id: 34, text: "¿Te aburre profundamente trabajar siempre con la misma pila tecnológica o el mismo tipo de proyecto?", scores: [{ skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Creatividad e innovación", polarity: 1 }], scaleType: 'attitude' },
-    { id: 35, text: "¿Automatizas tareas repetitivas o manuales, incluso si te lleva más tiempo automatizarlas que hacerlas una vez?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Gestión del tiempo", polarity: 1 }], scaleType: 'frequency' },
-    { id: 36, text: "Tras un gran error, ¿pasas rápidamente de la autocrítica al análisis de los pasos concretos para prevenir que vuelva a ocurrir?", scores: [{ skill: "Resiliencia", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
-    { id: 37, text: "¿Dedicas tiempo a documentar y compartir tus nuevos aprendizajes para que el resto del equipo se beneficie?", scores: [{ skill: "Aprendizaje continuo", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }, { skill: "Trabajo en equipo", polarity: 1 }], scaleType: 'frequency' },
-    { id: 38, text: "¿Buscas activamente a compañeros que están luchando con una tarea para ofrecerles ayuda, sin esperar a que te la pidan?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Empatía", polarity: 1 }, { skill: "Proactividad", polarity: 1 }], scaleType: 'frequency' },
-    { id: 39, text: "Al escribir un mensaje o email importante, ¿lo revisas dos veces para eliminar ambigüedades y asegurar la precisión del mensaje?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
-    { id: 40, text: "¿Te molesta profundamente cuando tu rutina de trabajo se interrumpe por reuniones de última hora o emergencias no planificadas?", scores: [{ skill: "Adaptabilidad al cambio", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }, { skill: "Resiliencia", polarity: -1 }], scaleType: 'attitude' }
+    { id: 26, text: "¿Tienes estrategias definidas (ej. respiración, pausas) para manejar picos de estrés?", scores: [{ skill: "Resiliencia", polarity: 1 }, { skill: "Gestión del tiempo", polarity: 1 }], scaleType: 'frequency' },
+    { id: 27, text: "¿Utilizas analogías de otros campos (arte, biología) para resolver problemas técnicos?", scores: [{ skill: "Creatividad e innovación", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }], scaleType: 'frequency' },
+    { id: 28, text: "¿Te aseguras de que todos los stakeholders entiendan las implicaciones antes de proceder?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'frequency' },
+    { id: 29, text: "Si el equipo falla, ¿asumes tu parte de la responsabilidad públicamente?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }], scaleType: 'frequency' },
+    { id: 30, text: "¿Necesitas que un colega te cuestione para encontrar los puntos débiles de tu diseño?", scores: [{ skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }, { skill: "Proactividad", polarity: -1 }], scaleType: 'frequency' },
+    { id: 31, text: "¿Sientes que pierdes tiempo si pasas un día aprendiendo sin producir código?", scores: [{ skill: "Gestión del tiempo", polarity: -1 }, { skill: "Aprendizaje continuo", polarity: -1 }], scaleType: 'attitude' },
+    { id: 32, text: "¿Delegas tareas complejas para fomentar el crecimiento de otros?", scores: [{ skill: "Liderazgo", polarity: 1 }, { skill: "Trabajo en equipo", polarity: 1 }], scaleType: 'frequency' },
+    { id: 33, text: "¿Puedes resumir con precisión la posición de otra persona antes de refutarla?", scores: [{ skill: "Empatía", polarity: 1 }, { skill: "Comunicación efectiva", polarity: 1 }], scaleType: 'frequency' },
+    { id: 34, text: "¿Te aburre trabajar siempre con la misma tecnología o tipo de proyecto?", scores: [{ skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Creatividad e innovación", polarity: 1 }], scaleType: 'attitude' },
+    { id: 35, text: "¿Automatizas tareas manuales aunque te tome más tiempo al principio?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Gestión del tiempo", polarity: 1 }], scaleType: 'frequency' },
+    { id: 36, text: "Tras un error, ¿analizas pasos concretos para prevenir que vuelva a ocurrir?", scores: [{ skill: "Resiliencia", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
+    { id: 37, text: "¿Documentas y compartes tus nuevos aprendizajes con el equipo?", scores: [{ skill: "Aprendizaje continuo", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }, { skill: "Trabajo en equipo", polarity: 1 }], scaleType: 'frequency' },
+    { id: 38, text: "¿Ofreces ayuda a compañeros que luchan con una tarea sin que te la pidan?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Empatía", polarity: 1 }, { skill: "Proactividad", polarity: 1 }], scaleType: 'frequency' },
+    { id: 39, text: "¿Revisas tus mensajes importantes dos veces para eliminar ambigüedades?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
+    { id: 40, text: "¿Te molesta profundamente cuando tu rutina se interrumpe por emergencias?", scores: [{ skill: "Adaptabilidad al cambio", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }, { skill: "Resiliencia", polarity: -1 }], scaleType: 'attitude' }
 ];
 
-// --- DATA COMPLETA DE PERFILES ---
+// --- DATA EXTENSA DE PERFILES ---
 const PROFILES = [
-    { name: "EL ARQUITECTO ESTRATÉGICO", skills: ["Liderazgo", "Pensamiento crítico y resolución de problemas", "Comunicación efectiva"], description: "Usted no solo dirige; define el futuro. Su habilidad para desglosar la complejidad, articular una visión inspiradora y movilizar a las personas lo posiciona como un catalizador de transformación." },
-    { name: "EL CONSTRUCTOR DE CULTURA", skills: ["Trabajo en equipo", "Empatía", "Comunicación efectiva"], description: "Su mayor fortaleza es la inteligencia emocional. Usted es el engranaje humano del equipo, capaz de percibir tensiones, mediar conflictos y transformar grupos de individuos en equipos de alto rendimiento." },
-    { name: "EL AGENTE DEL CAMBIO ÁGIL", skills: ["Adaptabilidad al cambio", "Resiliencia", "Aprendizaje continuo"], description: "Usted abraza la disrupción. Su mente está programada para la mejora continua, viendo cada revés como un nuevo capítulo. Es el recurso ideal para entornos de alta incertidumbre." },
-    { name: "EL VISIONARIO DISRUPTIVO", skills: ["Creatividad e innovación", "Proactividad", "Pensamiento crítico y resolución de problemas"], description: "Su motor es la eficiencia y la originalidad. Posee la habilidad de generar soluciones fuera del estándar y la disciplina para implementarlas sin esperar órdenes." },
-    { name: "EL EJECUTOR DE ALTO RENDIMIENTO", skills: ["Gestión del tiempo", "Proactividad", "Resiliencia"], description: "Ejecuta con implacable eficiencia. Domina la priorización, limpia obstáculos y se levanta inmediatamente tras un fallo. Es el motor que convierte planes en resultados." },
-    { name: "EL PROFESIONAL INTEGRAL (360°)", skills: [], description: "Demuestra un balance excepcional en todas las áreas. Su perfil es adaptable a casi cualquier rol. Su próximo paso es especializarse para maximizar su impacto." },
+    { 
+        name: "EL ARQUITECTO ESTRATÉGICO", 
+        skills: ["Liderazgo", "Pensamiento crítico y resolución de problemas", "Comunicación efectiva"], 
+        description: "Usted posee la rara habilidad de ver el tablero de ajedrez completo. No solo resuelve problemas; diseña los sistemas que evitan que los problemas ocurran. Su liderazgo no se basa en la autoridad, sino en la claridad de pensamiento. Es el perfil ideal para roles de CTO, Arquitectura de Software o Dirección de Producto, donde la visión a largo plazo y la comunicación precisa son vitales." 
+    },
+    { 
+        name: "EL CONECTOR HUMANO Y TÉCNICO", 
+        skills: ["Trabajo en equipo", "Empatía", "Comunicación efectiva"], 
+        description: "Usted es el 'pegamento' indispensable de cualquier organización. En un mundo de código y máquinas, usted domina el algoritmo más complejo: las personas. Su capacidad para leer el ambiente, mediar en conflictos invisibles y articular ideas complejas de forma simple lo convierte en un líder de cultura. Sin usted, los equipos se fragmentan y los proyectos se estancan por fricción humana." 
+    },
+    { 
+        name: "EL AGENTE DE EVOLUCIÓN ÁGIL", 
+        skills: ["Adaptabilidad al cambio", "Resiliencia", "Aprendizaje continuo"], 
+        description: "Usted es la definición de 'Antifrágil'. Mientras otros temen el cambio de requisitos o tecnología, usted lo utiliza como combustible. Su perfil indica una mentalidad de crecimiento inquebrantable. Es el activo más valioso en Startups, entornos de innovación rápida o durante fusiones corporativas, donde la única constante es el caos y la necesidad de aprender ayer lo que se necesita hoy." 
+    },
+    { 
+        name: "EL VISIONARIO DISRUPTIVO", 
+        skills: ["Creatividad e innovación", "Proactividad", "Pensamiento crítico y resolución de problemas"], 
+        description: "Usted no sigue caminos; los abre. Su mente rechaza instintivamente el 'status quo'. Donde otros ven un proceso establecido, usted ve ineficiencia esperando ser optimizada. Su combinación de creatividad con la iniciativa para ejecutar (Proactividad) lo hace peligroso (en el buen sentido) para la competencia. Es el motor de I+D y diferenciación de su empresa." 
+    },
+    { 
+        name: "EL MAESTRO DE LA EJECUCIÓN", 
+        skills: ["Gestión del tiempo", "Proactividad", "Resiliencia"], 
+        description: "Usted convierte estrategias abstractas en resultados tangibles. Su disciplina es su superpoder. No se distrae, no pone excusas y se recupera de los fallos con una velocidad asombrosa. En un mundo lleno de 'iniciadores', usted es un 'finalizador'. Los equipos de alto rendimiento se construyen alrededor de personas como usted que garantizan que el trabajo se haga, a tiempo y con calidad." 
+    },
+    { 
+        name: "EL PROFESIONAL INTEGRAL (360°)", 
+        skills: [], 
+        description: "Su perfil es un polígono perfecto. Ha logrado un equilibrio que pocos alcanzan, evitando las debilidades críticas que suelen descarrilar carreras. Es el comodín definitivo, capaz de liderar, ejecutar o mediar según la situación lo requiera. Su desafío ahora es la especialización: elija qué 'pico' quiere desarrollar para destacar aún más sobre su sólida base." 
+    },
 ];
 
-// --- DATA COMPLETA DE FEEDBACK DETALLADO ---
+// --- FEEDBACK DETALLADO (Nivel Consultoría) ---
 const SKILL_FEEDBACK = {
     "Liderazgo": {
-        low: { weakness: "Evitas decisiones difíciles o delegar, lo que limita el crecimiento del equipo.", tip: "Implementa la 'Delegación de Empoderamiento': delega resultados, no solo tareas." },
-        high: { strength: "Arquitecto de equipos. Empoderas y mantienes la moral alta.", tip: "Canalice esta fortaleza para el Liderazgo de Sistemas y mentoría de futuros líderes." },
+        low: { 
+            title: "Liderazgo Pasivo / Reactivo",
+            weakness: "Actualmente, su estilo de trabajo sugiere una evitación de la responsabilidad de 'dirigir'. Puede que esté esperando permiso para actuar o evitando conversaciones difíciles. Esto crea un vacío de poder que genera incertidumbre en sus pares.", 
+            tip: "Adopte la **'Propiedad Extrema'**. No necesita un cargo para liderar. Mañana, identifique una tarea que nadie quiere hacer, hágase dueño de ella y llévela a término. El liderazgo comienza con la responsabilidad personal, no con la autoridad." 
+        },
+        high: { 
+            title: "Liderazgo Transformacional",
+            strength: "Usted inspira acción. Su enfoque va más allá de gestionar tareas; gestiona personas y visiones. Tiene la capacidad de elevar el estándar de quienes le rodean.", 
+            tip: "Su siguiente nivel es la **Mentoría Escalable**. Deje de sumar seguidores y empiece a crear líderes. Identifique a su reemplazo y comience a entrenarlo hoy mismo." 
+        },
     },
     "Comunicación efectiva": {
-        low: { weakness: "Falta de claridad en mensajes complejos o evitación de feedback directo.", tip: "Usa la estructura SCQA (Situación, Complicación, Pregunta, Respuesta) para mensajes clave." },
-        high: { strength: "Mediador y traductor del equipo. Claridad excepcional.", tip: "Descentraliza tu conocimiento creando documentación y guías de comunicación." },
+        low: { 
+            title: "Comunicación Ambigua / Unidireccional",
+            weakness: "Existe una brecha entre lo que piensa y lo que los demás entienden. Es probable que asuma que los demás tienen su contexto, lo que lleva a errores costosos y retrabajos.", 
+            tip: "Utilice la técnica **ELI5 (Explícame como si tuviera 5 años)** para conceptos técnicos. Antes de enviar un correo importante, léalo en voz alta. Si se traba al leerlo, su lector se trabará al entenderlo." 
+        },
+        high: { 
+            title: "Articulador Maestro",
+            strength: "Usted convierte la complejidad en claridad. Es el traductor universal entre el negocio y la tecnología, eliminando fricciones y alineando equipos dispares.", 
+            tip: "Documente su conocimiento. Su capacidad verbal es efímera; su capacidad escrita es eterna. Cree guías, wikis o blogs internos para escalar su claridad." 
+        },
     },
     "Trabajo en equipo": {
-        low: { weakness: "Tendencia a operar como 'llanero solitario', priorizando el logro individual.", tip: "Practica la responsabilidad colectiva. Pregunta '¿Qué podemos hacer nosotros?' no '¿Quién falló?'." },
-        high: { strength: "Pegamento social del equipo. Priorizas la sinergia colectiva.", tip: "Establece un 'Acuerdo de Colaboración' formal para el equipo." },
+        low: { 
+            title: "Contribuidor Individual Aislado",
+            weakness: "Tiende a optimizar su propio rendimiento a expensas del flujo del equipo. Puede que retenga información o vea la colaboración como una interrupción a 'su' trabajo.", 
+            tip: "Cambie su métrica de éxito. Deje de medir 'mis tareas completadas' y mida 'tareas del equipo desbloqueadas'. Pregunte diariamente: '¿A quién puedo desbloquear hoy?'." 
+        },
+        high: { 
+            title: "Multiplicador de Sinergia",
+            strength: "Usted entiende que 1+1=3. Su presencia hace que los demás sean mejores. Es experto en crear seguridad psicológica, permitiendo que el equipo innove sin miedo.", 
+            tip: "Proteja la cultura. Usted es el guardián de los valores del equipo. Cuando vea un comportamiento tóxico, tiene el capital social para corregirlo con empatía." 
+        },
     },
     "Adaptabilidad al cambio": {
-        low: { weakness: "Resistencia pasiva o estrés ante cambios imprevistos.", tip: "Adopta el pensamiento Anti-Frágil. Cambia intencionalmente una herramienta al mes para ganar plasticidad." },
-        high: { strength: "Pivote natural. Ves el caos como oportunidad.", tip: "Lidera la evaluación de riesgos en nuevos proyectos y evangeliza la flexibilidad." },
+        low: { 
+            title: "Resistencia Estática",
+            weakness: "El cambio le genera fricción. Se aferra a herramientas o procesos obsoletos por comodidad, lo que lo pone en riesgo de irrelevancia técnica.", 
+            tip: "Hackee su cerebro: Cambie algo pequeño intencionalmente cada semana (su editor de texto, su ruta al trabajo, su horario). Entrene el músculo de la incomodidad." 
+        },
+        high: { 
+            title: "Fluidez Dinámica",
+            strength: "El caos no lo paraliza; lo activa. Usted navega la incertidumbre con gracia y ve las crisis como oportunidades para reescribir las reglas del juego.", 
+            tip: "Sea el 'Early Adopter' del equipo. Pruebe las tecnologías beta y filtre lo útil para los demás, ahorrándoles la curva de aprendizaje." 
+        },
     },
     "Resiliencia": {
-        low: { weakness: "Dificultad para separarse emocionalmente del fracaso.", tip: "Usa el 'Protocolo de Error': 15 min de desahogo, luego análisis objetivo de pasos a seguir." },
-        high: { strength: "Recuperación ejemplar. Mantienes la cabeza fría bajo presión.", tip: "Actúa como el ancla emocional del equipo durante las crisis." },
+        low: { 
+            title: "Fragilidad ante el Fracaso",
+            weakness: "Los errores se internalizan como fallos personales. Esto lleva a una aversión al riesgo y a una recuperación lenta tras críticas o bugs importantes.", 
+            tip: "Separe su **Identidad** de su **Resultado**. Usted no es su código. Un bug es un dato, no una sentencia. Practique el 'Post-Mortem sin culpa' con usted mismo." 
+        },
+        high: { 
+            title: "Antifragilidad",
+            strength: "Usted se beneficia del estrés. No solo rebota tras un golpe, sino que vuelve más fuerte y sabio. Su estabilidad emocional es un ancla para el equipo.", 
+            tip: "Comparta sus fracasos. Al hablar abiertamente de sus errores pasados, autoriza a los demás a tomar riesgos y aprender, eliminando el miedo al error en el equipo." 
+        },
     },
     "Pensamiento crítico y resolución de problemas": {
-        low: { weakness: "Dependencia de la intuición sin validación de datos.", tip: "Aplica los '5 Porqués' para llegar a la causa raíz de los problemas." },
-        high: { strength: "Rigor analítico superior. Ves sistemas, no solo problemas.", tip: "Lidera la creación de Documentos de Decisión Arquitectónica (ADR)." },
+        low: { 
+            title: "Pensamiento Superficial / Intuitivo",
+            weakness: "Acepta la primera solución que viene a la mente. Falta rigor en el análisis de causa raíz, lo que lleva a solucionar síntomas y no enfermedades.", 
+            tip: "Oblíguese a escribir 3 posibles soluciones antes de elegir una. Use los **'5 Porqués'** en cada problema para taladrar hasta la verdad fundamental." 
+        },
+        high: { 
+            title: "Pensamiento de Primeros Principios",
+            strength: "Usted deconstruye la realidad. No acepta 'las cosas son así'. Su capacidad para razonar desde cero le permite encontrar soluciones elegantes a problemas imposibles.", 
+            tip: "Afronte los problemas sistémicos. Deje de apagar fuegos y diseñe sistemas a prueba de incendios. Su mente debe estar en la arquitectura, no en la albañilería." 
+        },
     },
     "Creatividad e innovación": {
-        low: { weakness: "Aversión al riesgo limita la exploración de ideas nuevas.", tip: "Dedica 15 min semanales a la 'lluvia de ideas ciega' sin juzgar la viabilidad inicial." },
-        high: { strength: "Fuente inagotable de enfoques novedosos.", tip: "Lidera la incubación de proyectos internos o pruebas de concepto (POCs)." },
+        low: { 
+            title: "Ejecución Convencional",
+            weakness: "Preferencia excesiva por lo seguro y probado. Si bien es eficiente, corre el riesgo de estancarse mientras el mercado innova a su alrededor.", 
+            tip: "Practique la **'Polinización Cruzada'**. Lea libros de industrias ajenas a la suya. La innovación suele ser simplemente aplicar una solución vieja a un contexto nuevo." 
+        },
+        high: { 
+            title: "Motor de Innovación",
+            strength: "Su mente es una fábrica de '¿Y si...?'. Ve conexiones donde otros ven ruido. Su valor radica en generar la ventaja competitiva del futuro.", 
+            tip: "Aprenda a vender sus ideas. La mejor idea del mundo muere si no sabe comunicarle su ROI (Retorno de Inversión) a los tomadores de decisiones." 
+        },
     },
     "Gestión del tiempo": {
-        low: { weakness: "El multitasking y la falta de priorización reducen el trabajo profundo.", tip: "Implementa el 'Bloqueo de Tiempo Profundo' (2 horas sin interrupciones)." },
-        high: { strength: "Dominio del tiempo y enfoque sostenible.", tip: "Automatiza flujos de trabajo del equipo para multiplicar tu eficiencia." },
+        low: { 
+            title: "Reactividad Crónica",
+            weakness: "Su agenda es dictada por el email y las interrupciones de otros. Está 'ocupado', pero no es 'productivo'. Confunde movimiento con avance.", 
+            tip: "Defina su **M.I.T. (Most Important Task)** cada mañana. No abra el correo hasta haber trabajado 90 minutos en ella. Defienda su tiempo como si fuera dinero." 
+        },
+        high: { 
+            title: "Maestría del Flujo (Flow)",
+            strength: "Usted controla el tiempo, no al revés. Su capacidad para el trabajo profundo (Deep Work) le permite producir en horas lo que a otros les toma días.", 
+            tip: "Optimice su entorno. Automatice decisiones triviales (ropa, comida) para reservar su energía mental para los problemas más complejos del proyecto." 
+        },
     },
     "Proactividad": {
-        low: { weakness: "Reactivo: esperas instrucciones antes de actuar.", tip: "Adopta el principio de 'Dueño'. Arregla un problema pequeño sin que te lo pidan." },
-        high: { strength: "Motor de la iniciativa. Anticipas riesgos.", tip: "Formaliza tu anticipación mediante análisis 'Pre-Mortem' de proyectos." },
+        low: { 
+            title: "Ejecutor Pasivo",
+            weakness: "Espera instrucciones. Si ve un problema que no es 'su trabajo', lo ignora. Esto limita su crecimiento a lo que otros deciden por usted.", 
+            tip: "Adopte la mentalidad de **Dueño**. Si ve basura en el suelo (código sucio, proceso roto), recójala. La iniciativa es el predictor #1 de ascenso profesional." 
+        },
+        high: { 
+            title: "Catalizador de Acción",
+            strength: "Usted hace que las cosas sucedan. Anticipa necesidades futuras y actúa hoy. No necesita permiso para mejorar su entorno.", 
+            tip: "Alinee su iniciativa con la estrategia del negocio. Asegúrese de que los fuegos que apaga son los que realmente importan a la organización." 
+        },
     },
     "Empatía": {
-        low: { weakness: "Desconexión con el factor humano y emocional.", tip: "Practica la escucha no evaluativa y el parafraseo empático." },
-        high: { strength: "Inteligencia emocional elevada. Creas seguridad psicológica.", tip: "Diseña la Experiencia del Desarrollador (DX) pensando en el usuario humano." },
+        low: { 
+            title: "Ceguera Emocional",
+            weakness: "Se enfoca tanto en la lógica que atropella los sentimientos de los demás. Puede ser percibido como frío o abrasivo, lo que reduce la cooperación.", 
+            tip: "Antes de criticar, valide. Use la frase: **'Veo que esto es importante para ti...'**. La gente no le importa cuánto sabe hasta que saben cuánto le importa." 
+        },
+        high: { 
+            title: "Resonancia Emocional",
+            strength: "Lee el salón al instante. Entiende las motivaciones ocultas de las personas y sabe cómo comunicarse para obtener lo mejor de cada uno.", 
+            tip: "Use su don para la negociación. Usted puede resolver conflictos enquistados encontrando el 'tercer camino' que satisface las necesidades emocionales de ambas partes." 
+        },
     },
     "Aprendizaje continuo": {
-        low: { weakness: "Aprendizaje utilitario y reactivo, solo lo necesario.", tip: "Establece la 'Hora de Exploración' semanal para temas fuera de tu zona de confort." },
-        high: { strength: "Sed insaciable de conocimiento que compartes.", tip: "Formaliza la transferencia de conocimiento mediante charlas o blogs internos." },
+        low: { 
+            title: "Estancamiento de Habilidades",
+            weakness: "Se conforma con lo que ya sabe. En tecnología, si no está avanzando, está retrocediendo. Corre riesgo de obsolescencia profesional.", 
+            tip: "Aplique la **Regla de las 5 Horas**: Dedique una hora diaria (o 5 semanales) a aprender deliberadamente. Vea el aprendizaje como parte de su trabajo, no como un extra." 
+        },
+        high: { 
+            title: "Máquina de Aprendizaje (Polymath)",
+            strength: "Su curiosidad es voraz. Aprende rápido, desaprende rápido y conecta conceptos dispares. Usted es el seguro de vida de la empresa ante el futuro.", 
+            tip: "Enseñe para aprender. La mejor forma de consolidar un conocimiento complejo es explicárselo a los demás. Inicie 'Brown Bag Sessions' en su equipo." 
+        },
     },
 };
 
@@ -581,7 +692,7 @@ let currentQuestionIndex = 0;
 let userAnswers = [];
 let quizResults = null;
 
-// --- ELEMENTOS DOM (Inicializados en initQuiz) ---
+// --- ELEMENTOS DOM ---
 let quizEl, resultEl, questionsContainer, progressBarFill, progressText, prevBtn, nextBtn, submitBtn, alertModal, alertTitle, alertMessage, quizCardEl, goHomeFromQuiz, restartQuizBtn, topSkillsPillsEl, skillsList, profileNameEl, profileDescriptionEl, saveResultBtn;
 
 // --- UTILIDADES ---
@@ -594,18 +705,13 @@ function shuffleArray(array) {
 
 function showAlertModal(title, message, isError = true) {
     if (!alertModal) return;
-    if (alertTitle) alertTitle.textContent = title;
-    if (alertMessage) alertMessage.textContent = message;
-    
+    alertTitle.textContent = title;
+    alertMessage.textContent = message;
     const ctaBtn = alertModal.querySelector('.cta-btn');
     if (ctaBtn) {
-        if (isError) {
-            ctaBtn.classList.add('bg-red-600', 'hover:bg-red-700');
-            ctaBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
-        } else {
-            ctaBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
-            ctaBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
-        }
+        ctaBtn.className = isError 
+            ? 'cta-btn mt-6 text-white w-full py-2 rounded bg-red-600 hover:bg-red-700' 
+            : 'cta-btn mt-6 text-white w-full py-2 rounded bg-emerald-600 hover:bg-emerald-700';
     }
     alertModal.classList.add('open');
 }
@@ -614,6 +720,7 @@ window.closeAlertModal = function() {
     if (alertModal) alertModal.classList.remove('open');
 }
 
+// --- LÓGICA DE COOLDOWN Y COMPARACIÓN ---
 function isQuizOnCooldown() {
     const lastCompletion = localStorage.getItem(LAST_QUIZ_KEY);
     if (!lastCompletion) return false;
@@ -627,10 +734,9 @@ function getPreviousResult() {
     return result ? JSON.parse(result) : null;
 }
 
-// --- CORE DEL QUIZ ---
+// --- FUNCIONES DE NAVEGACIÓN Y RENDERIZADO ---
 function renderQuestion(index) {
     if (!questionsContainer) return;
-    
     const loadingEl = document.getElementById('loading');
     if (loadingEl) loadingEl.style.display = 'none';
     
@@ -641,7 +747,7 @@ function renderQuestion(index) {
 
     questionsContainer.innerHTML = `
         <div class="question-item">
-            <p class="question-text">(${questionNumber}/${QUIZ_DATA.length}) ${questionData.text}</p>
+            <p class="question-text font-bold text-xl mb-6">(${questionNumber}/${QUIZ_DATA.length}) ${questionData.text}</p>
         </div>
         <div class="options-group" id="optionsGroup">
             ${scale.options.map((option, i) => `
@@ -667,29 +773,25 @@ function handleOptionClick(e) {
     const value = parseInt(target.dataset.value);
     userAnswers[currentQuestionIndex] = value;
     
-    // Guardado parcial
     localStorage.setItem('quiz_progress_answers', JSON.stringify(userAnswers));
     localStorage.setItem('quiz_progress_index', currentQuestionIndex);
 
-    // Avance automático
     setTimeout(() => {
         if (currentQuestionIndex < QUIZ_DATA.length - 1) {
             currentQuestionIndex++;
             renderQuestion(currentQuestionIndex);
         } else {
-            updateUIState(); // Actualizar botones para mostrar "Finalizar"
+            updateUIState();
         }
     }, 200);
 }
 
 function updateUIState() {
-    // Barra de progreso
     const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
     const pct = ((currentQuestionIndex + 1) / QUIZ_DATA.length) * 100;
     if (progressBarFill) progressBarFill.style.width = `${pct}%`;
     if (progressText) progressText.textContent = `PREGUNTA ${currentQuestionIndex + 1} DE ${QUIZ_DATA.length}`;
 
-    // Botones
     if (prevBtn) prevBtn.style.display = currentQuestionIndex > 0 ? 'block' : 'none';
     
     const isLast = currentQuestionIndex === QUIZ_DATA.length - 1;
@@ -699,30 +801,26 @@ function updateUIState() {
     if (submitBtn) submitBtn.style.display = (isLast && isAnswered) ? 'block' : 'none';
 }
 
+// --- CÁLCULO Y RESULTADOS ---
 function submitQuiz() {
     if (userAnswers.filter(a => a).length < QUIZ_DATA.length) {
         showAlertModal("Incompleto", "Por favor responde todas las preguntas.");
         return;
     }
 
-    // 1. Calcular Puntajes
     const skillScores = {};
     const maxScores = {};
-    
-    // Inicializar
     Object.keys(SKILL_FEEDBACK).forEach(k => { skillScores[k] = 0; maxScores[k] = 0; });
 
     QUIZ_DATA.forEach((q, idx) => {
         const val = userAnswers[idx];
         q.scores.forEach(impact => {
-            // Normalizar 1-5 a 0-4
             let score = (impact.polarity === 1) ? (val - 1) : (MAX_SCORE_PER_QUESTION_RAW - val);
             skillScores[impact.skill] += score;
-            maxScores[impact.skill] += 4; // Max posible (5-1)
+            maxScores[impact.skill] += 4; 
         });
     });
 
-    // 2. Formatear Resultados
     const results = [];
     Object.keys(skillScores).forEach(skill => {
         const max = maxScores[skill];
@@ -732,7 +830,6 @@ function submitQuiz() {
     
     results.sort((a, b) => b.percentage - a.percentage);
     
-    // 3. Determinar Perfil
     let profile = PROFILES.find(p => p.name.includes("INTEGRAL"));
     const top3Names = results.slice(0,3).map(r => r.name);
     
@@ -741,14 +838,8 @@ function submitQuiz() {
         if (matches >= 2) { profile = p; break; }
     }
 
-    // 4. Construir Objeto Final
-    quizResults = {
-        skills: results,
-        profile: profile,
-        date: new Date().toISOString()
-    };
+    quizResults = { skills: results, profile: profile, date: new Date().toISOString() };
     
-    // Objeto para API (con nombres compatibles)
     window.finalQuizResult = {
         answers: userAnswers.reduce((acc, val, idx) => ({...acc, [`q${QUIZ_DATA[idx].id}`]: val}), {}),
         softSkills: results.map(r => ({ skill: r.name, score: r.percentage })),
@@ -777,16 +868,36 @@ function renderResultsView() {
     
     if (topSkillsPillsEl) {
         topSkillsPillsEl.innerHTML = skills.slice(0, 3).map(s => 
-            `<span class="bg-emerald-600 text-white text-xs px-2 py-1 rounded-full shadow">${s.name}</span>`
+            `<span class="bg-emerald-600 text-white text-xs px-3 py-1 rounded-full shadow border border-emerald-400">${s.name}</span>`
         ).join('');
     }
 
-    // Comparación
     const prev = getPreviousResult();
-    let comparisonHTML = '';
     
+    // GENERAR RESUMEN COMPARATIVO INTELIGENTE
+    let comparisonSummary = '';
     if (prev) {
-        comparisonHTML = `<div class="p-4 bg-blue-900/30 rounded mb-4 border border-blue-800"><h4 class="font-bold text-blue-300">📊 Comparativa</h4><p class="text-sm text-gray-300">Mostrando cambios vs tu último intento.</p></div>`;
+        const improved = [];
+        const declined = [];
+        skills.forEach(s => {
+            const old = prev.skills.find(o => o.name === s.name);
+            if (old) {
+                if (s.percentage > old.percentage + 5) improved.push(s.name);
+                if (s.percentage < old.percentage - 5) declined.push(s.name);
+            }
+        });
+        
+        let narrative = "Comparando con tu última sesión: ";
+        if (improved.length > 0) narrative += `Has mostrado una evolución notable en <span class="text-emerald-400 font-bold">${improved.join(", ")}</span>. `;
+        if (declined.length > 0) narrative += `Sin embargo, se detecta un retroceso en <span class="text-red-400 font-bold">${declined.join(", ")}</span> que requiere atención. `;
+        if (improved.length === 0 && declined.length === 0) narrative += "Tus métricas se mantienen estables. Es momento de romper la meseta con nuevos desafíos.";
+        
+        comparisonSummary = `
+            <div class="p-5 bg-slate-800/80 border-l-4 border-blue-500 rounded shadow mb-8">
+                <h4 class="text-blue-400 font-bold text-lg mb-2">📊 Informe de Progreso Evolutivo</h4>
+                <p class="text-sm text-gray-300 leading-relaxed">${narrative}</p>
+            </div>
+        `;
     }
 
     const listHTML = skills.map(s => {
@@ -800,36 +911,51 @@ function renderResultsView() {
             if (oldSkill) {
                 const diff = s.percentage - oldSkill.percentage;
                 if (diff !== 0) {
-                    const color = diff > 0 ? 'text-green-400' : 'text-red-400';
+                    const color = diff > 0 ? 'text-emerald-400' : 'text-red-400';
                     const arrow = diff > 0 ? '⬆' : '⬇';
-                    diffDisplay = `<span class="${color} text-sm font-bold ml-2">${arrow} ${Math.abs(diff)}%</span>`;
+                    diffDisplay = `<span class="${color} text-sm font-bold ml-3 bg-slate-900 px-2 py-1 rounded border border-slate-700">${arrow} ${Math.abs(diff)}%</span>`;
                 }
             }
         }
 
         return `
-        <div class="mb-6 p-5 bg-slate-800 rounded-lg border-l-4 ${isHigh ? 'border-emerald-500' : 'border-orange-500'} shadow-lg">
-            <div class="flex justify-between items-center mb-2">
-                <h3 class="text-lg font-bold text-white">${s.name}</h3>
+        <div class="mb-8 p-6 bg-slate-800 rounded-xl border border-slate-700 shadow-xl hover:border-slate-500 transition-colors">
+            <div class="flex justify-between items-end mb-4 border-b border-slate-700 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-1">${s.name}</h3>
+                    <span class="text-xs uppercase tracking-wider font-semibold ${isHigh ? 'text-emerald-500' : 'text-orange-500'}">
+                        ${detail.title}
+                    </span>
+                </div>
                 <div class="flex items-center">
-                    <span class="text-2xl font-bold text-white">${s.percentage}%</span>
+                    <span class="text-3xl font-black text-white">${s.percentage}%</span>
                     ${diffDisplay}
                 </div>
             </div>
-            <div class="h-2 bg-slate-700 rounded-full mb-4 overflow-hidden">
-                <div class="h-full ${isHigh ? 'bg-emerald-500' : 'bg-orange-500'} transition-all duration-1000" style="width: ${s.percentage}%"></div>
-            </div>
-            <div class="text-sm space-y-2">
-                <p><strong class="${isHigh ? 'text-emerald-300' : 'text-orange-300'}">${isHigh ? 'Fortaleza:' : 'Punto de Mejora:'}</strong> <span class="text-gray-300">${detail.strength || detail.weakness}</span></p>
-                <div class="mt-2 pt-2 border-t border-slate-700">
-                    <p class="text-blue-300 font-semibold">💡 Consejo:</p>
-                    <p class="text-gray-400 italic">${detail.tip}</p>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-sm font-bold text-slate-400 mb-2 uppercase">Diagnóstico & Impacto</h4>
+                    <p class="text-sm text-gray-300 leading-relaxed text-justify">${isHigh ? detail.strength : detail.weakness}</p>
+                </div>
+                <div class="bg-slate-700/30 p-4 rounded-lg border-l-2 ${isHigh ? 'border-emerald-500' : 'border-orange-500'}">
+                    <h4 class="text-sm font-bold ${isHigh ? 'text-emerald-400' : 'text-orange-400'} mb-2 uppercase">⚡ Plan de Acción Táctico</h4>
+                    <p class="text-sm text-gray-300 italic leading-relaxed">${detail.tip}</p>
                 </div>
             </div>
         </div>`;
     }).join('');
 
-    if (skillsList) skillsList.innerHTML = comparisonHTML + listHTML;
+    // Bloqueo de Reflexión (Cooldown UI)
+    const cooldownBlock = `
+        <div class="mt-10 p-6 bg-indigo-900/40 border border-indigo-500/50 rounded-xl text-center">
+            <h3 class="text-xl font-bold text-indigo-300 mb-2">🔒 Periodo de Asimilación Activo</h3>
+            <p class="text-sm text-indigo-100 mb-4">Para garantizar que este análisis se convierta en crecimiento real, el test se bloqueará por <strong>${COOLDOWN_DAYS} días</strong>. No consuma información; ejecute el plan.</p>
+            <div class="inline-block bg-indigo-900 text-white text-xs px-3 py-1 rounded">Próxima evaluación disponible: ${new Date(Date.now() + COOLDOWN_DAYS * 86400000).toLocaleDateString()}</div>
+        </div>
+    `;
+
+    if (skillsList) skillsList.innerHTML = comparisonSummary + listHTML + cooldownBlock;
     
     if (saveResultBtn) saveResultBtn.disabled = false;
 }
@@ -852,7 +978,7 @@ async function saveResultsToAPI() {
         });
         
         if (res.ok) {
-            showAlertModal("Guardado", "Resultados guardados correctamente.", false);
+            showAlertModal("Guardado", "Resultados guardados correctamente en tu perfil.", false);
             saveResultBtn.disabled = true;
             saveResultBtn.textContent = "Guardado";
         } else {
@@ -861,15 +987,17 @@ async function saveResultsToAPI() {
     } catch (e) {
         saveResultBtn.disabled = false;
         saveResultBtn.textContent = "Guardar Resultado";
-        showAlertModal("Error", "No se pudo conectar con el servidor.", true);
+        showAlertModal("Error", "No se pudo conectar con el servidor. (Error de red o servidor inactivo)", true);
     }
 }
 
 function restartQuiz() {
-    localStorage.removeItem('quiz_progress_answers');
-    localStorage.removeItem('quiz_progress_index');
-    localStorage.removeItem(LAST_QUIZ_KEY); // Opcional: Eliminar para debug
-    location.reload();
+    if(confirm("¿Estás seguro? Esto borrará tu progreso actual.")) {
+        localStorage.removeItem('quiz_progress_answers');
+        localStorage.removeItem('quiz_progress_index');
+        // Nota: No borramos LAST_QUIZ_KEY para mantener el historial de cooldown si aplicara
+        location.reload();
+    }
 }
 
 // --- INIT ---
@@ -911,9 +1039,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (saved) {
             quizResults = saved;
             renderResultsView();
-            showAlertModal("Modo Espera", `Debes esperar ${COOLDOWN_DAYS} días. Se muestran tus resultados anteriores.`, false);
+            showAlertModal("Modo Reflexión", `Estás en el periodo de asimilación de 7 días. Se muestran tus últimos resultados para que trabajes en ellos.`, false);
         } else {
-            quizEl.innerHTML = `<div class="text-center text-white p-10"><h3>⏳ Enfriamiento Activo</h3><p>Vuelve en unos días.</p> <button onclick="window.location.href='home.html'" class="mt-4 btn bg-blue-600 p-2 rounded">Volver</button></div>`;
+            quizEl.innerHTML = `<div class="text-center text-white p-10 bg-slate-800 rounded-xl">
+                <h3 class="text-2xl font-bold text-yellow-400 mb-4">⏳ Enfriamiento Activo</h3>
+                <p class="mb-6">Has realizado el test recientemente. Tómate un tiempo para aplicar lo aprendido.</p> 
+                <button onclick="window.location.href='home.html'" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold">Volver al Inicio</button>
+            </div>`;
+            if(loadingEl) loadingEl.style.display = 'none';
         }
         return;
     }
@@ -924,7 +1057,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedIdx = localStorage.getItem('quiz_progress_index');
     if (savedIdx) currentQuestionIndex = parseInt(savedIdx);
 
-    // Shuffle si es nuevo
+    // Shuffle si es nuevo (no hay respuestas guardadas)
     if (!savedAns) shuffleArray(QUIZ_DATA);
     
     renderQuestion(currentQuestionIndex);
@@ -932,6 +1065,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </script>
   </body>
 </html>
+
 
 
 
