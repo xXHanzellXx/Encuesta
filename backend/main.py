@@ -10,6 +10,16 @@ from typing import Optional # Para tipado de Header
 
 app = FastAPI()
 
+from fastapi import Request
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    print(f"🔍 RUTA SOLICITADA: {request.method} {request.url.path}")
+    response = await call_next(request)
+    if response.status_code == 404:
+        print("❌ ERROR 404 DETECTADO EN LA RUTA ANTERIOR")
+    return response
+
 app.add_middleware(
     CORSMiddleware,
     # Deja "*" por ahora, pero cámbialo a tu URL de Netlify luego por seguridad.
@@ -98,3 +108,4 @@ def get_user_info(authorization: Optional[str] = Header(None)):
     # Obtiene solo el nombre y el email del usuario
     user = users_collection.find_one({"email": user_data["email"]}, {"_id": 0, "name": 1, "email": 1})
     return user
+
