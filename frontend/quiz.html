@@ -808,6 +808,7 @@ window.closeAlertModal = function() {
 // --- LÓGICA DE COOLDOWN Y COMPARACIÓN (ACTUALIZADA A ASYNC/AWAIT Y DB) ---
 
 // Línea 810 (Asegúrate de que estás comenzando tu reemplazo aquí)
+// Línea 810 (Asegúrate de que estás comenzando tu reemplazo aquí)
 async function isQuizOnCooldown() {
     const token = localStorage.getItem('token');
     
@@ -815,7 +816,7 @@ async function isQuizOnCooldown() {
     if (!token) return false; 
 
     try {
-        // CORRECCIÓN DE URL: API_URL ahora debe tener la barra final '/'
+        // API_URL ya tiene la barra final '/'
         const res = await fetch(`${API_URL}api/quiz/cooldown`, {
             method: 'GET',
             headers: {
@@ -823,7 +824,7 @@ async function isQuizOnCooldown() {
             }
         });
 
-        // 2. MANEJO DE RESPUESTA DENTRO DEL TRY (Bloque arreglado)
+        // 2. MANEJO DE RESPUESTA
         if (!res.ok) {
             console.error(`DEBUG: Error ${res.status} al consultar cooldown.`, await res.text());
             // Si el servidor falla (400, 500, etc.), asumimos que NO hay bloqueo.
@@ -842,16 +843,16 @@ async function isQuizOnCooldown() {
         // COOLDOWN_DAYS (se toma de la constante global)
         const cooldownExpiry = new Date(lastDate.getTime() + COOLDOWN_DAYS * 24 * 60 * 60 * 1000); 
 
+        // Devuelve TRUE si la fecha actual es anterior a la expiración
         return new Date() < cooldownExpiry;
 
     } catch (error) {
         // 4. MANEJO DE ERRORES DE RED/CORS
         console.error("CRÍTICO: Error de red o CORS al consultar cooldown:", error);
-        // Error de red (el API está caído o URL mal). Asumimos NO hay bloqueo.
+        // Error de red. Asumimos NO hay bloqueo.
         return false; 
     }
 }
-
         const data = await res.json();
         const lastCompletionDateStr = data.last_completion_date;
 
