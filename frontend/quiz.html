@@ -10,7 +10,7 @@
       rel="stylesheet"
     />
     <style>
-  /* 🎨 CONFIGURACIÓN GLOBAL - ESTILO OSCURO ESMERALDA */
+  /* 🎨 CONFIGURACIÓN GLOBAL - ESTILO OSCURO ESMERALDA */
 :root {
   --color-primary: #10b981; /* Esmeralda 500 */
   --color-accent: #059669; /* Esmeralda 600 */
@@ -20,10 +20,9 @@
   --color-border: #475569; /* Borde neutro */
 }
 
-/* ❗ AJUSTE: Eliminar redundancia. La perspectiva queda en .quiz-container */
-/* .quiz-container {
-  perspective: 1200px;
-} */
+.quiz-container {
+  perspective: 1200px; /* 🔹 Más profundidad */
+}
 
 .quiz-card {
   transform-style: preserve-3d;
@@ -31,7 +30,6 @@
   will-change: transform;
 }
 
-/* ❗ AJUSTE: Agregar padding superior para el navbar fijo y centrar el contenido (quitando justify-content) */
 body {
   font-family: "Inter", sans-serif;
   background-color: var(--color-bg-dark);
@@ -39,19 +37,18 @@ body {
   color: var(--color-text-light);
   display: flex;
   flex-direction: column;
-  /* justify-content: center; // Quitamos centrado vertical para que el contenido fluya */
+  justify-content: center;
   align-items: center;
   overflow-y: auto;
   margin: 0;
-  padding-top: 5rem; /* Espacio para el navbar fijo */
 }
 
-/* 🔹 NAVBAR (Se mantiene casi igual, ajuste leve de padding) */
+/* 🔹 NAVBAR */
 .navbar {
   background-color: rgba(15, 23, 42, 0.9);
   backdrop-filter: blur(6px);
   border-bottom: 2px solid var(--color-primary);
-  padding: 0.8rem 1.5rem; /* ❗ AJUSTE: Mayor padding para mejor aspecto */
+  padding: 0.6rem 1.2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -63,7 +60,7 @@ body {
 }
 
 .navbar h1 {
-  font-size: 1.4rem; /* ❗ AJUSTE: Ligeramente más grande */
+  font-size: 1.3rem;
   font-weight: 900;
   color: var(--color-text-light);
   text-transform: uppercase;
@@ -71,38 +68,37 @@ body {
   text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
 }
 
-/* 🧩 CONTENEDOR DEL QUIZ (Ajuste clave de ancho y scale) */
+/* 🧩 CONTENEDOR DEL QUIZ */
 .quiz-container {
-  max-width: 850px; /* ❗ AJUSTE: Más ancho para desktop */
-  width: 95%; /* Asegura que no desborde en móvil */
-  margin: 0 auto 3rem auto; /* ❗ AJUSTE: Margen superior fijo y más margen inferior */
+  max-width: 700px;
+  margin: 5rem auto 2rem auto;
   padding: 1rem;
   position: relative;
   perspective: 1000px;
-  transform: scale(1); /* ❗ AJUSTE: Quitar el scale(0.95) inicial */
+  transform: scale(0.95);
 }
 
-/* 💫 TARJETA DEL QUIZ (Ajuste de padding y animación) */
+/* 💫 TARJETA DEL QUIZ */
 .quiz-card,
 .result-card {
   background-color: var(--color-card-dark);
   border: 1px solid var(--color-border);
   border-radius: 1rem;
-  padding: 2.5rem; /* ❗ AJUSTE: Mayor padding */
+  padding: 1.8rem;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
   transition: all 0.5s ease, box-shadow 0.3s ease;
   animation: popCard 0.6s ease forwards;
 }
 
 .quiz-card:hover {
-  transform: scale(1.005); /* ❗ AJUSTE: Menos exagerado */
+  transform: scale(1.01);
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
 }
 
 @keyframes popCard {
   from {
     opacity: 0;
-    transform: scale(0.95); /* ❗ AJUSTE: Solo escala, sin translateY */
+    transform: scale(0.9) translateY(10px);
   }
   to {
     opacity: 1;
@@ -110,101 +106,99 @@ body {
   }
 }
 
-/* 🔸 BARRA DE PROGRESO (Ajuste de altura y margen) */
+/* 🔸 BARRA DE PROGRESO */
 .progress-bar {
   width: 100%;
-  height: 10px; /* ❗ AJUSTE: Más grueso */
-  background: #334155;
+  height: 8px;
+  background: #334155; /* gris azulado */
   border-radius: 9999px;
-  margin-bottom: 1.5rem; /* ❗ AJUSTE: Más margen inferior */
+  margin-bottom: 1rem;
 }
 
 .progress-fill {
   background: var(--color-primary);
-  height: 10px; /* ❗ AJUSTE: Más grueso */
+  height: 8px;
   width: 0%;
   border-radius: 9999px;
   box-shadow: 0 0 10px var(--color-primary);
   transition: width 0.6s ease-in-out;
 }
 
-/* ❓ PREGUNTA (Ajuste de tamaño de fuente y margen) */
+/* ❓ PREGUNTA */
 .question-item {
   text-align: center;
 }
 
 .question-item p {
-  font-size: 1.8rem; /* ❗ AJUSTE: Más grande */
+  font-size: 1.6rem;
   font-weight: 800;
   color: var(--color-text-light);
-  margin-bottom: 2rem; /* ❗ AJUSTE: Más margen */
+  margin-bottom: 1.2rem;
   text-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
 }
 
-/* ⚡ OPCIONES (Ajuste de gap y tamaño mínimo/máximo) */
+/* ⚡ OPCIONES */
 .options-group {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem; /* ❗ AJUSTE: Más espacio */
-  margin-top: 1.5rem; /* ❗ AJUSTE: Más margen */
+  gap: 0.8rem;
+  margin-top: 1rem;
 }
 
 .option-btn {
   background-color: #334155;
   border: 1px solid var(--color-border);
   color: var(--color-text-light);
-  padding: 0.8rem 1.5rem; /* ❗ AJUSTE: Más padding */
-  font-size: 1.05rem; /* ❗ AJUSTE: Ligeramente más grande */
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
   font-weight: 700;
-  border-radius: 0.7rem; /* ❗ AJUSTE: Ligeramente más redondeado */
+  border-radius: 0.6rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 150px; /* ❗ AJUSTE: Más ancho */
-  max-width: 250px;
-  flex-grow: 1; /* ❗ AJUSTE: Para distribución uniforme */
+  min-width: 120px;
+  max-width: 220px;
   text-align: center;
 }
 
 .option-btn:hover {
   background-color: #475569;
-  transform: scale(1.03); /* ❗ AJUSTE: Menos exagerado */
+  transform: scale(1.05);
   box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
 }
 
 .option-btn.selected {
   background: var(--color-primary);
   color: #0f172a;
-  border: 3px solid white; /* ❗ AJUSTE: Borde más grueso */
+  border: 2px solid white;
   font-weight: 900;
   transform: scale(1.08);
   box-shadow: 0 0 10px var(--color-primary);
 }
 
-/* 🔻 BOTONES DE ACCIÓN (Ajuste de distribución y padding) */
+/* 🔻 BOTONES DE ACCIÓN */
 .quiz-actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 2rem; /* ❗ AJUSTE: Más margen */
+  margin-top: 1.5rem;
   flex-wrap: wrap;
-  gap: 1rem; /* ❗ AJUSTE: Más espacio */
+  gap: 0.5rem;
 }
 
 .cta-btn {
   background-color: var(--color-primary);
   color: #0f172a;
   font-weight: 900;
-  padding: 0.8rem 1.6rem; /* ❗ AJUSTE: Más padding */
+  padding: 0.7rem 1.6rem;
   border-radius: 0.6rem;
   transition: all 0.3s ease;
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-  font-size: 1rem; /* ❗ AJUSTE: Ligeramente más grande */
-  flex: 1; /* ❗ AJUSTE: Distribución uniforme */
+  font-size: 0.95rem;
 }
 
 .cta-btn:hover {
   background-color: var(--color-accent);
-  transform: scale(1.03); /* ❗ AJUSTE: Menos exagerado */
+  transform: scale(1.05);
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
 }
 
@@ -212,11 +206,10 @@ body {
   background-color: #334155;
   color: var(--color-text-light);
   font-weight: 700;
-  padding: 0.8rem 1.6rem; /* ❗ AJUSTE: Más padding */
+  padding: 0.7rem 1.6rem;
   border-radius: 0.6rem;
   transition: all 0.3s ease;
-  font-size: 1rem; /* ❗ AJUSTE: Ligeramente más grande */
-  flex: 1; /* ❗ AJUSTE: Distribución uniforme */
+  font-size: 0.95rem;
 }
 
 .secondary-btn:hover {
@@ -224,22 +217,22 @@ body {
   transform: scale(1.03);
 }
 
-/* 💬 RESULTADOS (Ajuste de alineación y tamaño) */
+/* 💬 RESULTADOS */
 .result-card {
-  text-align: left; /* ❗ AJUSTE: Alineación a la izquierda */
-  padding: 3rem; /* ❗ AJUSTE: Más padding */
+  text-align: center;
+  padding: 1.8rem;
   margin-bottom: 2rem;
 }
 
 .result-card .text-emerald-500 {
-  font-size: 2.2rem; /* ❗ AJUSTE: Más grande */
+  font-size: 1.8rem;
   font-weight: 900;
   color: var(--color-primary);
   text-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
 }
 
 .result-card p {
-  font-size: 1.1rem; /* ❗ AJUSTE: Más grande */
+  font-size: 1rem;
   color: #d1d5db;
 }
 
@@ -247,7 +240,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.6rem 0; /* ❗ AJUSTE: Más padding */
+  padding: 0.4rem 0;
 }
 
 .skill-name {
@@ -259,7 +252,7 @@ body {
 
 .skill-bar-container {
   flex-grow: 1;
-  height: 10px; /* ❗ AJUSTE: Más grueso */
+  height: 8px;
   background-color: #334155;
   border-radius: 9999px;
   overflow: hidden;
@@ -272,7 +265,7 @@ body {
   box-shadow: 0 0 4px rgba(16, 185, 129, 0.6);
 }
 
-/* Modal (Ajuste de tamaño) */
+/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -296,22 +289,22 @@ body {
 
 .modal-content {
   background-color: var(--color-card-dark);
-  padding: 2rem; /* ❗ AJUSTE: Más padding */
+  padding: 1.5rem;
   border-radius: 1rem;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  max-width: 450px; /* ❗ AJUSTE: Más ancho */
+  max-width: 380px;
   text-align: center;
   border: 2px solid var(--color-primary);
 }
 
 .modal-content h3 {
-  font-size: 1.5rem; /* ❗ AJUSTE: Más grande */
+  font-size: 1.3rem;
   font-weight: 800;
   color: var(--color-primary);
-  margin-bottom: 1rem; /* ❗ AJUSTE: Más margen */
+  margin-bottom: 0.8rem;
 }
 
-/* 🌟 EFECTO DE FONDO (Sin cambios) */
+/* 🌟 EFECTO DE FONDO */
 body::before {
   content: "";
   position: fixed;
@@ -324,61 +317,28 @@ body::before {
   z-index: -1;
 }
 
-/* 📱 RESPONSIVIDAD (Ajustes clave de distribución) */
-@media (max-width: 800px) {
-    .quiz-container {
-        max-width: 95%;
-        padding: 0;
-    }
-
-    .quiz-card,
-    .result-card {
-        padding: 2rem;
-    }
-}
-
+/* 📱 RESPONSIVIDAD */
 @media (max-width: 640px) {
-    body {
-        padding-top: 4.5rem;
-    }
-    
-    .navbar {
-        padding: 0.6rem 1rem;
-    }
-    
-    .question-item p {
-        font-size: 1.5rem; /* ❗ AJUSTE: Mayor tamaño */
-    }
+  .question-item p {
+    font-size: 1.3rem;
+  }
 
-    .options-group {
-        flex-direction: column; /* ❗ AJUSTE: Opciones en columna */
-        gap: 0.6rem;
-    }
+  .option-btn {
+    width: 100%;
+  }
 
-    .option-btn {
-        width: 100%;
-        max-width: 100%;
-        min-width: unset;
-    }
+  .quiz-card,
+  .result-card {
+    padding: 1.5rem;
+  }
 
-    .quiz-card,
-    .result-card {
-        padding: 1.5rem;
-    }
-
-    .quiz-actions {
-        flex-direction: column; /* ❗ AJUSTE: Botones en columna */
-        gap: 0.8rem;
-    }
-
-    .cta-btn,
-    .secondary-btn {
-        flex: unset; /* ❗ AJUSTE: Quitar flex para forzar ancho completo */
-        width: 100%;
-        padding: 0.7rem 1.2rem;
-        font-size: 0.95rem;
-    }
+  .cta-btn,
+  .secondary-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
 }
+
     </style>
   </head>
 <body>
@@ -1268,6 +1228,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     </script>
   </body>
 </html>
+
 
 
 
