@@ -797,48 +797,50 @@ window.closeAlertModal = function() {
 
 // --- LÓGICA DE COOLDOWN Y COMPARACIÓN (ACTUALIZADA A ASYNC/AWAIT Y DB) ---
 
-const COOLDOWN_DAYS = 7; 
+const COOLDOWN_DAYS = 7; 
 
 async function isQuizOnCooldown() {
-    const token = localStorage.getItem('token');
-    
-    // Si no hay token, el usuario no está logueado o está expirado.
-    if (!token) return false; 
+    const token = localStorage.getItem('token');
+    
+    // Si no hay token, el usuario no está logueado o está expirado.
+    if (!token) return false; 
 
-    try {
-        const res = await fetch(`${API_URL}/api/quiz/cooldown`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}` 
-            }
-        });
+    try {
+        // **¡REVISA QUE API_URL ESTÉ DEFINIDA CORRECTAMENTE!**
+        const res = await fetch(`${API_URL}/api/quiz/cooldown`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}` 
+            }
+        });
 
-        if (!res.ok) {
-            console.error("Error al consultar cooldown:", res.status);
-            // Si el servidor falla, asumimos que no hay bloqueo para no detener la aplicación.
-            return false;
-        }
+        if (!res.ok) {
+            console.error("Error al consultar cooldown:", res.status);
+            // Si el servidor falla (400, 500, etc.), asumimos que NO hay bloqueo.
+            return false;
+        }
 
-        const data = await res.json();
-        const lastCompletionDateStr = data.last_completion_date;
+        const data = await res.json();
+        const lastCompletionDateStr = data.last_completion_date;
 
-        if (!lastCompletionDateStr) {
-            return false; // No hay quizzes previos en la base de datos.
-        }
+        if (!lastCompletionDateStr) {
+            return false; // No hay quizzes previos en la base de datos.
+        }
 
-        // Crear objeto Date a partir de la fecha de la base de datos (YYYY-MM-DD)
-        const lastDate = new Date(lastCompletionDateStr);
-        
-        // Calcular la fecha de expiración: Último Quiz + 7 días (en milisegundos)
-        const cooldownExpiry = new Date(lastDate.getTime() + COOLDOWN_DAYS * 24 * 60 * 60 * 1000);
+        // Crear objeto Date a partir de la fecha de la base de datos (YYYY-MM-DD)
+        const lastDate = new Date(lastCompletionDateStr);
+        
+        // Calcular la fecha de expiración: Último Quiz + 7 días (en milisegundos)
+        const cooldownExpiry = new Date(lastDate.getTime() + COOLDOWN_DAYS * 24 * 60 * 60 * 1000);
 
-        // Devolvemos TRUE si la fecha de expiración es FUTURA.
-        return new Date() < cooldownExpiry;
+        // Devolvemos TRUE si la fecha de expiración es FUTURA.
+        return new Date() < cooldownExpiry;
 
-    } catch (error) {
-        console.error("Error de red al consultar cooldown:", error);
-        return false; 
-    }
+    } catch (error) {
+        console.error("Error de red o CORS al consultar cooldown:", error);
+        // Error de red (el API está caído o URL mal). Asumimos NO hay bloqueo para evitar carga infinita.
+        return false; 
+    }
 }
 
 
@@ -850,8 +852,8 @@ function getPreviousResult() {
 // --- FUNCIONES DE NAVEGACIÓN Y RENDERIZADO ---
 function renderQuestion(index) {
     if (!questionsContainer) return;
-    const loadingEl = document.getElementById('loading');
-    if (loadingEl) loadingEl.style.display = 'none';
+    // **CAMBIO 1: Eliminada la gestión de 'loadingEl' de aquí.**
+    // if (loadingEl) loadingEl.style.display = 'none'; <--- ¡ESTO SE MUEVE AL DOMContentLoaded!
     
     questionsContainer.innerHTML = '';
     const questionData = QUIZ_DATA[index];
@@ -1123,74 +1125,80 @@ function renderResultsView() {
 
 // ... (saveResultsToAPI, restartQuiz, etc. siguen aquí)
 
-// --- INIT (ACTUALIZADO para usar async/await) ---
+// --- INIT (ACTUALIZADO para usar async/await y CORREGIDO el manejo del spinner) ---
 document.addEventListener('DOMContentLoaded', async () => {
-    // Bind DOM elements (déjalo como está)
-    quizEl = document.getElementById('quiz');
-    resultEl = document.getElementById('result');
-    questionsContainer = document.getElementById('questionsContainer');
-    progressBarFill = document.getElementById('progressBarFill');
-    progressText = document.getElementById('progressText');
-    prevBtn = document.getElementById('prevBtn');
-    nextBtn = document.getElementById('nextBtn');
-    submitBtn = document.getElementById('submitBtn');
-    alertModal = document.getElementById('alertModal');
-    alertTitle = document.getElementById('alertTitle');
-    alertMessage = document.getElementById('alertMessage');
-    saveResultBtn = document.getElementById('saveResultBtn');
-    backBtn = document.getElementById('backBtn');
-    goHomeFromQuizBtn = document.getElementById('goHomeFromQuiz');
-    loadingEl = document.getElementById('loading');
-    topSkillsPillsEl = document.getElementById('topSkillsPills');
-    skillsList = document.getElementById('skillsList');
-    profileNameEl = document.getElementById('profileName');
-    profileDescriptionEl = document.getElementById('profileDescription');
-    restartQuizBtn = document.getElementById('restartQuizBtn');
+    // Bind DOM elements (déjalo como está)
+    quizEl = document.getElementById('quiz');
+    resultEl = document.getElementById('result');
+    questionsContainer = document.getElementById('questionsContainer');
+    progressBarFill = document.getElementById('progressBarFill');
+    progressText = document.getElementById('progressText');
+    prevBtn = document.getElementById('prevBtn');
+    nextBtn = document.getElementById('nextBtn');
+    submitBtn = document.getElementById('submitBtn');
+    alertModal = document.getElementById('alertModal');
+    alertTitle = document.getElementById('alertTitle');
+    alertMessage = document.getElementById('alertMessage');
+    saveResultBtn = document.getElementById('saveResultBtn');
+    backBtn = document.getElementById('backBtn');
+    goHomeFromQuizBtn = document.getElementById('goHomeFromQuiz');
+    loadingEl = document.getElementById('loading');
+    topSkillsPillsEl = document.getElementById('topSkillsPills');
+    skillsList = document.getElementById('skillsList');
+    profileNameEl = document.getElementById('profileName');
+    profileDescriptionEl = document.getElementById('profileDescription');
+    restartQuizBtn = document.getElementById('restartQuizBtn');
 
-    // Listeners (déjalo como está)
-    if(backBtn) backBtn.onclick = () => window.location.href = 'home.html';
-    if(goHomeFromQuizBtn) goHomeFromQuizBtn.onclick = () => window.location.href = 'home.html';
-    if(prevBtn) prevBtn.onclick = () => { if(currentQuestionIndex > 0) { currentQuestionIndex--; renderQuestion(currentQuestionIndex); }};
-    if(nextBtn) nextBtn.onclick = () => { if(userAnswers[currentQuestionIndex]) { currentQuestionIndex++; renderQuestion(currentQuestionIndex); }};
-    if(submitBtn) submitBtn.onclick = submitQuiz;
-    if(saveResultBtn) saveResultBtn.onclick = saveResultsToAPI;
-    if(restartQuizBtn) restartQuizBtn.onclick = restartQuiz;
+    // Listeners (déjalo como está)
+    if(backBtn) backBtn.onclick = () => window.location.href = 'home.html';
+    if(goHomeFromQuizBtn) goHomeFromQuizBtn.onclick = () => window.location.href = 'home.html';
+    if(prevBtn) prevBtn.onclick = () => { if(currentQuestionIndex > 0) { currentQuestionIndex--; renderQuestion(currentQuestionIndex); }};
+    if(nextBtn) nextBtn.onclick = () => { if(userAnswers[currentQuestionIndex]) { currentQuestionIndex++; renderQuestion(currentQuestionIndex); }};
+    if(submitBtn) submitBtn.onclick = submitQuiz;
+    if(saveResultBtn) saveResultBtn.onclick = saveResultsToAPI;
+    if(restartQuizBtn) restartQuizBtn.onclick = restartQuiz;
 
-    // 🌟 COOLDOWN CHECK ASÍNCRONO CONTRA LA BASE DE DATOS
-    const isOnCooldown = await isQuizOnCooldown();
+    // 🌟 COOLDOWN CHECK ASÍNCRONO CONTRA LA BASE DE DATOS
+    const isOnCooldown = await isQuizOnCooldown();
 
-    if (isOnCooldown) {
-        const saved = getPreviousResult(); // Usamos el resultado de localStorage para la vista
-        if (saved) {
-            quizResults = saved;
-            renderResultsView();
-            showAlertModal("Modo Reflexión", `Estás en el periodo de asimilación de ${COOLDOWN_DAYS} días. Se muestran tus últimos resultados.`, false);
-        } else {
-            // Manejo si está bloqueado pero no tiene resultados locales
-            quizEl.innerHTML = `<div class="text-center text-white p-10 bg-slate-800 rounded-xl">
-                <h3 class="text-2xl font-bold text-yellow-400 mb-4">⏳ Enfriamiento Activo</h3>
-                <p class="mb-6">Has realizado el test recientemente. Tómate un tiempo para aplicar lo aprendido.</p> 
-                <button onclick="window.location.href='home.html'" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold">Volver al Inicio</button>
-            </div>`;
-            if(loadingEl) loadingEl.style.display = 'none';
-        }
-        return; // Detiene la carga del quiz.
-    }
+    if (isOnCooldown) {
+        const saved = getPreviousResult(); // Usamos el resultado de localStorage para la vista
+        if (saved) {
+            quizResults = saved;
+            renderResultsView();
+            showAlertModal("Modo Reflexión", `Estás en el periodo de asimilación de ${COOLDOWN_DAYS} días. Se muestran tus últimos resultados.`, false);
+        } else {
+            // Manejo si está bloqueado pero no tiene resultados locales
+            quizEl.innerHTML = `<div class="text-center text-white p-10 bg-slate-800 rounded-xl">
+                <h3 class="text-2xl font-bold text-yellow-400 mb-4">⏳ Enfriamiento Activo</h3>
+                <p class="mb-6">Has realizado el test recientemente. Tómate un tiempo para aplicar lo aprendido.</p> 
+                <button onclick="window.location.href='home.html'" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold">Volver al Inicio</button>
+            </div>`;
+        }
+        
+        // **CAMBIO 2 (CRÍTICO): Ocultar el spinner al salir de la ruta de bloqueo.**
+        if(loadingEl) loadingEl.style.display = 'none'; 
+        return; // Detiene la carga del quiz.
+    }
 
-    // Load Progress & Start (solo se ejecuta si NO hay bloqueo)
-    const savedAns = localStorage.getItem('quiz_progress_answers');
-    if (savedAns) userAnswers = JSON.parse(savedAns);
-    const savedIdx = localStorage.getItem('quiz_progress_index');
-    if (savedIdx) currentQuestionIndex = parseInt(savedIdx);
+    // Load Progress & Start (solo se ejecuta si NO hay bloqueo)
+    const savedAns = localStorage.getItem('quiz_progress_answers');
+    if (savedAns) userAnswers = JSON.parse(savedAns);
+    const savedIdx = localStorage.getItem('quiz_progress_index');
+    if (savedIdx) currentQuestionIndex = parseInt(savedIdx);
 
-    // Shuffle si es nuevo (no hay respuestas guardadas)
-    if (!savedAns) shuffleArray(QUIZ_DATA);
-    
-    renderQuestion(currentQuestionIndex);
+    // Shuffle si es nuevo (no hay respuestas guardadas)
+    if (!savedAns) shuffleArray(QUIZ_DATA);
+    
+    // **CAMBIO 3 (CRÍTICO): Ocultar el spinner antes de renderizar la primera pregunta.**
+    if(loadingEl) loadingEl.style.display = 'none';
+    
+    renderQuestion(currentQuestionIndex);
 });
     </script>
   </body>
 </html>
+
 
 
 
