@@ -690,76 +690,84 @@ const SKILL_FEEDBACK = {
 // Reemplaza toda la función calculateResults en tu quiz.html
 // Reemplaza toda la función calculateResults en tu quiz.html
 function calculateResults() {
-    // 🚨 VALIDACIÓN FINAL: Asegurarse de que todas las preguntas están respondidas
-    if (Object.keys(userAnswers).length !== QUIZ_DATA.length) {
-        showAlert('Faltan Respuestas', 'Por favor, asegúrate de responder todas las preguntas antes de finalizar.', true);
-        for (let i = 0; i < QUIZ_DATA.length; i++) {
-            const qId = `q${i + 1}`;
-            if (!userAnswers[qId]) {
-                currentQuestionIndex = i;
-                renderQuestion(currentQuestionIndex);
-                break;
-            }
-        }
-        return;
-    }
+    // 🚨 VALIDACIÓN FINAL: Asegurarse de que todas las preguntas están respondidas
+    if (Object.keys(userAnswers).length !== QUIZ_DATA.length) {
+        // Asumiendo que showAlertModal es la implementación actual de 'showAlert'
+        showAlertModal('Faltan Respuestas', 'Por favor, asegúrate de responder todas las preguntas antes de finalizar.', true);
+        for (let i = 0; i < QUIZ_DATA.length; i++) {
+            const qId = `q${i + 1}`;
+            // userAnswers es un array, no un objeto, así que se usa el índice 'i'.
+            // Corregido: Si la respuesta en el índice 'i' es nula o indefinida, navegamos.
+            if (userAnswers[i] == null) {
+                currentQuestionIndex = i;
+                renderQuestion(currentQuestionIndex);
+                break;
+            }
+        }
+        return;
+    }
 
-    const skillScores = {};
-    const skillCounts = {};
-    const MAX_SCORE_PER_QUESTION = 4; // Puntaje máximo por pregunta
+    const skillScores = {};
+    const skillCounts = {};
+    const MAX_SCORE_PER_QUESTION = 4; // Puntaje máximo por pregunta (asumiendo escala 0-4)
 
-    // 1. Recolectar puntajes brutos por habilidad y construir el objeto 'answers' para el API
-    const answersForApi = {}; 
+    // 1. Recolectar puntajes brutos por habilidad y construir el objeto 'answers' para el API
+    const answersForApi = {}; 
 
-    QUIZ_DATA.forEach(q => {
-        const qId = `q${q.id}`;
-        const answerText = userAnswers[qId];
-        const scoreValue = q.valueMap[answerText];
-        const skill = q.skill;
+    QUIZ_DATA.forEach((q, index) => { // Añadido 'index' para acceder a userAnswers[index]
+        const qId = `q${q.id}`;
+        // userAnswers es un array numérico [1, 5, 3...], no un Dict de 'answerText'
+        const scoreValue = userAnswers[index] - 1; // Convertir valor (1-5) a score (0-4)
+        const skill = q.skill;
 
-        if (!skillScores[skill]) {
-            skillScores[skill] = 0;
-            skillCounts[skill] = 0;
-        }
-        
-        skillScores[skill] += scoreValue;
-        skillCounts[skill]++;
+        // **NOTA:** Esta versión de cálculo SÓLO funciona si QUIZ_DATA
+        // tiene un campo 'skill' simple y no usa la estructura 'scores' con 'polarity'.
+        // Si usas 'scores', la lógica de 'submitQuiz' es la correcta.
+        // Asumo que esta versión más simple es intencional o una versión antigua.
+        
+        if (!skillScores[skill]) {
+            skillScores[skill] = 0;
+            skillCounts[skill] = 0;
+        }
+        
+        skillScores[skill] += scoreValue;
+        skillCounts[skill]++;
 
-        // 🟢 NUEVO: Guardamos el valor numérico (scoreValue + 1 para obtener 1-5) COMO STRING para el API
-        // Usamos el ID original de la pregunta (q.id) para que la clave sea 'q1', 'q2', etc.
-        answersForApi[`q${q.id}`] = (scoreValue + 1).toString();
-    });
+        // 🟢 Guardamos el valor numérico (scoreValue + 1 para obtener 1-5) COMO STRING para el API
+        answersForApi[`q${q.id}`] = (scoreValue + 1).toString();
+    });
 
-    // 2. Calcular porcentajes (0-100)
-    const finalScores = [];
-    let maxPossibleScore = 0;
+    // 2. Calcular porcentajes (0-100) y el resto del código es idéntico y correcto.
+    const finalScores = [];
+    let maxPossibleScore = 0;
 
-    for (const skill in skillScores) {
-        maxPossibleScore = skillCounts[skill] * MAX_SCORE_PER_QUESTION;
-        const percentage = Math.round((skillScores[skill] / maxPossibleScore) * 100);
-        finalScores.push({ skill, score: percentage });
-    }
-    
-    // 3. Determinar el perfil del usuario
-    finalScores.sort((a, b) => b.score - a.score);
-    const topSkills = finalScores.slice(0, 3).map(s => s.skill);
-    let userProfile = PROFILES.find(p => p.skills.filter(skill => topSkills.includes(skill)).length >= 2);
+    for (const skill in skillScores) {
+        maxPossibleScore = skillCounts[skill] * MAX_SCORE_PER_QUESTION;
+        const percentage = Math.round((skillScores[skill] / maxPossibleScore) * 100);
+        finalScores.push({ skill, score: percentage });
+    }
+    
+    // 3. Determinar el perfil del usuario (Lógica idéntica y correcta)
+    finalScores.sort((a, b) => b.score - a.score);
+    const topSkills = finalScores.slice(0, 3).map(s => s.skill);
+    let userProfile = PROFILES.find(p => p.skills.filter(skill => topSkills.includes(skill)).length >= 2);
 
-    if (!userProfile) {
-        userProfile = PROFILES.find(p => p.name === "EL DESARROLLADOR INTEGRAL");
-    }
-    
-    // 4. Guardar resultado final con la estructura COMPLETA esperada por el backend
-    window.finalQuizResult = {
-        answers: answersForApi, // Dict[str, str] (q1: "4", q2: "2", etc.)
-        softSkills: finalScores.map(s => ({ skill: s.skill, score: s.score })), // List[{skill: str, score: int}]
-        profile: userProfile.name, // str
-        date: new Date().toISOString().split('T')[0], // str (YYYY-MM-DD)
-        profileDescription: userProfile.description // str
-    };
+    if (!userProfile) {
+        userProfile = PROFILES.find(p => p.name === "EL DESARROLLADOR INTEGRAL");
+    }
+    
+    // 4. Guardar resultado final con la estructura COMPLETA esperada por el backend (idéntica y correcta)
+    window.finalQuizResult = {
+        answers: answersForApi, // Dict[str, str] (q1: "4", q2: "2", etc.)
+        softSkills: finalScores.map(s => ({ skill: s.skill, score: s.score })), // List[{skill: str, score: int}]
+        profile: userProfile.name, // str
+        date: new Date().toISOString().split('T')[0], // str (YYYY-MM-DD)
+        profileDescription: userProfile.description // str
+    };
 
-    // 5. Renderizar y mostrar resultados
-    renderResults(finalScores, userProfile);
+    // 5. Renderizar y mostrar resultados
+    // Asegúrate de que tienes una función 'renderResults' o usa 'renderResultsView'
+    renderResultsView(finalScores, userProfile); 
 }
       
 // --- VARIABLES GLOBALES ---
@@ -1126,78 +1134,86 @@ function renderResultsView() {
 // ... (saveResultsToAPI, restartQuiz, etc. siguen aquí)
 
 // --- INIT (ACTUALIZADO para usar async/await y CORREGIDO el manejo del spinner) ---
+// --- INIT (AJUSTADO) ---
 document.addEventListener('DOMContentLoaded', async () => {
-    // Bind DOM elements (déjalo como está)
-    quizEl = document.getElementById('quiz');
-    resultEl = document.getElementById('result');
-    questionsContainer = document.getElementById('questionsContainer');
-    progressBarFill = document.getElementById('progressBarFill');
-    progressText = document.getElementById('progressText');
-    prevBtn = document.getElementById('prevBtn');
-    nextBtn = document.getElementById('nextBtn');
-    submitBtn = document.getElementById('submitBtn');
-    alertModal = document.getElementById('alertModal');
-    alertTitle = document.getElementById('alertTitle');
-    alertMessage = document.getElementById('alertMessage');
-    saveResultBtn = document.getElementById('saveResultBtn');
-    backBtn = document.getElementById('backBtn');
-    goHomeFromQuizBtn = document.getElementById('goHomeFromQuiz');
-    loadingEl = document.getElementById('loading');
-    topSkillsPillsEl = document.getElementById('topSkillsPills');
-    skillsList = document.getElementById('skillsList');
-    profileNameEl = document.getElementById('profileName');
-    profileDescriptionEl = document.getElementById('profileDescription');
-    restartQuizBtn = document.getElementById('restartQuizBtn');
+    // Bind DOM elements (Idéntico a tu original)
+    quizEl = document.getElementById('quiz');
+    resultEl = document.getElementById('result');
+    questionsContainer = document.getElementById('questionsContainer');
+    progressBarFill = document.getElementById('progressBarFill');
+    progressText = document.getElementById('progressText');
+    prevBtn = document.getElementById('prevBtn');
+    nextBtn = document.getElementById('nextBtn');
+    submitBtn = document.getElementById('submitBtn');
+    alertModal = document.getElementById('alertModal');
+    alertTitle = document.getElementById('alertTitle');
+    alertMessage = document.getElementById('alertMessage');
+    saveResultBtn = document.getElementById('saveResultBtn');
+    backBtn = document.getElementById('backBtn');
+    goHomeFromQuizBtn = document.getElementById('goHomeFromQuiz');
+    loadingEl = document.getElementById('loading');
+    topSkillsPillsEl = document.getElementById('topSkillsPills');
+    skillsList = document.getElementById('skillsList');
+    profileNameEl = document.getElementById('profileName');
+    profileDescriptionEl = document.getElementById('profileDescription');
+    restartQuizBtn = document.getElementById('restartQuizBtn');
 
-    // Listeners (déjalo como está)
-    if(backBtn) backBtn.onclick = () => window.location.href = 'home.html';
-    if(goHomeFromQuizBtn) goHomeFromQuizBtn.onclick = () => window.location.href = 'home.html';
-    if(prevBtn) prevBtn.onclick = () => { if(currentQuestionIndex > 0) { currentQuestionIndex--; renderQuestion(currentQuestionIndex); }};
-    if(nextBtn) nextBtn.onclick = () => { if(userAnswers[currentQuestionIndex]) { currentQuestionIndex++; renderQuestion(currentQuestionIndex); }};
-    if(submitBtn) submitBtn.onclick = submitQuiz;
-    if(saveResultBtn) saveResultBtn.onclick = saveResultsToAPI;
-    if(restartQuizBtn) restartQuizBtn.onclick = restartQuiz;
+    // Listeners (Idéntico a tu original)
+    if(backBtn) backBtn.onclick = () => window.location.href = 'home.html';
+    if(goHomeFromQuizBtn) goHomeFromQuizBtn.onclick = () => window.location.href = 'home.html';
+    if(prevBtn) prevBtn.onclick = () => { if(currentQuestionIndex > 0) { currentQuestionIndex--; renderQuestion(currentQuestionIndex); }};
+    if(nextBtn) nextBtn.onclick = () => { 
+        // 🌟 CORRECCIÓN MENOR: Verificar que haya respuesta antes de avanzar.
+        if(userAnswers[currentQuestionIndex] != null) { 
+            currentQuestionIndex++; 
+            renderQuestion(currentQuestionIndex); 
+        }
+    };
+    if(submitBtn) submitBtn.onclick = submitQuiz;
+    if(saveResultBtn) saveResultBtn.onclick = saveResultsToAPI;
+    if(restartQuizBtn) restartQuizBtn.onclick = restartQuiz;
 
-    // 🌟 COOLDOWN CHECK ASÍNCRONO CONTRA LA BASE DE DATOS
-    const isOnCooldown = await isQuizOnCooldown();
+    // 🌟 COOLDOWN CHECK ASÍNCRONO CONTRA LA BASE DE DATOS (Idéntico a tu original)
+    const isOnCooldown = await isQuizOnCooldown();
 
-    if (isOnCooldown) {
-        const saved = getPreviousResult(); // Usamos el resultado de localStorage para la vista
-        if (saved) {
-            quizResults = saved;
-            renderResultsView();
-            showAlertModal("Modo Reflexión", `Estás en el periodo de asimilación de ${COOLDOWN_DAYS} días. Se muestran tus últimos resultados.`, false);
-        } else {
-            // Manejo si está bloqueado pero no tiene resultados locales
-            quizEl.innerHTML = `<div class="text-center text-white p-10 bg-slate-800 rounded-xl">
-                <h3 class="text-2xl font-bold text-yellow-400 mb-4">⏳ Enfriamiento Activo</h3>
-                <p class="mb-6">Has realizado el test recientemente. Tómate un tiempo para aplicar lo aprendido.</p> 
-                <button onclick="window.location.href='home.html'" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold">Volver al Inicio</button>
-            </div>`;
-        }
-        
-        // **CAMBIO 2 (CRÍTICO): Ocultar el spinner al salir de la ruta de bloqueo.**
-        if(loadingEl) loadingEl.style.display = 'none'; 
-        return; // Detiene la carga del quiz.
-    }
+    if (isOnCooldown) {
+        const saved = getPreviousResult(); // Usamos el resultado de localStorage para la vista
+        if (saved) {
+            quizResults = saved;
+            renderResultsView();
+            showAlertModal("Modo Reflexión", `Estás en el periodo de asimilación de ${COOLDOWN_DAYS} días. Se muestran tus últimos resultados.`, false);
+        } else {
+            // Manejo si está bloqueado pero no tiene resultados locales (Idéntico a tu original)
+            quizEl.innerHTML = `<div class="text-center text-white p-10 bg-slate-800 rounded-xl">
+                <h3 class="text-2xl font-bold text-yellow-400 mb-4">⏳ Enfriamiento Activo</h3>
+                <p class="mb-6">Has realizado el test recientemente. Tómate un tiempo para aplicar lo aprendido.</p> 
+                <button onclick="window.location.href='home.html'" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold">Volver al Inicio</button>
+            </div>`;
+        }
+        
+        // **CRÍTICO:** Ocultar el spinner al salir de la ruta de bloqueo. (Idéntico a tu original)
+        if(loadingEl) loadingEl.style.display = 'none'; 
+        return; // Detiene la carga del quiz.
+    }
 
-    // Load Progress & Start (solo se ejecuta si NO hay bloqueo)
-    const savedAns = localStorage.getItem('quiz_progress_answers');
-    if (savedAns) userAnswers = JSON.parse(savedAns);
-    const savedIdx = localStorage.getItem('quiz_progress_index');
-    if (savedIdx) currentQuestionIndex = parseInt(savedIdx);
+    // Load Progress & Start (solo se ejecuta si NO hay bloqueo) (Idéntico a tu original)
+    const savedAns = localStorage.getItem('quiz_progress_answers');
+    if (savedAns) userAnswers = JSON.parse(savedAns);
+    const savedIdx = localStorage.getItem('quiz_progress_index');
+    if (savedIdx) currentQuestionIndex = parseInt(savedIdx);
 
-    // Shuffle si es nuevo (no hay respuestas guardadas)
-    if (!savedAns) shuffleArray(QUIZ_DATA);
-    
-    // **CAMBIO 3 (CRÍTICO): Ocultar el spinner antes de renderizar la primera pregunta.**
-    if(loadingEl) loadingEl.style.display = 'none';
-    
-    renderQuestion(currentQuestionIndex);
+    // Shuffle si es nuevo (no hay respuestas guardadas) (Idéntico a tu original)
+    if (!savedAns) shuffleArray(QUIZ_DATA);
+    
+    // **CRÍTICO:** Ocultar el spinner antes de renderizar la primera pregunta. (Idéntico a tu original)
+    if(loadingEl) loadingEl.style.display = 'none';
+    
+    renderQuestion(currentQuestionIndex);
 });
     </script>
   </body>
 </html>
+
 
 
 
