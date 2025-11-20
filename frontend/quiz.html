@@ -10,332 +10,334 @@
       rel="stylesheet"
     />
     <style>
-      /* 🎨 CONFIGURACIÓN GLOBAL - ESTILO OSCURO ESMERALDA */
-      :root {
-        --color-primary: #10b981; /* Esmeralda 500 */
-        --color-accent: #059669; /* Esmeralda 600 */
-        --color-bg-dark: #0f172a; /* Fondo oscuro */
-        --color-card-dark: #1e293b; /* Fondo de tarjetas */
-        --color-text-light: #f8fafc; /* Texto claro */
-        --color-border: #475569; /* Borde neutro */
-      }
-      .quiz-container {
-        perspective: 1200px; /* 🔹 Más profundidad */
-      }
+    /* 🎨 CONFIGURACIÓN GLOBAL - ESTILO OSCURO ESMERALDA */
+:root {
+  --color-primary: #10b981; /* Esmeralda 500 */
+  --color-accent: #059669; /* Esmeralda 600 */
+  --color-bg-dark: #0f172a; /* Fondo oscuro */
+  --color-card-dark: #1e293b; /* Fondo de tarjetas */
+  --color-text-light: #f8fafc; /* Texto claro */
+  --color-border: #475569; /* Borde neutro */
+}
 
-      .quiz-card {
-        transform-style: preserve-3d;
-        transition: transform 0.3s ease;
-        will-change: transform;
-      }
+.quiz-container {
+  perspective: 1200px; /* 🔹 Más profundidad */
+}
 
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: var(--color-bg-dark);
-        min-height: 100vh;
-        color: var(--color-text-light);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        overflow-y: auto;
-        margin: 0;
-      }
+.quiz-card {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
 
-      /* 🔹 NAVBAR */
-      .navbar {
-        background-color: rgba(15, 23, 42, 0.9);
-        backdrop-filter: blur(6px);
-        border-bottom: 2px solid var(--color-primary);
-        padding: 0.6rem 1.2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: fixed;
-        top: 0;
-        width: 100%;
-        z-index: 20;
-        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-      }
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--color-bg-dark);
+  min-height: 100vh;
+  color: var(--color-text-light);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  margin: 0;
+}
 
-      .navbar h1 {
-        font-size: 1.3rem;
-        font-weight: 900;
-        color: var(--color-text-light);
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
-      }
+/* 🔹 NAVBAR */
+.navbar {
+  background-color: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(6px);
+  border-bottom: 2px solid var(--color-primary);
+  padding: 0.6rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 20;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
 
-      /* 🧩 CONTENEDOR DEL QUIZ */
-      .quiz-container {
-        max-width: 700px;
-        margin: 5rem auto 2rem auto;
-        padding: 1rem;
-        position: relative;
-        perspective: 1000px;
-        transform: scale(0.95);
-      }
+.navbar h1 {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+}
 
-      /* 💫 TARJETA DEL QUIZ */
-      .quiz-card,
-      .result-card {
-        background-color: var(--color-card-dark);
-        border: 1px solid var(--color-border);
-        border-radius: 1rem;
-        padding: 1.8rem;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-        transition: all 0.5s ease, box-shadow 0.3s ease;
-        animation: popCard 0.6s ease forwards;
-      }
+/* 🧩 CONTENEDOR DEL QUIZ */
+.quiz-container {
+  max-width: 700px;
+  margin: 5rem auto 2rem auto;
+  padding: 1rem;
+  position: relative;
+  perspective: 1000px;
+  transform: scale(0.95);
+}
 
-      .quiz-card:hover {
-        transform: scale(1.01);
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
-      }
+/* 💫 TARJETA DEL QUIZ */
+.quiz-card,
+.result-card {
+  background-color: var(--color-card-dark);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: 1.8rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+  transition: all 0.5s ease, box-shadow 0.3s ease;
+  animation: popCard 0.6s ease forwards;
+}
 
-      @keyframes popCard {
-        from {
-          opacity: 0;
-          transform: scale(0.9) translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
+.quiz-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
 
-      /* 🔸 BARRA DE PROGRESO */
-      .progress-bar {
-        width: 100%;
-        height: 8px;
-        background: #334155; /* gris azulado */
-        border-radius: 9999px;
-        margin-bottom: 1rem;
-      }
+@keyframes popCard {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
-      .progress-fill {
-        background: var(--color-primary);
-        height: 8px;
-        width: 0%;
-        border-radius: 9999px;
-        box-shadow: 0 0 10px var(--color-primary);
-        transition: width 0.6s ease-in-out;
-      }
+/* 🔸 BARRA DE PROGRESO */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #334155; /* gris azulado */
+  border-radius: 9999px;
+  margin-bottom: 1rem;
+}
 
-      /* ❓ PREGUNTA */
-      .question-item {
-        text-align: center;
-      }
+.progress-fill {
+  background: var(--color-primary);
+  height: 8px;
+  width: 0%;
+  border-radius: 9999px;
+  box-shadow: 0 0 10px var(--color-primary);
+  transition: width 0.6s ease-in-out;
+}
 
-      .question-item p {
-        font-size: 1.6rem;
-        font-weight: 800;
-        color: var(--color-text-light);
-        margin-bottom: 1.2rem;
-        text-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
-      }
+/* ❓ PREGUNTA */
+.question-item {
+  text-align: center;
+}
 
-      /* ⚡ OPCIONES */
-      .options-group {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.8rem;
-        margin-top: 1rem;
-      }
+.question-item p {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text-light);
+  margin-bottom: 1.2rem;
+  text-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+}
 
-      .option-btn {
-        background-color: #334155;
-        border: 1px solid var(--color-border);
-        color: var(--color-text-light);
-        padding: 0.6rem 1.4rem;
-        font-size: 1rem;
-        font-weight: 700;
-        border-radius: 0.6rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        min-width: 120px;
-        max-width: 220px;
-        text-align: center;
-      }
+/* ⚡ OPCIONES */
+.options-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
 
-      .option-btn:hover {
-        background-color: #475569;
-        transform: scale(1.05);
-        box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
-      }
+.option-btn {
+  background-color: #334155;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-light);
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  max-width: 220px;
+  text-align: center;
+}
 
-      .option-btn.selected {
-        background: var(--color-primary);
-        color: #0f172a;
-        border: 2px solid white;
-        font-weight: 900;
-        transform: scale(1.08);
-        box-shadow: 0 0 10px var(--color-primary);
-      }
+.option-btn:hover {
+  background-color: #475569;
+  transform: scale(1.05);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
 
-      /* 🔻 BOTONES DE ACCIÓN */
-      .quiz-actions {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 1.5rem;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
+.option-btn.selected {
+  background: var(--color-primary);
+  color: #0f172a;
+  border: 2px solid white;
+  font-weight: 900;
+  transform: scale(1.08);
+  box-shadow: 0 0 10px var(--color-primary);
+}
 
-      .cta-btn {
-        background-color: var(--color-primary);
-        color: #0f172a;
-        font-weight: 900;
-        padding: 0.7rem 1.6rem;
-        border-radius: 0.6rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-        font-size: 0.95rem;
-      }
+/* 🔻 BOTONES DE ACCIÓN */
+.quiz-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 
-      .cta-btn:hover {
-        background-color: var(--color-accent);
-        transform: scale(1.05);
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
-      }
+.cta-btn {
+  background-color: var(--color-primary);
+  color: #0f172a;
+  font-weight: 900;
+  padding: 0.7rem 1.6rem;
+  border-radius: 0.6rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  font-size: 0.95rem;
+}
 
-      .secondary-btn {
-        background-color: #334155;
-        color: var(--color-text-light);
-        font-weight: 700;
-        padding: 0.7rem 1.6rem;
-        border-radius: 0.6rem;
-        transition: all 0.3s ease;
-        font-size: 0.95rem;
-      }
+.cta-btn:hover {
+  background-color: var(--color-accent);
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+}
 
-      .secondary-btn:hover {
-        background-color: #475569;
-        transform: scale(1.03);
-      }
+.secondary-btn {
+  background-color: #334155;
+  color: var(--color-text-light);
+  font-weight: 700;
+  padding: 0.7rem 1.6rem;
+  border-radius: 0.6rem;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
 
-      /* 💬 RESULTADOS */
-      .result-card {
-        text-align: center;
-        padding: 1.8rem;
-        margin-bottom: 2rem;
-      }
+.secondary-btn:hover {
+  background-color: #475569;
+  transform: scale(1.03);
+}
 
-      .result-card .text-emerald-500 {
-        font-size: 1.8rem;
-        font-weight: 900;
-        color: var(--color-primary);
-        text-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
-      }
+/* 💬 RESULTADOS */
+.result-card {
+  text-align: center;
+  padding: 1.8rem;
+  margin-bottom: 2rem;
+}
 
-      .result-card p {
-        font-size: 1rem;
-        color: #d1d5db;
-      }
+.result-card .text-emerald-500 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--color-primary);
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+}
 
-      .skill-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.4rem 0;
-      }
+.result-card p {
+  font-size: 1rem;
+  color: #d1d5db;
+}
 
-      .skill-name {
-        font-weight: 600;
-        color: var(--color-text-light);
-        width: 30%;
-        text-align: left;
-      }
+.skill-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0;
+}
 
-      .skill-bar-container {
-        flex-grow: 1;
-        height: 8px;
-        background-color: #334155;
-        border-radius: 9999px;
-        overflow: hidden;
-      }
+.skill-name {
+  font-weight: 600;
+  color: var(--color-text-light);
+  width: 30%;
+  text-align: left;
+}
 
-      .skill-bar {
-        height: 100%;
-        background-color: var(--color-primary);
-        transition: width 0.5s ease-out;
-        box-shadow: 0 0 4px rgba(16, 185, 129, 0.6);
-      }
+.skill-bar-container {
+  flex-grow: 1;
+  height: 8px;
+  background-color: #334155;
+  border-radius: 9999px;
+  overflow: hidden;
+}
 
-      /* Modal */
-      .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 50;
-        opacity: 0; /* Controlado por JS */
-        visibility: hidden; /* Controlado por JS */
-        transition: opacity 0.3s ease;
-      }
-      .modal-overlay.open {
-        opacity: 1;
-        visibility: visible;
-      }
+.skill-bar {
+  height: 100%;
+  background-color: var(--color-primary);
+  transition: width 0.5s ease-out;
+  box-shadow: 0 0 4px rgba(16, 185, 129, 0.6);
+}
 
-      .modal-content {
-        background-color: var(--color-card-dark);
-        padding: 1.5rem;
-        border-radius: 1rem;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        max-width: 380px;
-        text-align: center;
-        border: 2px solid var(--color-primary);
-      }
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  opacity: 0; /* Controlado por JS */
+  visibility: hidden; /* Controlado por JS */
+  transition: opacity 0.3s ease;
+}
 
-      .modal-content h3 {
-        font-size: 1.3rem;
-        font-weight: 800;
-        color: var(--color-primary);
-        margin-bottom: 0.8rem;
-      }
+.modal-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
 
-      /* 🌟 EFECTO DE FONDO */
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(
-          circle at 50% 50%,
-          rgba(16, 185, 129, 0.06) 0%,
-          transparent 70%
-        );
-        z-index: -1;
-      }
+.modal-content {
+  background-color: var(--color-card-dark);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  max-width: 380px;
+  text-align: center;
+  border: 2px solid var(--color-primary);
+}
 
-      /* 📱 RESPONSIVIDAD */
-      @media (max-width: 640px) {
-        .question-item p {
-          font-size: 1.3rem;
-        }
+.modal-content h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-bottom: 0.8rem;
+}
 
-        .option-btn {
-          width: 100%;
-        }
+/* 🌟 EFECTO DE FONDO */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(16, 185, 129, 0.06) 0%,
+    transparent 70%
+  );
+  z-index: -1;
+}
 
-        .quiz-card,
-        .result-card {
-          padding: 1.5rem;
-        }
+/* 📱 RESPONSIVIDAD */
+@media (max-width: 640px) {
+  .question-item p {
+    font-size: 1.3rem;
+  }
 
-        .cta-btn,
-        .secondary-btn {
-          padding: 0.6rem 1.2rem;
-          font-size: 0.9rem;
-        }
-      }
+  .option-btn {
+    width: 100%;
+  }
+
+  .quiz-card,
+  .result-card {
+    padding: 1.5rem;
+  }
+
+  .cta-btn,
+  .secondary-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
     </style>
   </head>
 <body>
@@ -452,68 +454,84 @@
     </div>
 
     <script>
-      const API_URL = "https://encuestaa.onrender.com"; // URL de tu API de FastAPI en Render
+     const API_URL = "https://encuestaa.onrender.com"; // URL de tu API de FastAPI en Render
 
 // --- CONFIGURACIÓN DE ESCALA Y ALMACENAMIENTO ---
 const MAX_SCORE_PER_QUESTION_RAW = 5;
 const COOLDOWN_DAYS = 7;
 const LAST_QUIZ_KEY = 'lastQuizCompletion';
-const PREVIOUS_RESULT_KEY = 'previousQuizResult'; // Para almacenar el resultado anterior para la comparación
+const PREVIOUS_RESULT_KEY = 'previousQuizResult';
 
-const STANDARD_MULTIPOLAR_VALUE_MAP = {
-  "Totalmente en desacuerdo": 1,
-  "En desacuerdo": 2,
-  "Neutral": 3,
-  "De acuerdo": 4,
-  "Totalmente de acuerdo": 5,
+// --- NUEVAS ESCALAS CONTEXTUALES DE RESPUESTA ---
+const ANSWER_SCALES = {
+    // Escala A: Actitud/Prioridad (para preguntas de opinión o reacción)
+    'attitude': {
+        "Totalmente en desacuerdo": 1,
+        "En desacuerdo": 2,
+        "Neutral/Depende": 3,
+        "De acuerdo": 4,
+        "Totalmente de acuerdo": 5,
+        options: ["Totalmente en desacuerdo", "En desacuerdo", "Neutral/Depende", "De acuerdo", "Totalmente de acuerdo"]
+    },
+    // Escala B: Frecuencia (para preguntas de hábito o acción)
+    'frequency': {
+        "Casi nunca lo hago": 1,
+        "Raramente lo hago": 2,
+        "A veces lo hago": 3,
+        "Lo hago frecuentemente": 4,
+        "Casi siempre lo hago": 5,
+        options: ["Casi nunca lo hago", "Raramente lo hago", "A veces lo hago", "Lo hago frecuentemente", "Casi siempre lo hago"]
+    }
 };
+const DEFAULT_SCALE = 'frequency';
 
-// --- DATA DEL QUIZ (40 preguntas de escaneo MULTIFACTORIAL) ---
+// --- DATA DEL QUIZ (40 preguntas de escaneo MULTIFACTORIAL con 'scaleType') ---
 const QUIZ_DATA = [
-  { id: 1, text: "Al inicio de un proyecto, ¿dedicas más tiempo a la planificación detallada (milestones, dependencias) que a la ejecución inmediata?", scores: [{ skill: "Gestión del tiempo", polarity: 1 }, { skill: "Proactividad", polarity: -1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }] },
-  { id: 2, text: "Si un requisito clave de un cliente cambia a última hora, ¿te frustras o lo ves como una oportunidad para demostrar flexibilidad?", scores: [{ skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }] },
-  { id: 3, text: "En una reunión de ideas, ¿sientes que es tu deber señalar los defectos de una idea 'loca' en lugar de intentar mejorarla?", scores: [{ skill: "Creatividad e innovación", polarity: -1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: -1 }] },
-  { id: 4, text: "¿Buscas tomar todas las decisiones importantes del equipo para asegurar que se hagan 'bien', restando autonomía a tus compañeros?", scores: [{ skill: "Liderazgo", polarity: -1 }, { skill: "Trabajo en equipo", polarity: -1 }, { skill: "Empatía", polarity: -1 }] },
-  { id: 5, text: "Cuando un colega te pide ayuda o te explica un problema, ¿le interrumpes para ofrecerle la solución apenas crees entender la causa?", scores: [{ skill: "Comunicación efectiva", polarity: -1 }, { skill: "Empatía", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }] },
-  { id: 6, text: "¿Realizas o exploras una nueva herramienta o curso por iniciativa propia, incluso si no tiene una aplicación directa en tu trabajo actual?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: 1 }, { skill: "Creatividad e innovación", polarity: 1 }] },
-  { id: 7, text: "Si fallas un plazo importante, ¿te cuesta días recuperarte emocionalmente y volver a concentrarte en otras tareas?", scores: [{ skill: "Resiliencia", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }] },
-  { id: 8, text: "En un debate intenso, ¿priorizas alcanzar un acuerdo que satisfaga a todos sobre imponer tu punto de vista lógicamente superior?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }] },
-  { id: 9, text: "¿Te sientes muy incómodo cuando un software o proceso que dominas es reemplazado por uno nuevo sin previo aviso?", scores: [{ skill: "Adaptabilidad al cambio", polarity: -1 }, { skill: "Aprendizaje continuo", polarity: -1 }, { skill: "Resiliencia", polarity: -1 }] },
-  { id: 10, text: "¿Eres de los que prefiere 'pedir perdón antes que permiso' cuando ves una oportunidad clara de mejora o eficiencia?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Gestión del tiempo", polarity: 1 }] },
-  { id: 11, text: "¿Ante un problema conocido, primero revisas si existe un proceso o solución estándar, antes de intentar crear una nueva?", scores: [{ skill: "Creatividad e innovación", polarity: -1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }] },
-  { id: 12, text: "¿Crees que los problemas personales de un empleado son irrelevantes y no deberían afectar la planificación ni los objetivos laborales del equipo?", scores: [{ skill: "Liderazgo", polarity: -1 }, { skill: "Empatía", polarity: -1 }] },
-  { id: 13, text: "¿Simplificas intencionalmente los detalles técnicos complejos cuando hablas con personas no técnicas para evitar confusiones, a pesar de la pérdida de precisión?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }] },
-  { id: 14, text: "Cuando el equipo atraviesa una crisis o un error grave, ¿logras mantener la moral alta y el enfoque positivo en la solución?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }] },
-  { id: 15, text: "¿Sueles trabajar en una sola tarea importante a la vez (Deep Work) o prefieres saltar entre varias tareas pequeñas para sentirte productivo?", scores: [{ skill: "Gestión del tiempo", polarity: 1 }, { skill: "Proactividad", polarity: -1 }] },
-  { id: 16, text: "¿Buscas activamente tutoriales o documentación avanzada sobre un tema, incluso si ya puedes resolver las tareas básicas con lo que sabes?", scores: [{ skill: "Aprendizaje continuo", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }] },
-  { id: 17, text: "¿Modificas tu estilo de comunicación (formal/informal, directo/suave) según la personalidad o estado de ánimo de la persona con la que interactúas?", scores: [{ skill: "Empatía", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }] },
-  { id: 18, text: "¿Te sientes responsable de la formación y el crecimiento de tus compañeros, incluso si no eres su jefe directo?", scores: [{ skill: "Liderazgo", polarity: 1 }, { skill: "Proactividad", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: 1 }] },
-  { id: 19, text: "¿Evitas dar feedback negativo directo a un colega para preservar una relación armoniosa, prefiriendo comunicarlo indirectamente?", scores: [{ skill: "Comunicación efectiva", polarity: -1 }, { skill: "Trabajo en equipo", polarity: -1 }, { skill: "Empatía", polarity: -1 }] },
-  { id: 20, text: "Cuando tienes una idea muy innovadora, ¿el miedo al fracaso te detiene o te motiva a probarla?", scores: [{ skill: "Creatividad e innovación", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }] },
-  { id: 21, text: "¿Tienes una lista clara de 'no hacer' para evitar distracciones durante tus bloques de trabajo más importantes?", scores: [{ skill: "Gestión del tiempo", polarity: 1 }, { skill: "Proactividad", polarity: 1 }] },
-  { id: 22, text: "¿Consideras que el éxito de un proyecto es la suma de los logros individuales o el resultado de la sinergia colectiva?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }] },
-  { id: 23, text: "¿Buscas datos y métricas para validar tus suposiciones, incluso si tu intuición ya te dice cuál es la respuesta correcta?", scores: [{ skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: 1 }] },
-  { id: 24, text: "¿Eres el primero en el equipo en experimentar con cambios en las herramientas del entorno de desarrollo, a pesar de los posibles errores que pueda causar a otros?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Trabajo en equipo", polarity: -1 }] },
-  { id: 25, text: "¿Cuando un colega habla, centras tu atención en lo que dice y no en lo que vas a responder a continuación?", scores: [{ skill: "Empatía", polarity: 1 }, { skill: "Comunicación efectiva", polarity: 1 }] },
-  { id: 26, text: "¿Tienes estrategias definidas (ej. ejercicio, pausas) para manejar picos de estrés que de otra forma afectarían tu productividad?", scores: [{ skill: "Resiliencia", polarity: 1 }, { skill: "Gestión del tiempo", polarity: 1 }] },
-  { id: 27, text: "¿Utilizas analogías o ideas de otros campos (arte, naturaleza) para explicar o resolver problemas técnicos complejos?", scores: [{ skill: "Creatividad e innovación", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }] },
-  { id: 28, text: "¿Te aseguras de que todos los involucrados en una decisión crucial entiendan las implicaciones antes de proceder, no solo los directamente afectados?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }] },
-  { id: 29, text: "Si el equipo falla en un objetivo, ¿asumes tu parte de la responsabilidad públicamente en lugar de enfocarte en las fallas ajenas?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }] },
-  { id: 30, text: "Antes de implementar una solución importante, ¿suele ser necesario que un colega te cuestione para que encuentres los puntos débiles de tu diseño?", scores: [{ skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }, { skill: "Proactividad", polarity: -1 }] },
-  { id: 31, text: "¿Sientes que estás perdiendo tiempo si pasas un día entero aprendiendo una nueva librería sin producir código para el proyecto actual?", scores: [{ skill: "Gestión del tiempo", polarity: -1 }, { skill: "Aprendizaje continuo", polarity: -1 }] },
-  { id: 32, text: "¿Delegas tareas complejas, no solo las sencillas, para fomentar el crecimiento y la confianza de los miembros de tu equipo?", scores: [{ skill: "Liderazgo", polarity: 1 }, { skill: "Trabajo en equipo", polarity: 1 }] },
-  { id: 33, text: "¿Antes de intentar convencer a alguien de tu punto de vista, puedes resumir con precisión la posición de la otra persona para demostrar que la entendiste?", scores: [{ skill: "Empatía", polarity: 1 }, { skill: "Comunicación efectiva", polarity: 1 }] },
-  { id: 34, text: "¿Te aburre profundamente trabajar siempre con la misma pila tecnológica o el mismo tipo de proyecto?", scores: [{ skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Creatividad e innovación", polarity: 1 }] },
-  { id: 35, text: "¿Automatizas tareas repetitivas o manuales, incluso si te lleva más tiempo automatizarlas que hacerlas una vez?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Gestión del tiempo", polarity: 1 }] },
-  { id: 36, text: "Tras un gran error, ¿pasas rápidamente de la autocrítica al análisis de los pasos concretos para prevenir que vuelva a ocurrir?", scores: [{ skill: "Resiliencia", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }] },
-  { id: 37, text: "¿Dedicas tiempo a documentar y compartir tus nuevos aprendizajes para que el resto del equipo se beneficie?", scores: [{ skill: "Aprendizaje continuo", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }, { skill: "Trabajo en equipo", polarity: 1 }] },
-  { id: 38, text: "¿Buscas activamente a compañeros que están luchando con una tarea para ofrecerles ayuda, sin esperar a que te la pidan?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Empatía", polarity: 1 }, { skill: "Proactividad", polarity: 1 }] },
-  { id: 39, text: "Al escribir un mensaje o email importante, ¿lo revisas dos veces para eliminar ambigüedades y asegurar la precisión del mensaje?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }] },
-  { id: 40, text: "¿Te molesta profundamente cuando tu rutina de trabajo se interrumpe por reuniones de última hora o emergencias no planificadas?", scores: [{ skill: "Adaptabilidad al cambio", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }, { skill: "Resiliencia", polarity: -1 }] }
+  { id: 1, text: "Al inicio de un proyecto, ¿dedicas más tiempo a la planificación detallada (milestones, dependencias) que a la ejecución inmediata?", scores: [{ skill: "Gestión del tiempo", polarity: 1 }, { skill: "Proactividad", polarity: -1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
+  { id: 2, text: "Si un requisito clave de un cliente cambia a última hora, ¿te frustras o lo ves como una oportunidad para demostrar flexibilidad?", scores: [{ skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'attitude' },
+  { id: 3, text: "En una reunión de ideas, ¿sientes que es tu deber señalar los defectos de una idea 'loca' en lugar de intentar mejorarla?", scores: [{ skill: "Creatividad e innovación", polarity: -1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: -1 }], scaleType: 'attitude' },
+  { id: 4, text: "¿Buscas tomar todas las decisiones importantes del equipo para asegurar que se hagan 'bien', restando autonomía a tus compañeros?", scores: [{ skill: "Liderazgo", polarity: -1 }, { skill: "Trabajo en equipo", polarity: -1 }, { skill: "Empatía", polarity: -1 }], scaleType: 'frequency' },
+  { id: 5, text: "Cuando un colega te pide ayuda o te explica un problema, ¿le interrumpes para ofrecerle la solución apenas crees entender la causa?", scores: [{ skill: "Comunicación efectiva", polarity: -1 }, { skill: "Empatía", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }], scaleType: 'frequency' },
+  { id: 6, text: "¿Realizas o exploras una nueva herramienta o curso por iniciativa propia, incluso si no tiene una aplicación directa en tu trabajo actual?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: 1 }, { skill: "Creatividad e innovación", polarity: 1 }], scaleType: 'frequency' },
+  { id: 7, text: "Si fallas un plazo importante, ¿te cuesta días recuperarte emocionalmente y volver a concentrarte en otras tareas?", scores: [{ skill: "Resiliencia", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }], scaleType: 'attitude' },
+  { id: 8, text: "En un debate intenso, ¿priorizas alcanzar un acuerdo que satisfaga a todos sobre imponer tu punto de vista lógicamente superior?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }], scaleType: 'attitude' },
+  { id: 9, text: "¿Te sientes muy incómodo cuando un software o proceso que dominas es reemplazado por uno nuevo sin previo aviso?", scores: [{ skill: "Adaptabilidad al cambio", polarity: -1 }, { skill: "Aprendizaje continuo", polarity: -1 }, { skill: "Resiliencia", polarity: -1 }], scaleType: 'attitude' },
+  { id: 10, text: "¿Eres de los que prefiere 'pedir perdón antes que permiso' cuando ves una oportunidad clara de mejora o eficiencia?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Gestión del tiempo", polarity: 1 }], scaleType: 'attitude' },
+  { id: 11, text: "¿Ante un problema conocido, primero revisas si existe un proceso o solución estándar, antes de intentar crear una nueva?", scores: [{ skill: "Creatividad e innovación", polarity: -1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
+  { id: 12, text: "¿Crees que los problemas personales de un empleado son irrelevantes y no deberían afectar la planificación ni los objetivos laborales del equipo?", scores: [{ skill: "Liderazgo", polarity: -1 }, { skill: "Empatía", polarity: -1 }], scaleType: 'attitude' },
+  { id: 13, text: "¿Simplificas intencionalmente los detalles técnicos complejos cuando hablas con personas no técnicas para evitar confusiones, a pesar de la pérdida de precisión?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }], scaleType: 'frequency' },
+  { id: 14, text: "Cuando el equipo atraviesa una crisis o un error grave, ¿logras mantener la moral alta y el enfoque positivo en la solución?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'frequency' },
+  { id: 15, text: "¿Sueles trabajar en una sola tarea importante a la vez (Deep Work) o prefieres saltar entre varias tareas pequeñas para sentirte productivo?", scores: [{ skill: "Gestión del tiempo", polarity: 1 }, { skill: "Proactividad", polarity: -1 }], scaleType: 'frequency' },
+  { id: 16, text: "¿Buscas activamente tutoriales o documentación avanzada sobre un tema, incluso si ya puedes resolver las tareas básicas con lo que sabes?", scores: [{ skill: "Aprendizaje continuo", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
+  { id: 17, text: "¿Modificas tu estilo de comunicación (formal/informal, directo/suave) según la personalidad o estado de ánimo de la persona con la que interactúas?", scores: [{ skill: "Empatía", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }], scaleType: 'frequency' },
+  { id: 18, text: "¿Te sientes responsable de la formación y el crecimiento de tus compañeros, incluso si no eres su jefe directo?", scores: [{ skill: "Liderazgo", polarity: 1 }, { skill: "Proactividad", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: 1 }], scaleType: 'attitude' },
+  { id: 19, text: "¿Evitas dar feedback negativo directo a un colega para preservar una relación armoniosa, prefiriendo comunicarlo indirectamente?", scores: [{ skill: "Comunicación efectiva", polarity: -1 }, { skill: "Trabajo en equipo", polarity: -1 }, { skill: "Empatía", polarity: -1 }], scaleType: 'frequency' },
+  { id: 20, text: "Cuando tienes una idea muy innovadora, ¿el miedo al fracaso te detiene o te motiva a probarla?", scores: [{ skill: "Creatividad e innovación", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }], scaleType: 'attitude' },
+  { id: 21, text: "¿Tienes una lista clara de 'no hacer' para evitar distracciones durante tus bloques de trabajo más importantes?", scores: [{ skill: "Gestión del tiempo", polarity: 1 }, { skill: "Proactividad", polarity: 1 }], scaleType: 'frequency' },
+  { id: 22, text: "¿Consideras que el éxito de un proyecto es la suma de los logros individuales o el resultado de la sinergia colectiva?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'attitude' },
+  { id: 23, text: "¿Buscas datos y métricas para validar tus suposiciones, incluso si tu intuición ya te dice cuál es la respuesta correcta?", scores: [{ skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }, { skill: "Aprendizaje continuo", polarity: 1 }], scaleType: 'frequency' },
+  { id: 24, text: "¿Eres el primero en el equipo en experimentar con cambios en las herramientas del entorno de desarrollo, a pesar de los posibles errores que pueda causar a otros?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Trabajo en equipo", polarity: -1 }], scaleType: 'frequency' },
+  { id: 25, text: "¿Cuando un colega habla, centras tu atención en lo que dice y no en lo que vas a responder a continuación?", scores: [{ skill: "Empatía", polarity: 1 }, { skill: "Comunicación efectiva", polarity: 1 }], scaleType: 'frequency' },
+  { id: 26, text: "¿Tienes estrategias definidas (ej. ejercicio, pausas) para manejar picos de estrés que de otra forma afectarían tu productividad?", scores: [{ skill: "Resiliencia", polarity: 1 }, { skill: "Gestión del tiempo", polarity: 1 }], scaleType: 'frequency' },
+  { id: 27, text: "¿Utilizas analogías o ideas de otros campos (arte, naturaleza) para explicar o resolver problemas técnicos complejos?", scores: [{ skill: "Creatividad e innovación", polarity: 1 }, { skill: "Adaptabilidad al cambio", polarity: 1 }], scaleType: 'frequency' },
+  { id: 28, text: "¿Te aseguras de que todos los involucrados en una decisión crucial entiendan las implicaciones antes de proceder, no solo los directamente afectados?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }], scaleType: 'frequency' },
+  { id: 29, text: "Si el equipo falla en un objetivo, ¿asumes tu parte de la responsabilidad públicamente en lugar de enfocarte en las fallas ajenas?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Resiliencia", polarity: 1 }], scaleType: 'frequency' },
+  { id: 30, text: "Antes de implementar una solución importante, ¿suele ser necesario que un colega te cuestione para que encuentres los puntos débiles de tu diseño?", scores: [{ skill: "Pensamiento crítico y resolución de problemas", polarity: -1 }, { skill: "Proactividad", polarity: -1 }], scaleType: 'frequency' },
+  { id: 31, text: "¿Sientes que estás perdiendo tiempo si pasas un día entero aprendiendo una nueva librería sin producir código para el proyecto actual?", scores: [{ skill: "Gestión del tiempo", polarity: -1 }, { skill: "Aprendizaje continuo", polarity: -1 }], scaleType: 'attitude' },
+  { id: 32, text: "¿Delegas tareas complejas, no solo las sencillas, para fomentar el crecimiento y la confianza de los miembros de tu equipo?", scores: [{ skill: "Liderazgo", polarity: 1 }, { skill: "Trabajo en equipo", polarity: 1 }], scaleType: 'frequency' },
+  { id: 33, text: "¿Antes de intentar convencer a alguien de tu punto de vista, puedes resumir con precisión la posición de la otra persona para demostrar que la entendiste?", scores: [{ skill: "Empatía", polarity: 1 }, { skill: "Comunicación efectiva", polarity: 1 }], scaleType: 'frequency' },
+  { id: 34, text: "¿Te aburre profundamente trabajar siempre con la misma pila tecnológica o el mismo tipo de proyecto?", scores: [{ skill: "Adaptabilidad al cambio", polarity: 1 }, { skill: "Creatividad e innovación", polarity: 1 }], scaleType: 'attitude' },
+  { id: 35, text: "¿Automatizas tareas repetitivas o manuales, incluso si te lleva más tiempo automatizarlas que hacerlas una vez?", scores: [{ skill: "Proactividad", polarity: 1 }, { skill: "Gestión del tiempo", polarity: 1 }], scaleType: 'frequency' },
+  { id: 36, text: "Tras un gran error, ¿pasas rápidamente de la autocrítica al análisis de los pasos concretos para prevenir que vuelva a ocurrir?", scores: [{ skill: "Resiliencia", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
+  { id: 37, text: "¿Dedicas tiempo a documentar y compartir tus nuevos aprendizajes para que el resto del equipo se beneficie?", scores: [{ skill: "Aprendizaje continuo", polarity: 1 }, { skill: "Liderazgo", polarity: 1 }, { skill: "Trabajo en equipo", polarity: 1 }], scaleType: 'frequency' },
+  { id: 38, text: "¿Buscas activamente a compañeros que están luchando con una tarea para ofrecerles ayuda, sin esperar a que te la pidan?", scores: [{ skill: "Trabajo en equipo", polarity: 1 }, { skill: "Empatía", polarity: 1 }, { skill: "Proactividad", polarity: 1 }], scaleType: 'frequency' },
+  { id: 39, text: "Al escribir un mensaje o email importante, ¿lo revisas dos veces para eliminar ambigüedades y asegurar la precisión del mensaje?", scores: [{ skill: "Comunicación efectiva", polarity: 1 }, { skill: "Pensamiento crítico y resolución de problemas", polarity: 1 }], scaleType: 'frequency' },
+  { id: 40, text: "¿Te molesta profundamente cuando tu rutina de trabajo se interrumpe por reuniones de última hora o emergencias no planificadas?", scores: [{ skill: "Adaptabilidad al cambio", polarity: -1 }, { skill: "Gestión del tiempo", polarity: -1 }, { skill: "Resiliencia", polarity: -1 }], scaleType: 'attitude' }
 ];
 
-// --- DATA DE PERFILES (Mapeo por Top 3 Habilidades) ---
+// --- DATA DE PERFILES (SIN CAMBIOS) ---
 const PROFILES = [
+    // ... (Mantener la data de PROFILES y SKILL_FEEDBACK sin cambios) ...
   { name: "EL LÍDER ESTRATÉGICO", skills: ["Liderazgo", "Pensamiento crítico y resolución de problemas", "Comunicación efectiva"], description: "Un líder natural con la capacidad de analizar problemas complejos y dirigir al equipo hacia metas claras. Excelente para la toma de decisiones y la gestión de la visión." },
   { name: "EL COLABORADOR INFLUYENTE", skills: ["Trabajo en equipo", "Empatía", "Comunicación efectiva"], description: "Eres el puente del equipo. Entiendes las dinámicas humanas, comunicas eficazmente y garantizas que el equipo trabaje en armonía. Ideal para roles de Scrum Master o coordinación." },
   { name: "EL AGENTE DE CAMBIO ÁGIL", skills: ["Adaptabilidad al cambio", "Resiliencia", "Aprendizaje continuo"], description: "Prosperas en ambientes dinámicos. Tu capacidad de recuperarte de los reveses y tu apetito por aprender te convierten en un recurso invaluable para proyectos en evolución constante o startups." },
@@ -522,8 +540,8 @@ const PROFILES = [
   { name: "EL DESARROLLADOR INTEGRAL", skills: [], description: "Tienes un equilibrio fuerte entre tus habilidades blandas, mostrando potencial en diversas áreas. Tu adaptabilidad y enfoque te harán exitoso." },
 ];
 
-// --- FEEDBACK CUALITATIVO DETALLADO POR HABILIDAD ---
 const SKILL_FEEDBACK = {
+    // ... (Mantener la data de SKILL_FEEDBACK sin cambios) ...
   "Liderazgo": {
     low: { weakness: "Evitas decisiones difíciles y no logras establecer una dirección clara, impactando la moral y la autonomía del equipo.", tip: "Asume responsabilidades de la 'visión'. Practica delegar tareas complejas y ofrece *mentoría* en lugar de hacer *micromanagement*." },
     high: { strength: "Líder inspirador que empodera. Tu visión y tu capacidad para mantener la moral alta son tus mayores fortalezas.", tip: "Enfócate en desarrollar futuros líderes. Crea sistemas de delegación basados en la confianza para multiplicar el impacto." },
@@ -570,7 +588,7 @@ const SKILL_FEEDBACK = {
   },
 };
 
-// --- ESTADO Y UTILERIAS ---
+// --- ESTADO Y UTILERIAS (SIN CAMBIOS) ---
 let currentQuestionIndex = 0;
 const userAnswers = {};
 window.finalQuizResult = null;
@@ -594,7 +612,8 @@ const saveResultBtn = document.getElementById('saveResultBtn');
 const backBtn = document.getElementById('backBtn');
 const goHomeFromQuizBtn = document.getElementById('goHomeFromQuiz');
 const loadingEl = document.getElementById('loading');
-const topSkillsPillsEl = document.getElementById('topSkillsPills'); // Asumimos que existe
+const topSkillsPillsEl = document.getElementById('topSkillsPills');
+
 
 /** Función utilitaria para mezclar un array. */
 function shuffleArray(array) {
@@ -628,7 +647,7 @@ function closeAlertModal() {
 }
 window.closeAlertModal = closeAlertModal;
 
-// --- LÓGICA DE COOLDOWN Y COMPARACIÓN ---
+// --- LÓGICA DE COOLDOWN Y COMPARACIÓN (SIN CAMBIOS) ---
 
 /** Revisa si el usuario debe esperar para tomar el quiz. */
 function checkQuizCooldown() {
@@ -705,18 +724,15 @@ function getComparisonData(currentScores) {
 /** Reinicia el estado del quiz a su configuración inicial. */
 function resetQuiz() {
     currentQuestionIndex = 0;
-    // Limpiar respuestas
     for (const key in userAnswers) {
         delete userAnswers[key];
     }
     window.finalQuizResult = null;
-    localStorage.removeItem('quiz_progress'); // Limpiar progreso de localStorage
+    localStorage.removeItem('quiz_progress');
     
-    // Ocultar resultados y mostrar quiz
     if (resultCard) resultCard.style.display = 'none';
     if (quizCard) quizCard.style.display = 'block';
     
-    // Restaurar el botón de guardar
     if (saveResultBtn) {
         saveResultBtn.disabled = false;
         saveResultBtn.textContent = 'Guardar Resultado';
@@ -736,7 +752,6 @@ function loadProgress() {
 
             const answeredIds = Object.keys(userAnswers);
             if (answeredIds.length > 0) {
-                // Encontrar el índice de la pregunta con el ID más alto
                 const lastQuestionId = answeredIds.reduce((a, b) => {
                     const idA = parseInt(a.slice(1) || 0);
                     const idB = parseInt(b.slice(1) || 0);
@@ -749,10 +764,8 @@ function loadProgress() {
                     let lastIndex = QUIZ_DATA.findIndex(q => q.id === lastAnsweredQData.id);
                     
                     if (answeredIds.length === QUIZ_DATA.length) {
-                         // Si respondió todas, se queda en la última para revisión antes de finalizar
                          currentQuestionIndex = QUIZ_DATA.length - 1;
                     } else if (lastIndex < QUIZ_DATA.length - 1) {
-                         // Si no ha respondido todas, avanza a la siguiente pregunta sin responder
                         currentQuestionIndex = lastIndex + 1;
                     } else {
                         currentQuestionIndex = lastIndex;
@@ -778,12 +791,15 @@ function renderQuestion(index) {
   const questionData = QUIZ_DATA[index];
   const questionNumber = index + 1;
   const originalQuestionId = `q${questionData.id}`;
+  // Obtener las opciones de la escala correcta
+  const scaleType = questionData.scaleType || DEFAULT_SCALE;
+  const optionsMap = ANSWER_SCALES[scaleType].options;
 
   const questionHTML = `
       <div id="currentQuestion_${questionNumber}" class="question-item animate-in fade-in">
-        <p>(${questionNumber}/${QUIZ_DATA.length}) ${questionData.text}</p>
+        <p class="question-text">(${questionNumber}/${QUIZ_DATA.length}) ${questionData.text}</p>
         <div class="options-group" data-q-original-id="${originalQuestionId}" data-q-index="${index}">
-          ${Object.keys(STANDARD_MULTIPOLAR_VALUE_MAP).map(option => {
+          ${optionsMap.map(option => {
             const isSelected = userAnswers[originalQuestionId] === option;
             return `
               <button
@@ -922,7 +938,10 @@ function calculateResults() {
   QUIZ_DATA.forEach(q => {
     const qId = `q${q.id}`;
     const answerText = userAnswers[qId];
-    const answerRawScore = STANDARD_MULTIPOLAR_VALUE_MAP[answerText];
+    const scaleType = q.scaleType || DEFAULT_SCALE; // Obtener el tipo de escala
+    
+    // Obtener el valor numérico de la respuesta según la escala
+    const answerRawScore = ANSWER_SCALES[scaleType][answerText];
     if (!answerRawScore) return;
 
     q.scores.forEach(s => {
@@ -956,12 +975,11 @@ function calculateResults() {
   const topSkills = finalScores.slice(0, 3).map(s => s.skill);
   let userProfile = PROFILES.find(p => p.skills.every(skill => topSkills.includes(skill)));
 
-  // Si no se encuentra un perfil específico, usar el perfil "Integral"
   if (!userProfile) {
     userProfile = PROFILES.find(p => p.name === "EL DESARROLLADOR INTEGRAL");
   }
 
-  // 5. Guardar resultado final (incluye answers como diccionario)
+  // 5. Guardar resultado final
   window.finalQuizResult = {
     answers: userAnswers,
     softSkills: finalScores,
@@ -985,10 +1003,9 @@ function renderResults(scores, profile) {
   profileNameEl.textContent = profile.name;
   profileDescriptionEl.textContent = profile.description;
 
-  // Obtener datos de comparación y guardar el resultado actual para el futuro (Cooldow/Comparison logic)
   const comparisonData = getComparisonData(scores);
   saveResultsForComparison(window.finalQuizResult);
-  localStorage.removeItem('quiz_progress'); // Limpia el progreso una vez finalizado y guardado
+  localStorage.removeItem('quiz_progress');
 
   // 1. Renderizar Top Skills Pills
   topSkillsPillsEl.innerHTML = scores.slice(0, 3).map(s => `
@@ -1092,7 +1109,7 @@ async function saveResultsToAPI() {
             }
 
             showAlert('❌ Error al Guardar', errorMessage, true);
-            if (saveResultBtn) saveResultBtn.disabled = false; // Re-habilitar para reintentar
+            if (saveResultBtn) saveResultBtn.disabled = false;
         }
 
     } catch (error) {
@@ -1104,27 +1121,19 @@ async function saveResultsToAPI() {
     }
 }
       
-// --- INICIALIZACIÓN Y EVENT LISTENERS ---
+// --- INICIALIZACIÓN Y EVENT LISTENERS (SIN CAMBIOS) ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Verificar Cooldown
     if (!checkQuizCooldown()) {
-        return; // Detiene la inicialización si está en cooldown
+        return;
     }
     
-    // 2. Cargar progreso guardado y determinar la pregunta inicial
     loadProgress();
-
-    // 3. Inicializar la primera pregunta (o la reanudada)
     renderQuestion(currentQuestionIndex);
     
-    // --- ASIGNACIÓN DE EVENT LISTENERS ---
-    
-    // 4. Redirecciones 
     if (backBtn) backBtn.addEventListener('click', () => (window.location.href = 'home.html'));
     if (goHomeFromQuizBtn) goHomeFromQuizBtn.addEventListener('click', () => (window.location.href = 'home.html'));
 
-    // 5. Navegación del quiz
     if (prevBtn) prevBtn.addEventListener('click', () => {
       if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
@@ -1140,11 +1149,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // 6. Finalizar y Guardar
     if (submitBtn) submitBtn.addEventListener('click', calculateResults);
     if (saveResultBtn) saveResultBtn.addEventListener('click', saveResultsToAPI);
     
-    // 7. Reinicio del Quiz (Botón que debe existir en el resultCard)
     const restartQuizBtn = document.getElementById('restartQuizBtn');
     if (restartQuizBtn) {
         restartQuizBtn.addEventListener('click', resetQuiz);
@@ -1184,6 +1191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </script>
   </body>
 </html>
+
 
 
 
