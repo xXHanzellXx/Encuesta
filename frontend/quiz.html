@@ -454,11 +454,13 @@ body::before {
     </div>
 
     <script>
-   const API_URL = "https://encuestaa.onrender.com/"; 
+   // AL INICIO DEL ARCHIVO (ÚNICA DECLARACIÓN)
+const API_URL = "https://encuestaa.onrender.com/"; 
 
 // --- CONSTANTES Y CONFIGURACIÓN ---
 const MAX_SCORE_PER_QUESTION_RAW = 5;
 const COOLDOWN_DAYS = 7;
+// ... (otras constantes) ...
 const LAST_QUIZ_KEY = 'lastQuizCompletion';
 const PREVIOUS_RESULT_KEY = 'previousQuizResult';
 
@@ -807,19 +809,24 @@ window.closeAlertModal = function() {
 
 
 async function isQuizOnCooldown() {
-    const token = localStorage.getItem('token');
-    
-    // Si no hay token, el usuario no está logueado o está expirado.
-    if (!token) return false; 
+    const token = localStorage.getItem('token');
+    if (!token) return false; 
 
-    try {
-        // **¡REVISA QUE API_URL ESTÉ DEFINIDA CORRECTAMENTE!**
-        const res = await fetch(`${API_URL}/api/quiz/cooldown`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}` 
-            }
-        });
+    try {
+        // CORRECCIÓN: Quitamos la barra inicial del endpoint.
+        // Si API_URL es "https://encuestaa.onrender.com/", esto resulta en:
+        // https://encuestaa.onrender.com/api/quiz/cooldown
+        const res = await fetch(`${API_URL}api/quiz/cooldown`, { 
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}` 
+            }
+        });
+        // ... (el resto de la función es correcto) ...
+    } catch (error) {
+        // ...
+    }
+}
 
         if (!res.ok) {
             console.error("Error al consultar cooldown:", res.status);
@@ -1212,6 +1219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     </script>
   </body>
 </html>
+
 
 
 
