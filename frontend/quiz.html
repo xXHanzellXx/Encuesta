@@ -805,7 +805,6 @@ window.closeAlertModal = function() {
 
 // --- LÓGICA DE COOLDOWN Y COMPARACIÓN (ACTUALIZADA A ASYNC/AWAIT Y DB) ---
 
-const COOLDOWN_DAYS = 7; 
 
 async function isQuizOnCooldown() {
     const token = localStorage.getItem('token');
@@ -1213,6 +1212,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     </script>
   </body>
 </html>
+
 
 
 
