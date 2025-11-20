@@ -9,7 +9,7 @@ from .auth import create_token, verify_token
 
 app = FastAPI()
 
-# 🛑 Middleware de logging ELIMINADO para evitar consumir el cuerpo de la petición (JSON).
+# 🛑 Se eliminó el middleware de logging que interfería con el JSON.
 
 app.add_middleware(
     CORSMiddleware,
@@ -52,10 +52,11 @@ def login_user(user: UserLogin):
 # --- RUTAS DEL QUIZ ---
 
 # ---------- Guardar Quiz (VERSION DE PRUEBA EXITOSA) ----------
-@app.post("/api/quiz/") # Mantenemos la barra final
+# Nota: La ruta ahora es "/api/quiz/" con la barra final.
+@app.post("/api/quiz/") 
 def save_quiz(result: QuizResult):
-    # Ya no se requiere el token ni el Header.
-    email = "temp_user@test.com" # EMAIL TEMPORAL
+    # En modo de prueba, el email es fijo.
+    email = "temp_user@test.com" 
     
     quiz_data = result.dict()
     quiz_data["user_email"] = email
